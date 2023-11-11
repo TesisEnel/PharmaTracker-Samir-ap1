@@ -14,7 +14,8 @@ namespace PharmaTracker.Shared
         public int DetalleProductoId { get; set; }
         [ForeignKey("ProductoId")]
         public int ProductoId { get; set; }
-        public string Descripcion { get; set; }
+        [Required]
+        public string? Descripción { get; set; }
 
     }
 }
