@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
+
+var ConStr = builder.Configuration.GetConnectionString("ConStr");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
