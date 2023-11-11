@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PharmaTracker.Shared
 {
-	internal class Clientes
+	public class Clientes
 	{
 		[Key]
 		public int ClienteId { get; set; }
