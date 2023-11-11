@@ -19,6 +19,9 @@ namespace PharmaTracker.Shared
 		public string? Teléfono { get; set; }
 		[Required(ErrorMessage = "El Email es obligatorio")]
 		public string? Email { get; set; }
+		[Required(ErrorMessage = "La contraseña es obligatoria")]
+		public string? Contraseña { get; set; }
+
 
 	}
 }
