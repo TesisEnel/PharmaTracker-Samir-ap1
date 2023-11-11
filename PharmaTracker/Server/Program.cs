@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using PharmaTracker.Server.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,10 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-var app = builder.Build();
-
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
+builder.Services.AddDbContext<PharmaTracketContext>(options => options.UseSqlite(ConStr));
 
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
