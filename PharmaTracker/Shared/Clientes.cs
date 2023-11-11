@@ -12,13 +12,13 @@ namespace PharmaTracker.Shared
 		[Key]
 		public int ClienteId { get; set; }
 		[Required(ErrorMessage = "El nombre es obligatorio")]
-		public string Nombre { get; set; }
+		public string? Nombre { get; set; }
 		[Required(ErrorMessage = "La dirección es obligatorio")]
-		public string Direccion { get; set; }
+		public string? Dirección { get; set; }
 		[Required(ErrorMessage = "El teléfono es obligatorio")]
-		public string Telefono { get; set; }
+		public string? Teléfono { get; set; }
 		[Required(ErrorMessage = "El Email es obligatorio")]
-		public string Email { get; set; }
+		public string? Email { get; set; }
 
 	}
 }
