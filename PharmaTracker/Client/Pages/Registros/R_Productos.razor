@@ -1,0 +1,13 @@
+﻿@page "/R_Productos"
+@page "/R_Productos/{RProductosId:int}"
+
+<PageTitle>Registro de Productos</PageTitle>
+
+<div class="card-header">
+	<h3 class="card align-items-center">Registros de Productos</h3>
+</div>
+
+@code {
+	[Parameter]
+	public int RProductosId { get; set; }
+}
