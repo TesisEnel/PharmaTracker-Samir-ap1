@@ -1,5 +1,6 @@
 ﻿@page "/R_Productos"
 @page "/R_Productos/{RProductosId:int}"
+@using PharmaTracker.Shared;
 
 <PageTitle>Registro de Productos</PageTitle>
 
@@ -7,7 +8,101 @@
 	<h3 class="card align-items-center">Registros de Productos</h3>
 </div>
 
+<EditForm Model="Productos" OnValidSubmit="Guardar">
+
+	@*ID*@
+	<div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4 mt-4">
+		<label>Producto Id</label>
+		<div class="d-flex align-items-center">
+			<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="Productos.ProductoId" />
+			<button class="btn btn-primary ml-2" type="button" @onclick="Buscar">
+				<i class="oi oi-magnifying-glass" />
+			</button>
+		</div>
+	</div>
+
+	@*Fecha*@
+	<div class="col-md-6 mt-2">
+		<div Class="form-group mb-2">
+			<label>Fecha:</label>
+			<div class="input-group ">
+				<InputDate id="Fecha" class="form-control" @bind-Value="Productos.Fecha" />
+			</div>
+		</div>
+	</div>
+
+	@*Nombre*@
+	<div class="mb-3">
+		<label class="form-label" for="Concepto">Nombre del Producto:</label>
+		<InputTextArea @bind-Value="Productos.NombreProducto" class="form-control" />
+		<ValidationMessage For="@(() => Productos.NombreProducto)" />
+	</div>
+
+	@*Laboratorio*@
+	<div class="col-md-6 mt-2">
+		<div class="form-group mb-3">
+			<label>Laboratorio:</label>
+				<div class="input-group ">		
+				<InputText id="Laboratorio" class="form-control" @bind-Value="Productos.Laboratorio" />
+				</div>
+		</div>
+	</div>
+
+	@*Precio y Existencia*@
+	<div class="row">
+		<div class="col-md-6 mt-2">
+			<div class="form-group mb-3">
+				<label>Precio:</label>
+				<div class="input-group ">
+					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="Productos.Precio" />
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 mt-2">
+			<div class="form-group mb-3">
+				<label>Existencia:</label>
+				<div class="input-group ">
+					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="Productos.Existencia" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-6 mt-2" >
+		<div Class="form-group">
+			<label>Foto:</label>
+			<div class="input-group">
+				<span class="input-group-text">Seleccionar Imagen:</span>
+				<InputText @bind-Value="Productos.imagen" class="form-control"></InputText>
+				<ValidationMessage For="@(() =>Productos.imagen)" />
+			</div>
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-center mb-4 mt-4">
+		<div class="btn-group">
+			<button type="button" class="btn btn-outline-primary">Nuevo <i class="oi oi-file" /></button>
+			<button type="submit" class="btn btn-outline-success" >Guardar <i class="oi oi-document" /></button>
+			<button type="button" class="btn btn-outline-danger">Eliminar <i class="oi oi-trash" /></button>
+		</div>
+	</div>
+
+</EditForm>
+
 @code {
 	[Parameter]
 	public int RProductosId { get; set; }
+
+	public Productos Productos { get; set; } = new Productos();
+
+
+	public async Task Guardar()
+	{
+
+	}
+
+	public async Task Buscar()
+	{
+
+	}
 }

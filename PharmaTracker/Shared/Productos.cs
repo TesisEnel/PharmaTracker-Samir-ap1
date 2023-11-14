@@ -12,6 +12,7 @@ namespace PharmaTracker.Shared
         [Key]
         public int ProductoId { get; set; }
         [Required(ErrorMessage = "El nombre del producto es obligatorio")]
+        public DateTime Fecha { get; set; } = DateTime.Now;
         public string NombreProducto { get; set; }
         [Required(ErrorMessage = "El precio es obligatorio")]   
         public int Precio { get; set; }
@@ -19,6 +20,7 @@ namespace PharmaTracker.Shared
         public string Laboratorio { get; set; }
         [Required(ErrorMessage = "La exitencia es obligatorio")]
         public int Existencia { get; set; }
+        public string imagen { get; set; }
 
         public ICollection<DescripcionProductoD> DescripcionProductos { get; set; }
         public ICollection<ComponentesProductoD> ComponentesProducto { get; set; }
