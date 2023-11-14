@@ -1,0 +1,148 @@
+﻿@* 
+<ul class="nav">
+    <li @onclick="ShowLogin">Login</li>
+    <li @onclick="ShowSignup">Sign up</li>
+    <li @onclick="ShowForgotPassword">Forgot password</li>
+    <li @onclick="ShowSubscribe">Subscribe</li>
+    <li @onclick="ShowContactUs">Contact us</li>
+</ul>
+<div class="wrapper">
+    <div class="rec-prism">
+        <div class="face rec-prism-top">
+            <div class="content">
+                <h2>Subscribe</h2>
+                <small>Enter your email so we can send you the latest updates!</small>
+                <form @onsubmit="PreventDefault">
+                    <div class="field-wrapper">
+                        <input type="text" name="email" placeholder="email">
+                        <label>e-mail</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="submit" @onclick="ShowThankYou">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="face rec-prism-front">
+            <div class="content">
+                <h2>Sign in</h2>
+                <form @onsubmit="PreventDefault">
+                    <div class="field-wrapper">
+                        <input type="text" name="username" placeholder="username">
+                        <label>username</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="password" name="password" placeholder="password" autocomplete="new-password">
+                        <label>password</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="submit" @onclick="ShowThankYou">
+                    </div>
+                    <span class="psw" @onclick="ShowForgotPassword">Forgot Password?   </span>
+                    <span class="signup" @onclick="ShowSignup">Not a user?  Sign up</span>
+                </form>
+            </div>
+        </div>
+        <div class="face rec-prism-back">
+            <div class="content">
+                <h2>Forgot your password?</h2>
+                <small>Enter your email so we can send you a reset link for your password</small>
+                <form @onsubmit="PreventDefault">
+                    <div class="field-wrapper">
+                        <input type="text" name="email" placeholder="email">
+                        <label>e-mail</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="submit" @onclick="ShowThankYou">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="face rec-prism-right">
+            <div class="content">
+                <h2>Sign up</h2>
+                <form @onsubmit="PreventDefault">
+                    <div class="field-wrapper">
+                        <input type="text" name="email" placeholder="email">
+                        <label>e-mail</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="password" name="password" placeholder="password" autocomplete="new-password">
+                        <label>password</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="password" name="password2" placeholder="password" autocomplete="new-password">
+                        <label>re-enter password</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="submit" @onclick="ShowThankYou">
+                    </div>
+                    <span class="singin" @onclick="ShowLogin">Already a user?  Sign in</span>
+                </form>
+            </div>
+        </div>
+        <div class="face rec-prism-left">
+            <div class="content">
+                <h2>Contact us</h2>
+                <form @onsubmit="PreventDefault">
+                    <div class="field-wrapper">
+                        <input type="text" name="name" placeholder="name">
+                        <label>Name</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="text" name="email" placeholder="email">
+                        <label>e-mail</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <textarea placeholder="your message"></textarea>
+                        <label>your message</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="submit" @onclick="ShowThankYou">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="face rec-prism-bottom">
+            <div class="content">
+                <div class="thank-you-msg">
+                    Thank you!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ *@
+@code {
+    private string transformStyle = "translateZ(-100px)"; 
+
+    private void ShowSignup()
+    {
+        transformStyle = "translateZ(-100px) rotateY(-90deg)";
+    }
+
+    private void ShowLogin()
+    {
+        transformStyle = "translateZ(-100px)";
+    }
+
+    private void ShowForgotPassword()
+    {
+        transformStyle = "translateZ(-100px) rotateY(-180deg)";
+    }
+
+    private void ShowSubscribe()
+    {
+        transformStyle = "translateZ(-100px) rotateX(-90deg)";
+    }
+
+    private void ShowContactUs()
+    {
+        transformStyle = "translateZ(-100px) rotateY(90deg)";
+    }
+
+    private void ShowThankYou()
+    {
+        transformStyle = "translateZ(-100px) rotateX(90deg)";
+    }
+}
