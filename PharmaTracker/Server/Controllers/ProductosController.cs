@@ -116,6 +116,27 @@ namespace PharmaTracker.Server.Controllers
             return NoContent();
         }
 
+        //Delete: api/Productos
+        [HttpDelete("DeleteProductosMes/{id}")]
+        public async Task<IActionResult> DeleteProductosMes(int id)
+        {
+            if(id <= 0)
+            {
+                return BadRequest();
+            }
+            var productosDesc = await _context.DescripcionProductoD.FirstOrDefaultAsync(dp => dp.ProductoId == id);
+            var productosComp = await _context.ComponentesProductoD.FirstOrDefaultAsync(cp => cp.ProductoId == id);
+            if(productosDesc is not null && productosComp is not null)
+            {
+                return NotFound();
+			}
+            _context.DescripcionProductoD.Remove(productosDesc);
+            _context.ComponentesProductoD.Remove(productosComp);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+		}
+
         private bool ProductosExists(int id)
         {
             return (_context.Productos?.Any(e => e.ProductoId == id)).GetValueOrDefault();
