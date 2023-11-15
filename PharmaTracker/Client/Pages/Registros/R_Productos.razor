@@ -1,6 +1,8 @@
 ﻿@page "/R_Productos"
 @page "/R_Productos/{RProductosId:int}"
 @using PharmaTracker.Shared;
+@inject NotificationService notificacionesService
+@inject HttpClient httpClient
 
 <PageTitle>Registro de Productos</PageTitle>
 
@@ -151,13 +153,109 @@
 	public DescripcionProductoD descripcionProductoD { get; set; } = new DescripcionProductoD();
 
 
-	public async Task Guardar()
+	protected override async Task OnInitializedAsync()
 	{
-
+		if(RProductosId > 0)
+		{
+			this.Productos.ProductoId = RProductosId;
+			await Buscar();
+		}
 	}
+
+	@*Guardad, Buscar, Eliminar y Nuevo*@
 
 	public async Task Buscar()
 	{
-
+		var productoNotNull = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos")).ToList().Any(p => p.ProductoId == Productos.ProductoId);
+		if (productoNotNull)
+		{
+			var productoEncontrado = await httpClient.GetFromJsonAsync<Productos>($"api/Productos/{Productos.ProductoId}");
+			if (productoEncontrado != null)
+			{
+				this.Productos = productoEncontrado;
+				StateHasChanged();
+			}
+		}
+		else
+		{
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Warning,
+				Summary = "Error",
+				Detail = "No se encontro el Producto",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+		}
 	}
+
+	public async Task Nuevo()
+	{
+		this.Productos = new Productos();
+		this.descripcionProductoD = new DescripcionProductoD();
+
+		var mensaje = new NotificationMessage
+		{
+			Severity = NotificationSeverity.Success,
+			Summary = "Nuevo ",
+			Detail = "Puede introducir una nueva Entrada",
+			Duration = 5_000
+		};
+		notificacionesService.Notify(mensaje);
+	}
+
+
+	public async Task Guardar()
+	{
+		using var response = await httpClient.PostAsJsonAsync("api/Productos", Productos);
+		if (!response.IsSuccessStatusCode)
+		{
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "Error",
+				Detail = "No se pudo guardar el Producto",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+			return;
+		}
+		var productoGuardado = await response.Content.ReadFromJsonAsync<Productos>();
+		if (productoGuardado is not null)
+		{
+			this.Productos = productoGuardado;
+			StateHasChanged();
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "Guardado",
+				Detail = "Se guardo el Producto",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+			Nuevo();
+		}
+	}
+
+	public async Task Eliminar()
+	{
+		using var reponse = await httpClient.DeleteAsync($"api/Productos/{Productos.ProductoId}");
+		if (!reponse.IsSuccessStatusCode)
+		{
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "Error",
+				Detail = "No se pudo eliminar el Producto",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+			return;
+		}
+		else
+		{
+			Nuevo();
+		}
+	}
+
 }
