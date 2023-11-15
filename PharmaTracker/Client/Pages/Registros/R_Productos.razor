@@ -31,20 +31,23 @@
 		</div>
 	</div>
 
-	@*Nombre*@
-	<div class="mb-3">
-		<label class="form-label" for="Concepto">Nombre del Producto:</label>
-		<InputTextArea @bind-Value="Productos.NombreProducto" class="form-control" />
-		<ValidationMessage For="@(() => Productos.NombreProducto)" />
-	</div>
+	@*NombreProducto y Laboratorio*@
+	<div class="row">
 
-	@*Laboratorio*@
-	<div class="col-md-6 mt-2">
-		<div class="form-group mb-3">
-			<label>Laboratorio:</label>
-				<div class="input-group ">		
-				<InputText id="Laboratorio" class="form-control" @bind-Value="Productos.Laboratorio" />
+		<div class="col-md-6 mb-3">
+			<label class="form-label" for="Concepto">Nombre del Producto:</label>
+			<InputText @bind-Value="Productos.NombreProducto" class="form-control" />
+			<ValidationMessage For="@(() => Productos.NombreProducto)" />
+		</div>
+
+		<div class="col-md-6 mt-2">
+			<div class="form-group mb-3">
+				<label>Laboratorio:</label>
+				<div class="input-group">
+					<InputText id="Laboratorio" class="form-control" @bind-Value="Productos.Laboratorio" />
+					<ValidationMessage For="@(() => Productos.Laboratorio)" />
 				</div>
+			</div>
 		</div>
 	</div>
 
@@ -79,6 +82,57 @@
 		</div>
 	</div>
 
+	@*	<div class="card-header mt-4">
+
+	<h5>Componentes del Producto</h5>
+																	DE LUIS JOSE
+
+	</div>*@
+
+	@*Detalle Descripcion-Utilidad*@
+	<div class="card-header mt-4">
+
+		<h5>Utilidad</h5>
+
+		<div class="row">
+
+			<div class="col-md-5">
+				<div>
+					<label>Categor&iacute;a del Producto</label>
+					<InputSelect @bind-Value="descripcionProductoD.Categoria" class="form-select">
+						<option value="0">Seleccione</option>
+						<option value="1">Medicamento</option>
+						<option value="2">Suplemento</option>
+						<option value="3">Vitaminas</option>
+						<option value="4">Otros</option
+					</InputSelect>
+				</div>
+			</div>
+
+			<div class="col-md-5">
+				<div>
+					<label>Descripci&oacute;n del Producto</label>
+					<InputSelect @bind-Value="descripcionProductoD.Descripción" class="form-select">
+						<option value="0">Seleccione</option>
+						<option value="1">Fiebre</option>
+						<option value="2">Dolor de Cabeza</option>
+						<option value="3">Articulaciones</option>
+						<option value="4">Otros</option
+							@*Se agregaran mas, esto es de ejemplo*@
+					</InputSelect>
+				</div>
+			</div>
+
+			<div class="col-md-2 mt-4">
+				<div>
+					<button type="button" class="btn btn-success">+ Add</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
 	<div class="d-flex justify-content-center mb-4 mt-4">
 		<div class="btn-group">
 			<button type="button" class="btn btn-outline-primary">Nuevo <i class="oi oi-file" /></button>
@@ -94,6 +148,7 @@
 	public int RProductosId { get; set; }
 
 	public Productos Productos { get; set; } = new Productos();
+	public DescripcionProductoD descripcionProductoD { get; set; } = new DescripcionProductoD();
 
 
 	public async Task Guardar()
