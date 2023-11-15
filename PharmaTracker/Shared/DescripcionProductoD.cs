@@ -16,6 +16,7 @@ namespace PharmaTracker.Shared
         public int ProductoId { get; set; }
         [Required]
         public string? Descripción { get; set; }
+        public string Categoria { get; set; }
 
     }
 }

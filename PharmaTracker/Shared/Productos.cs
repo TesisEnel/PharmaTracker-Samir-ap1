@@ -15,11 +15,11 @@ namespace PharmaTracker.Shared
         public DateTime Fecha { get; set; } = DateTime.Now;
         public string NombreProducto { get; set; }
         [Required(ErrorMessage = "El precio es obligatorio")]   
-        public int Precio { get; set; }
+        public decimal Precio { get; set; }
         [Required(ErrorMessage = "El laboratorio es obligatorio")]
         public string Laboratorio { get; set; }
         [Required(ErrorMessage = "La exitencia es obligatorio")]
-        public int Existencia { get; set; }
+        public int? Existencia { get; set; }
         public string imagen { get; set; }
 
         public ICollection<DescripcionProductoD> DescripcionProductos { get; set; }
