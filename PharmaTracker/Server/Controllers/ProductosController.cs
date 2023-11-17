@@ -84,17 +84,22 @@ namespace PharmaTracker.Server.Controllers
         // POST: api/Productos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Productos>> PostProductos(Productos productos)
-        {
-          if (_context.Productos == null)
-          {
-              return Problem("Entity set 'PharmaTracketContext.Productos'  is null.");
-          }
-            _context.Productos.Add(productos);
-            await _context.SaveChangesAsync();
+		public async Task<ActionResult<Productos>> PostProductos(Productos productos)
+		{
+			if (productos.ProductoId <= 0 || !ProductosExists(productos.ProductoId))
+			{
+				_context.Productos.Add(productos);
+			}
+			else
+			{
+				_context.Productos.Update(productos);
+			}
 
-            return CreatedAtAction("GetProductos", new { id = productos.ProductoId }, productos);
-        }
+			await _context.SaveChangesAsync();
+
+			return Ok(productos);
+		}
+		[HttpPost("PostProductosMessa")]
 
         // DELETE: api/Productos/5
         [HttpDelete("{id}")]
