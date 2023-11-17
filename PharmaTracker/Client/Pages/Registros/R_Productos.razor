@@ -10,13 +10,13 @@
 	<h3 class="card align-items-center">Registros de Productos</h3>
 </div>
 
-<EditForm Model="Productos" OnValidSubmit="Guardar">
+<EditForm Model="productos" OnValidSubmit="Guardar">
 
 	@*ID*@
 	<div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4 mt-4">
 		<label>Producto Id</label>
 		<div class="d-flex align-items-center">
-			<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="Productos.ProductoId" />
+			<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="productos.ProductoId" />
 			<button class="btn btn-primary ml-2" type="button" @onclick="Buscar">
 				<i class="oi oi-magnifying-glass" />
 			</button>
@@ -28,7 +28,7 @@
 		<div Class="form-group mb-2">
 			<label>Fecha:</label>
 			<div class="input-group ">
-				<InputDate id="Fecha" class="form-control" @bind-Value="Productos.Fecha" />
+				<InputDate id="Fecha" class="form-control" @bind-Value="productos.Fecha" />
 			</div>
 		</div>
 	</div>
@@ -38,16 +38,16 @@
 
 		<div class="col-md-6 mb-3">
 			<label class="form-label" for="Concepto">Nombre del Producto:</label>
-			<InputText @bind-Value="Productos.NombreProducto" class="form-control" />
-			<ValidationMessage For="@(() => Productos.NombreProducto)" />
+			<InputText @bind-Value="productos.NombreProducto" class="form-control" />
+			<ValidationMessage For="@(() => productos.NombreProducto)" />
 		</div>
 
 		<div class="col-md-6 mt-2">
 			<div class="form-group mb-3">
 				<label>Laboratorio:</label>
 				<div class="input-group">
-					<InputText id="Laboratorio" class="form-control" @bind-Value="Productos.Laboratorio" />
-					<ValidationMessage For="@(() => Productos.Laboratorio)" />
+					<InputText id="Laboratorio" class="form-control" @bind-Value="productos.Laboratorio" />
+					<ValidationMessage For="@(() => productos.Laboratorio)" />
 				</div>
 			</div>
 		</div>
@@ -59,7 +59,7 @@
 			<div class="form-group mb-3">
 				<label>Precio:</label>
 				<div class="input-group ">
-					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="Productos.Precio" />
+					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="productos.Precio" />
 				</div>
 			</div>
 		</div>
@@ -67,7 +67,7 @@
 			<div class="form-group mb-3">
 				<label>Existencia:</label>
 				<div class="input-group ">
-					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="Productos.Existencia" />
+					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="productos.Existencia" />
 				</div>
 			</div>
 		</div>
@@ -78,8 +78,8 @@
 			<label>Foto:</label>
 			<div class="input-group">
 				<span class="input-group-text">Seleccionar Imagen:</span>
-				<InputText @bind-Value="Productos.imagen" class="form-control"></InputText>
-				<ValidationMessage For="@(() =>Productos.imagen)" />
+				<InputText @bind-Value="productos.imagen" class="form-control"></InputText>
+				<ValidationMessage For="@(() =>productos.imagen)" />
 			</div>
 		</div>
 	</div>
@@ -92,54 +92,13 @@
 	</div>*@
 
 	@*Detalle Descripcion-Utilidad*@
-	<div class="card-header mt-4">
-
-		<h5>Utilidad</h5>
-
-		<div class="row">
-
-			<div class="col-md-5">
-				<div>
-					<label>Categor&iacute;a del Producto</label>
-					<InputSelect @bind-Value="descripcionProductoD.Categoria" class="form-select">
-						<option value="0">Seleccione</option>
-						<option value="1">Medicamento</option>
-						<option value="2">Suplemento</option>
-						<option value="3">Vitaminas</option>
-						<option value="4">Otros</option
-					</InputSelect>
-				</div>
-			</div>
-
-			<div class="col-md-5">
-				<div>
-					<label>Descripci&oacute;n del Producto</label>
-					<InputSelect @bind-Value="descripcionProductoD.Descripción" class="form-select">
-						<option value="0">Seleccione</option>
-						<option value="1">Fiebre</option>
-						<option value="2">Dolor de Cabeza</option>
-						<option value="3">Articulaciones</option>
-						<option value="4">Otros</option
-							@*Se agregaran mas, esto es de ejemplo*@
-					</InputSelect>
-				</div>
-			</div>
-
-			<div class="col-md-2 mt-4">
-				<div>
-					<button type="button" class="btn btn-success">+ Add</button>
-				</div>
-			</div>
-		</div>
-
-	</div>
 
 
 	<div class="d-flex justify-content-center mb-4 mt-4">
 		<div class="btn-group">
-			<button type="button" class="btn btn-outline-primary">Nuevo <i class="oi oi-file" /></button>
-			<button type="submit" class="btn btn-outline-success" >Guardar <i class="oi oi-document" /></button>
-			<button type="button" class="btn btn-outline-danger">Eliminar <i class="oi oi-trash" /></button>
+			<button type="button" class="btn btn-outline-primary" @onclick="Nuevo"> Nuevo <i class="oi oi-file" /></button>
+			<button type="submit" class="btn btn-outline-success" @onclick="Guardar"> Guardar <i class="oi oi-document" /></button>
+			<button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
 		</div>
 	</div>
 
@@ -149,15 +108,21 @@
 	[Parameter]
 	public int RProductosId { get; set; }
 
-	public Productos Productos { get; set; } = new Productos();
+	public Productos productos { get; set; } = new Productos();
 	public DescripcionProductoD descripcionProductoD { get; set; } = new DescripcionProductoD();
+
+	public List<DescripcionProductoD> listaDescripcionProductoD = new List<DescripcionProductoD>();
+
+
+	public bool detalleCategoria  = false;
+	public bool detalleDescripcion  = false;
 
 
 	protected override async Task OnInitializedAsync()
 	{
 		if(RProductosId > 0)
 		{
-			this.Productos.ProductoId = RProductosId;
+			this.productos.ProductoId = RProductosId;
 			await Buscar();
 		}
 	}
@@ -166,13 +131,13 @@
 
 	public async Task Buscar()
 	{
-		var productoNotNull = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos")).ToList().Any(p => p.ProductoId == Productos.ProductoId);
+		var productoNotNull = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos")).ToList().Any(p => p.ProductoId == productos.ProductoId);
 		if (productoNotNull)
 		{
-			var productoEncontrado = await httpClient.GetFromJsonAsync<Productos>($"api/Productos/{Productos.ProductoId}");
+			var productoEncontrado = await httpClient.GetFromJsonAsync<Productos>($"api/Productos/{productos.ProductoId}");
 			if (productoEncontrado != null)
 			{
-				this.Productos = productoEncontrado;
+				this.productos = productoEncontrado;
 				StateHasChanged();
 			}
 		}
@@ -191,7 +156,7 @@
 
 	public async Task Nuevo()
 	{
-		this.Productos = new Productos();
+		this.productos = new Productos();
 		this.descripcionProductoD = new DescripcionProductoD();
 
 		var mensaje = new NotificationMessage
@@ -205,41 +170,47 @@
 	}
 
 
-	public async Task Guardar()
-	{
-		using var response = await httpClient.PostAsJsonAsync("api/Productos", Productos);
-		if (!response.IsSuccessStatusCode)
-		{
-			var mensaje = new NotificationMessage
-			{
-				Severity = NotificationSeverity.Error,
-				Summary = "Error",
-				Detail = "No se pudo guardar el Producto",
-				Duration = 5_000
-			};
-			notificacionesService.Notify(mensaje);
-			return;
-		}
-		var productoGuardado = await response.Content.ReadFromJsonAsync<Productos>();
-		if (productoGuardado is not null)
-		{
-			this.Productos = productoGuardado;
-			StateHasChanged();
-			var mensaje = new NotificationMessage
-			{
-				Severity = NotificationSeverity.Success,
-				Summary = "Guardado",
-				Detail = "Se guardo el Producto",
-				Duration = 5_000
-			};
-			notificacionesService.Notify(mensaje);
-			Nuevo();
-		}
-	}
+public async Task Guardar()
+{
+    try
+    {
+        using var response = await httpClient.PostAsJsonAsync("api/Productos", productos);
+        response.EnsureSuccessStatusCode();
+
+        var productoGuardado = await response.Content.ReadFromJsonAsync<Productos>();
+        if (productoGuardado is not null)
+        {
+            this.productos = productoGuardado;
+            StateHasChanged();
+            var mensaje = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Guardado",
+                Detail = "Se guardo el Producto",
+                Duration = 5_000
+            };
+            notificacionesService.Notify(mensaje);
+            Nuevo();
+        }
+    }
+    catch (Exception ex)
+    {
+        // Registra la excepción para obtener más detalles
+        Console.WriteLine($"Error al guardar: {ex.Message}");
+        var mensaje = new NotificationMessage
+        {
+            Severity = NotificationSeverity.Error,
+            Summary = "Error",
+            Detail = "No se pudo guardar el Producto. Consulta la consola para obtener más detalles.",
+            Duration = 5_000
+        };
+        notificacionesService.Notify(mensaje);
+    }
+}
 
 	public async Task Eliminar()
 	{
-		using var reponse = await httpClient.DeleteAsync($"api/Productos/{Productos.ProductoId}");
+		using var reponse = await httpClient.DeleteAsync($"api/Productos/{productos.ProductoId}");
 		if (!reponse.IsSuccessStatusCode)
 		{
 			var mensaje = new NotificationMessage
@@ -258,4 +229,68 @@
 		}
 	}
 
+	@*Detalle Utilidad*@
+
+	bool ValidarDetail()
+	{
+		detalleCategoria = string.IsNullOrEmpty(descripcionProductoD.Categoria);
+		detalleDescripcion = string.IsNullOrEmpty(descripcionProductoD.Descripción);
+
+		return !detalleCategoria && !detalleDescripcion;
+	}
+
+	public async Task AddDetalle()
+	{
+		if (productos != null && descripcionProductoD != null &&
+			!string.IsNullOrEmpty(descripcionProductoD.Categoria) &&
+			!string.IsNullOrEmpty(descripcionProductoD.Descripción))
+		{
+			if (productos.DescripcionProductos == null)
+			{
+				productos.DescripcionProductos = new List<DescripcionProductoD>();
+			}
+
+			productos.DescripcionProductos.Add(new DescripcionProductoD
+			{
+				Categoria = descripcionProductoD.Categoria,
+				Descripción = descripcionProductoD.Descripción
+			});
+
+			this.productos = new Productos();
+			this.descripcionProductoD = new DescripcionProductoD();
+			StateHasChanged();
+		}
+		else
+		{
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "Error",
+				Detail = "No se pudo agregar el detalle. Asegúrese de seleccionar una categoría y una descripción.",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+		}
+	}
+
+	public async Task RemoveDetalle(DescripcionProductoD detalle)
+	{
+		var detalleEncontrado = productos.DescripcionProductos.FirstOrDefault(d => d.Categoria == descripcionProductoD.Categoria && d.Descripción == descripcionProductoD.Descripción);
+		if (detalleEncontrado != null)
+		{
+			productos.DescripcionProductos.Remove(detalleEncontrado);
+			StateHasChanged();
+		}
+		else
+		{
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "Error",
+				Detail = "No se pudo eliminar el detalle. Asegúrese de seleccionar una categoría y una descripción.",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+		}
+	}
 }
