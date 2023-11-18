@@ -95,6 +95,7 @@
 						<option value="SUP">SUP</option>
 						<option value="TAB">TAB</option>
 						<option value="POLV">POLV</option>
+						<option value="LATA">LATA </option>
 					</InputSelect>
 				</div>
 			</div>
@@ -102,6 +103,49 @@
 
 	</div>
 
+		@*Detalle Descripcion-Utilidad*@
+	<div class="card-header mt-4">
+
+		<h5>Utilidad</h5>
+
+		<div class="row">
+
+			<div class="col-md-5">
+				<div>
+					<label>Categor&iacute;a del Producto</label>
+					<InputSelect @bind-Value="descripcionProductoD.Categoria" class="form-select">
+						<option value="0">Seleccione</option>
+						<option value="1">Medicamento</option>
+						<option value="2">Suplemento</option>
+						<option value="3">Vitaminas</option>
+						<option value="4">Otros</option
+					</InputSelect>
+				</div>
+			</div>
+
+			<div class="col-md-5">
+				<div>
+					<label>Descripci&oacute;n del Producto</label>
+					<InputSelect @bind-Value="descripcionProductoD.Descripción" class="form-select">
+						<option value="0">Seleccione</option>
+						<option value="1">Fiebre</option>
+						<option value="2">Dolor de Cabeza</option>
+						<option value="3">Articulaciones</option>
+						<option value="4">Otros</option
+							@*Se agregaran mas, esto es de ejemplo*@
+					</InputSelect>
+				</div>
+			</div>
+
+			<div class="col-md-2 mt-4">
+				<div>
+					<button type="button" class="btn btn-success">+ Add</button>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
 
 	<div class="col-md-6 mt-2">
 		<div Class="form-group">
