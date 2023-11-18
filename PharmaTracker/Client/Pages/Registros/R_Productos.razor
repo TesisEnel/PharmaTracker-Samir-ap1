@@ -7,14 +7,15 @@
 <PageTitle>Registro de Productos</PageTitle>
 
 <div class="card-header">
-	<h3 class="card align-items-center">Registros de Productos</h3>
+	<h3 >Registros de Productos</h3>
 </div>
 
 <EditForm Model="productos" OnValidSubmit="Guardar">
+	<DataAnnotationsValidator />
 
-	@*ID*@
+	@* ID *@
 	<div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4 mt-4">
-		<label>Producto Id</label>
+		<label class="form-label" @for="productos.ProductoId">Producto Id</label>
 		<div class="d-flex align-items-center">
 			<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="productos.ProductoId" />
 			<button class="btn btn-primary ml-2" type="button" @onclick="Buscar">
@@ -23,67 +24,96 @@
 		</div>
 	</div>
 
-	@*Fecha*@
+	@* Fecha *@
 	<div class="col-md-6 mt-2">
 		<div Class="form-group mb-2">
-			<label>Fecha:</label>
+			<label class="form-label" @for="productos.Fecha">Fecha:</label>
 			<div class="input-group ">
 				<InputDate id="Fecha" class="form-control" @bind-Value="productos.Fecha" />
 			</div>
 		</div>
 	</div>
 
-	@*NombreProducto y Laboratorio*@
+	@* NombreProducto y Laboratorio *@
 	<div class="row">
-
 		<div class="col-md-6 mb-3">
-			<label class="form-label" for="Concepto">Nombre del Producto:</label>
-			<InputText @bind-Value="productos.NombreProducto" class="form-control" />
-			<ValidationMessage For="@(() => productos.NombreProducto)" />
+			<label class="form-label" @for="productos.NombreProducto">Nombre del Producto:</label>
+			<InputText id="NombreProducto" @bind-Value="productos.NombreProducto" class="form-control" />
 		</div>
 
-		<div class="col-md-6 mt-2">
+		<div class="col-md-6 mb-3">
 			<div class="form-group mb-3">
-				<label>Laboratorio:</label>
+				<label class="form-label" @for="productos.Laboratorio">Laboratorio:</label>
 				<div class="input-group">
 					<InputText id="Laboratorio" class="form-control" @bind-Value="productos.Laboratorio" />
-					<ValidationMessage For="@(() => productos.Laboratorio)" />
 				</div>
 			</div>
 		</div>
+
 	</div>
 
-	@*Precio y Existencia*@
+	@* Precio y Existencia *@
 	<div class="row">
-		<div class="col-md-6 mt-2">
+		<div class="col-md-4">
 			<div class="form-group mb-3">
-				<label>Precio:</label>
-				<div class="input-group ">
+				<label class="form-label" for="productos.Precio">Precio:</label>
+				<div class="input-group">
 					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="productos.Precio" />
 				</div>
 			</div>
 		</div>
-		<div class="col-md-6 mt-2">
+
+		<div class="col-md-4">
 			<div class="form-group mb-3">
-				<label>Existencia:</label>
-				<div class="input-group ">
+				<label class="form-label" for="productos.Existencia">Existencia:</label>
+				<div class="input-group">
 					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="productos.Existencia" />
 				</div>
 			</div>
 		</div>
+
+		<div class="col-md-4">
+			<label class="form-label" for="productos.Unidad">Unidad:</label>
+			<div class="input-group">
+				<div class="form-group mb-3">
+					<InputSelect id="Unidad" class="form-select" @bind-Value="productos.Unidad">
+						<option value="" disabled selected>Elija una unidad</option>
+						<option value="UD">UD</option>
+						<option value="BLI">BLI</option>
+						<option value="BARR">BARR</option>
+						<option value="BLLA">BLLA</option>
+						<option value="SUSP">SUSP</option>
+						<option value="PAQ">PAQ</option>
+						<option value="SOB">SOB</option>
+						<option value="CREM">CREM</option>
+						<option value="WIPE">WIPE</option>
+						<option value="OVUL">OVUL</option>
+						<option value="JER">JER</option>
+						<option value="GEL">GEL</option>
+						<option value="GOTA">GOTA</option>
+						<option value="PARCHE">PARCHE</option>
+						<option value="SUP">SUP</option>
+						<option value="TAB">TAB</option>
+						<option value="POLV">POLV</option>
+					</InputSelect>
+				</div>
+			</div>
+		</div>
+
 	</div>
 
-	<div class="col-md-6 mt-2" >
+
+	<div class="col-md-6 mt-2">
 		<div Class="form-group">
-			<label>Foto:</label>
+			<label class="form-label" @for="productos.imagen">Foto:</label>
 			<div class="input-group">
 				<span class="input-group-text">Seleccionar Imagen:</span>
 				<InputText @bind-Value="productos.imagen" class="form-control"></InputText>
-				<ValidationMessage For="@(() =>productos.imagen)" />
 			</div>
 		</div>
 	</div>
 
+	
 	@*	<div class="card-header mt-4">
 
 	<h5>Componentes del Producto</h5>
@@ -170,43 +200,37 @@
 	}
 
 
-public async Task Guardar()
-{
-    try
-    {
-        using var response = await httpClient.PostAsJsonAsync("api/Productos", productos);
-        response.EnsureSuccessStatusCode();
-
-        var productoGuardado = await response.Content.ReadFromJsonAsync<Productos>();
-        if (productoGuardado is not null)
-        {
-            this.productos = productoGuardado;
-            StateHasChanged();
-            var mensaje = new NotificationMessage
-            {
-                Severity = NotificationSeverity.Success,
-                Summary = "Guardado",
-                Detail = "Se guardo el Producto",
-                Duration = 5_000
-            };
-            notificacionesService.Notify(mensaje);
-            Nuevo();
-        }
-    }
-    catch (Exception ex)
-    {
-        // Registra la excepción para obtener más detalles
-        Console.WriteLine($"Error al guardar: {ex.Message}");
-        var mensaje = new NotificationMessage
-        {
-            Severity = NotificationSeverity.Error,
-            Summary = "Error",
-            Detail = "No se pudo guardar el Producto. Consulta la consola para obtener más detalles.",
-            Duration = 5_000
-        };
-        notificacionesService.Notify(mensaje);
-    }
-}
+	public async Task Guardar()
+	{
+		using var response = await httpClient.PostAsJsonAsync("api/Productos", productos);
+		if (!response.IsSuccessStatusCode)
+		{
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "Error",
+				Detail = "No se pudo guardar el Producto",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+			return;
+		}
+		var ProductoGuardado = await response.Content.ReadFromJsonAsync<Productos>();
+		if(ProductoGuardado is not null)
+		{
+			this.productos = ProductoGuardado;
+			StateHasChanged();
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "Guardado",
+				Detail = "Producto Guardado con exito",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+			Nuevo();
+		}
+	}
 
 	public async Task Eliminar()
 	{
@@ -231,6 +255,8 @@ public async Task Guardar()
 
 	@*Detalle Utilidad*@
 
+
+	@*
 	bool ValidarDetail()
 	{
 		detalleCategoria = string.IsNullOrEmpty(descripcionProductoD.Categoria);
@@ -293,4 +319,6 @@ public async Task Guardar()
 			notificacionesService.Notify(mensaje);
 		}
 	}
+	*@
+	
 }
