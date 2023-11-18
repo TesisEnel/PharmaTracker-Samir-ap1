@@ -84,24 +84,36 @@
 						<th>Fecha</th>
 						<th>Nombre del Producto</th>
 						<th>Laboratorio</th>
+						<th>Precio</th>
 						<th>Existencia</th>
+						<th>Unidad</th>
 						<th>Ver</th>
 					</tr>
 				</thead>
 				<tbody>
-					@foreach (var tabla in productos)
+					@foreach (var table in productos)
 					{
 						<tr>
-							<td>@tabla.ProductoId</td>
-							<td>@tabla.Fecha.ToString("MM/dd/yyyy")</td>
-							<td>@tabla.NombreProducto</td>
-							<td>@tabla.Laboratorio</td>
-							<td>@tabla.Existencia</td>
-							<td><a href="R_Productos/@tabla.ProductoId"> <i class="oi oi-eye"> </i></a></td>
+							<td>@table.ProductoId</td>
+							<td>@table.Fecha.ToString("MM/dd/yyyy")</td>
+							<td>@table.NombreProducto</td>
+							<td>@table.Laboratorio</td>
+							<td>@table.Precio</td>
+							<td>@table.Existencia</td>
+							<td>@table.Unidad</td>
+							<td><a href="R_Productos/@table.ProductoId"> <i class="oi oi-eye"> </i></a></td>
 						</tr>
 					}
 				</tbody>
+
+				<div class="card-header-tabs">
+					<div class="col col-md-mt-4">
+						<span class="ml-2">Resultados: @conteo</span>
+					</div>
+				</div>
+
 			</table>
+
 		</div>
 	</div>
 
@@ -109,26 +121,95 @@
 
 @code {
 
-    public List<Productos> productos { get; set; } = new List<Productos>();
+	public List<Productos> productos { get; set; } = new List<Productos>();
 	public Productos auxProducto { get; set; } = new Productos();
 
-    public DateTime Desde { get; set; }
-    public DateTime Hasta { get; set; }
+	public DateTime Desde { get; set; }
+	public DateTime Hasta { get; set; }
 
 	private bool conExistencia = true;
-    public int opciones { get; set; }
-    public int conteo { get; set; }
+	public int opciones { get; set; }
+	public int conteo { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        Desde = DateTime.Now.AddMonths(-1);
-        Hasta = DateTime.Now;
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		Desde = DateTime.Now.AddMonths(-1);
+		Hasta = DateTime.Now;
+	}
 
-    public async Task Buscar()
-    {
+	public async Task Buscar()
+	{
+		switch (opciones)
+		{
+			case 0:
+				if (auxProducto.ProductoId != 0)
+				{
+					productos = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos"))
+						.Where(p => p.Fecha >= Desde.Date && p.Fecha <= Hasta && p.ProductoId == auxProducto.ProductoId).
+						ToList();
+					StateHasChanged();
+				}
+				else
+				{
+					productos = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos"))
+						.Where(p => p.Fecha >= Desde.Date && p.Fecha <= Hasta)
+						.ToList();
+					StateHasChanged();
+				}
+				break;
 
+			case 1:
+				if (!string.IsNullOrEmpty(auxProducto.NombreProducto))
+				{
+					productos = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos"))
+						.Where(p => p.Fecha >= Desde.Date && p.Fecha <= Hasta && p.NombreProducto.Contains(auxProducto.NombreProducto))
+						.ToList();
+					StateHasChanged();
+				}
+				else
+				{
+					productos = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos"))
+						.Where(p => p.Fecha >= Desde.Date && p.Fecha <= Hasta)
+						.ToList();
+					StateHasChanged();
+				}
+				break;
 
+			case 2:
+				if (!string.IsNullOrEmpty(auxProducto.Laboratorio))
+				{
+					productos = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos"))
+						.Where(p => p.Fecha >= Desde.Date && p.Fecha <= Hasta && p.Laboratorio.Contains(auxProducto.Laboratorio))
+						.ToList();
+					StateHasChanged();
+				}
+				else
+				{
+					productos = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos"))
+						.Where(p => p.Fecha >= Desde.Date && p.Fecha <= Hasta)
+						.ToList();
+					StateHasChanged();
+				}
+			break;
+
+			case 3:
+				if (conExistencia)
+				{
+					productos = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos"))
+						.Where(p => p.Fecha >= Desde.Date && p.Fecha <= Hasta && p.Existencia > 0)
+						.ToList();
+					StateHasChanged();
+				}
+				else
+				{
+					productos = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos"))
+						.Where(p => p.Fecha >= Desde.Date && p.Fecha <= Hasta && p.Existencia == 0)
+						.ToList();
+					StateHasChanged();
+				}
+			break;
+		}
+		conteo = productos.Count;
     }
 
 }
