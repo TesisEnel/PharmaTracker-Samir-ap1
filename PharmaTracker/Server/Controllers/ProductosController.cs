@@ -99,7 +99,6 @@ namespace PharmaTracker.Server.Controllers
 
 			return Ok(productos);
 		}
-		[HttpPost("PostProductosMessa")]
 
         // DELETE: api/Productos/5
         [HttpDelete("{id}")]
