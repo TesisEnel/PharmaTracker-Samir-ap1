@@ -10,13 +10,6 @@
 
 
 <div class="login-body">
-    <ul class="nav">
-        <li @onclick="() => ShowLogin()">Login</li>
-        <li @onclick="() => ShowSignup()">Sign up</li>
-        <li @onclick="() => ShowForgotPassword()">Forgot password</li>
-        <li @onclick="() => ShowSubscribe()">Subscribe</li>
-        <li @onclick="() => ShowContactUs()">Contact us</li>
-    </ul>
     <div class="wrapper">
         <div class="rec-prism" style="transform: @prismTransform">
             <div class="face face-top">
@@ -47,7 +40,7 @@
                             <label>password</label>
                         </div>
                         <div class="field-wrapper">
-                            <input type="submit" @onclick="IniciarSesion">
+                            <button class="btn btn-success" type="submit" @onclick="IniciarSesion">Log In</button>
                         </div>
                         <span class="psw" @onclick="ShowForgotPassword">Forgot Password?   </span>
                         <span class="signup" @onclick="ShowSignup">Not a user?  Sign up</span>
@@ -139,17 +132,6 @@
             await authenticationExt.UpdateStatusAuthentication(userSession);
 
             navManager.NavigateTo("/Index");
-        }
-        else
-        {
-            var mensaje = new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "Error",
-                    Detail = "Usuario o contraseña incorrectos",
-                    Duration = 4_000
-                };
-            notificationService.Notify(mensaje);
         }
     }
 
