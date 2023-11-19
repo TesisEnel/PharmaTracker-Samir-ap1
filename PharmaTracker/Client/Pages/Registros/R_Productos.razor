@@ -1,6 +1,10 @@
 ﻿@page "/R_Productos"
 @page "/R_Productos/{RProductosId:int}"
-@using PharmaTracker.Shared;
+
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles ="Administrador, Vendedor")]
+
 @inject NotificationService notificacionesService
 @inject HttpClient httpClient
 
