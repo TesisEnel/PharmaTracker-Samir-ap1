@@ -7,7 +7,7 @@
 <PageTitle>Registro de Productos</PageTitle>
 
 <div class="card-header">
-	<h3 >Registros de Productos</h3>
+	<h3>Registros de Productos</h3>
 </div>
 
 <EditForm Model="productos" OnValidSubmit="Guardar">
@@ -18,6 +18,7 @@
 		<label class="form-label" @for="productos.ProductoId">Producto Id</label>
 		<div class="d-flex align-items-center">
 			<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="productos.ProductoId" />
+			<ValidationMessage For="@(() => productos.ProductoId)" />
 			<button class="btn btn-primary ml-2" type="button" @onclick="Buscar">
 				<i class="oi oi-magnifying-glass" />
 			</button>
@@ -34,42 +35,12 @@
 		</div>
 	</div>
 
-	@* NombreProducto y Laboratorio *@
+	@* NombreProducto y Unidad *@
 	<div class="row">
 		<div class="col-md-6 mb-3">
 			<label class="form-label" @for="productos.NombreProducto">Nombre del Producto:</label>
 			<InputText id="NombreProducto" @bind-Value="productos.NombreProducto" class="form-control" />
-		</div>
-
-		<div class="col-md-6 mb-3">
-			<div class="form-group mb-3">
-				<label class="form-label" @for="productos.Laboratorio">Laboratorio:</label>
-				<div class="input-group">
-					<InputText id="Laboratorio" class="form-control" @bind-Value="productos.Laboratorio" />
-				</div>
-			</div>
-		</div>
-
-	</div>
-
-	@* Precio y Existencia *@
-	<div class="row">
-		<div class="col-md-4">
-			<div class="form-group mb-3">
-				<label class="form-label" for="productos.Precio">Precio:</label>
-				<div class="input-group">
-					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="productos.Precio" />
-				</div>
-			</div>
-		</div>
-
-		<div class="col-md-4">
-			<div class="form-group mb-3">
-				<label class="form-label" for="productos.Existencia">Existencia:</label>
-				<div class="input-group">
-					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="productos.Existencia" />
-				</div>
-			</div>
+			<ValidationMessage For="@(() => productos.NombreProducto)" />
 		</div>
 
 		<div class="col-md-4">
@@ -101,71 +72,96 @@
 			</div>
 		</div>
 
+
 	</div>
 
-		@*Detalle Descripcion-Utilidad*@
+
+	@*Detalle laboratorio*@
+
 	<div class="card-header mt-4">
 
-		<h5>Utilidad</h5>
+		<h5>Laboratorios</h5>
 
-		<div class="row">
 
-			<div class="col-md-5">
-				<div>
-					<label>Categor&iacute;a del Producto</label>
-					<InputSelect @bind-Value="descripcionProductoD.Categoria" class="form-select">
-						<option value="0">Seleccione</option>
-						<option value="1">Medicamento</option>
-						<option value="2">Suplemento</option>
-						<option value="3">Vitaminas</option>
-						<option value="4">Otros</option
-					</InputSelect>
+		<div class="row form-inline align-items-center mt-3">
+
+			@*Laboratorio*@
+			<div class="col-md-4">
+				<div class="form-group">
+					<label>Laboratorio</label>
+					<InputText @bind-Value="laboratorioProducto.Laboratorios" class="form-control align-middle" />
+					<ValidationMessage For="@(() => laboratorioProducto.Laboratorios)" />
 				</div>
 			</div>
 
-			<div class="col-md-5">
-				<div>
-					<label>Descripci&oacute;n del Producto</label>
-					<InputSelect @bind-Value="descripcionProductoD.Descripción" class="form-select">
-						<option value="0">Seleccione</option>
-						<option value="1">Fiebre</option>
-						<option value="2">Dolor de Cabeza</option>
-						<option value="3">Articulaciones</option>
-						<option value="4">Otros</option
-							@*Se agregaran mas, esto es de ejemplo*@
-					</InputSelect>
+			@*Existencia*@
+			<div class="col-md-2">
+				<div class="form-group">
+					<label>Cantidad</label>
+					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="laboratorioProducto.Cantidad" />
 				</div>
 			</div>
 
-			<div class="col-md-2 mt-4">
-				<div>
-					<button type="button" class="btn btn-success">+ Add</button>
+			@*Precio*@
+			<div class="col-md-2">
+				<div class="form-group">
+					<label>Precio</label>
+					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="laboratorioProducto.Precio" />
+				</div>
+			</div>
+
+			@*Boton + Add *@
+			<div class="col-md-4">
+				<div class="form-group">
+					<button type="button" class="btn btn-success" @onclick="AddDetailLab">+ Add</button>
 				</div>
 			</div>
 
 		</div>
 
-	</div>
-
-	<div class="col-md-6 mt-2">
-		<div Class="form-group">
-			<label class="form-label" @for="productos.imagen">Foto:</label>
-			<div class="input-group">
-				<span class="input-group-text">Seleccionar Imagen:</span>
-				<InputText @bind-Value="productos.imagen" class="form-control"></InputText>
+		@*Imagen*@
+		<div class="col-md-5">
+			<div Class="form-group">
+				<label class="form-label mt-3" @for="productos.imagen">Foto:</label>
+				<div class="input-group">
+					<span class="input-group-text">Seleccionar Imagen:</span>
+					<InputText @bind-Value="laboratorioProducto.imagen" class="form-control"></InputText>
+				</div>
 			</div>
 		</div>
+
+		<table class="table table-sm mt-4">
+			<thead>
+				<tr>
+					<th>Laboratorio</th>
+					<th>Cantidad</th>
+					<th>Precio</th>
+					<th>Imagen</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (productos.detalleLabProducto != null)
+				{
+					foreach (var laboratorio in productos.detalleLabProducto)
+					{
+						<tr>
+							<td>@laboratorio.Laboratorios.ToUpper()</td>
+							<td>@laboratorio.Cantidad</td>
+							<td>RD$@laboratorio.Precio</td>
+							<td>@laboratorio.imagen</td>
+							<td><button type="button" class="btn btn-danger oi oi-trash" @onclick=@(() => RemoveDetailLab(laboratorio))></button></td>
+						</tr>
+					}
+				}
+				<tr>
+					<td></td>
+					@* <td class="mt-4">Cantidad Total: @CantidadTotal </td> *@
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
-	
-	@*	<div class="card-header mt-4">
 
-	<h5>Componentes del Producto</h5>
-																	DE LUIS JOSE
-
-	</div>*@
-
-	@*Detalle Descripcion-Utilidad*@
 
 
 	<div class="d-flex justify-content-center mb-4 mt-4">
@@ -183,18 +179,20 @@
 	public int RProductosId { get; set; }
 
 	public Productos productos { get; set; } = new Productos();
+	public IEnumerable<DetalleLaboratorioProducto> detalleLaboratorioProductos { get; set; } = new List<DetalleLaboratorioProducto>();
+
 	public DescripcionProductoD descripcionProductoD { get; set; } = new DescripcionProductoD();
+	public DetalleLaboratorioProducto laboratorioProducto { get; set; } = new DetalleLaboratorioProducto();
 
-	public List<DescripcionProductoD> listaDescripcionProductoD = new List<DescripcionProductoD>();
+	public bool detalleLaboratorio = false;
+	public bool detalleCantidad = false;
+	public bool detallePrecio = false;
 
-
-	public bool detalleCategoria  = false;
-	public bool detalleDescripcion  = false;
-
+	public int CantidadTotal { get; set; } = 0;
 
 	protected override async Task OnInitializedAsync()
 	{
-		if(RProductosId > 0)
+		if (RProductosId > 0)
 		{
 			this.productos.ProductoId = RProductosId;
 			await Buscar();
@@ -218,12 +216,12 @@
 		else
 		{
 			var mensaje = new NotificationMessage
-			{
-				Severity = NotificationSeverity.Warning,
-				Summary = "Error",
-				Detail = "No se encontro el Producto",
-				Duration = 5_000
-			};
+				{
+					Severity = NotificationSeverity.Warning,
+					Summary = "Error",
+					Detail = "No se encontro el Producto",
+					Duration = 5_000
+				};
 			notificacionesService.Notify(mensaje);
 		}
 	}
@@ -234,12 +232,12 @@
 		this.descripcionProductoD = new DescripcionProductoD();
 
 		var mensaje = new NotificationMessage
-		{
-			Severity = NotificationSeverity.Success,
-			Summary = "Nuevo ",
-			Detail = "Puede introducir una nueva Entrada",
-			Duration = 5_000
-		};
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "Nuevo ",
+				Detail = "Puede introducir una nueva Entrada",
+				Duration = 5_000
+			};
 		notificacionesService.Notify(mensaje);
 	}
 
@@ -250,27 +248,27 @@
 		if (!response.IsSuccessStatusCode)
 		{
 			var mensaje = new NotificationMessage
-			{
-				Severity = NotificationSeverity.Error,
-				Summary = "Error",
-				Detail = "No se pudo guardar el Producto",
-				Duration = 5_000
-			};
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "No se pudo guardar el Producto",
+					Duration = 5_000
+				};
 			notificacionesService.Notify(mensaje);
 			return;
 		}
 		var ProductoGuardado = await response.Content.ReadFromJsonAsync<Productos>();
-		if(ProductoGuardado is not null)
+		if (ProductoGuardado is not null)
 		{
 			this.productos = ProductoGuardado;
 			StateHasChanged();
 			var mensaje = new NotificationMessage
-			{
-				Severity = NotificationSeverity.Success,
-				Summary = "Guardado",
-				Detail = "Producto Guardado con exito",
-				Duration = 5_000
-			};
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Guardado",
+					Detail = "Producto Guardado con exito",
+					Duration = 5_000
+				};
 			notificacionesService.Notify(mensaje);
 			Nuevo();
 		}
@@ -282,12 +280,12 @@
 		if (!reponse.IsSuccessStatusCode)
 		{
 			var mensaje = new NotificationMessage
-			{
-				Severity = NotificationSeverity.Error,
-				Summary = "Error",
-				Detail = "No se pudo eliminar el Producto",
-				Duration = 5_000
-			};
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "No se pudo eliminar el Producto",
+					Duration = 5_000
+				};
 			notificacionesService.Notify(mensaje);
 			return;
 		}
@@ -297,72 +295,70 @@
 		}
 	}
 
-	@*Detalle Utilidad*@
+	@*Detalle Laboratorio*@
 
 
-	@*
-	bool ValidarDetail()
+	bool ValidarDetailLab()
 	{
-		detalleCategoria = string.IsNullOrEmpty(descripcionProductoD.Categoria);
-		detalleDescripcion = string.IsNullOrEmpty(descripcionProductoD.Descripción);
+		detalleLaboratorio = string.IsNullOrEmpty(laboratorioProducto.Laboratorios);
+		detalleCantidad = laboratorioProducto.Cantidad <= 0;
+		detallePrecio = laboratorioProducto.Precio <= 0;
 
-		return !detalleCategoria && !detalleDescripcion;
+		return !detalleLaboratorio && !detalleCantidad && !detallePrecio;
 	}
 
-	public async Task AddDetalle()
+	public async Task AddDetailLab()
 	{
-		if (productos != null && descripcionProductoD != null &&
-			!string.IsNullOrEmpty(descripcionProductoD.Categoria) &&
-			!string.IsNullOrEmpty(descripcionProductoD.Descripción))
+		productos.detalleLabProducto ??= new List<DetalleLaboratorioProducto>();
+
+		if (ValidarDetailLab())
 		{
-			if (productos.DescripcionProductos == null)
-			{
-				productos.DescripcionProductos = new List<DescripcionProductoD>();
-			}
+			var detalle = new DetalleLaboratorioProducto
+				{
+					Laboratorios = laboratorioProducto.Laboratorios,
+					Cantidad = laboratorioProducto.Cantidad,
+					Precio = laboratorioProducto.Precio
+				};
 
-			productos.DescripcionProductos.Add(new DescripcionProductoD
-			{
-				Categoria = descripcionProductoD.Categoria,
-				Descripción = descripcionProductoD.Descripción
-			});
+			productos.detalleLabProducto.Add(detalle);
+			laboratorioProducto = new DetalleLaboratorioProducto();
 
-			this.productos = new Productos();
-			this.descripcionProductoD = new DescripcionProductoD();
+			CantidadTotal = productos.detalleLabProducto.Sum(d => d.Cantidad);
+
 			StateHasChanged();
 		}
-		else
-		{
-			var mensaje = new NotificationMessage
-			{
-				Severity = NotificationSeverity.Error,
-				Summary = "Error",
-				Detail = "No se pudo agregar el detalle. Asegúrese de seleccionar una categoría y una descripción.",
-				Duration = 5_000
-			};
-			notificacionesService.Notify(mensaje);
-		}
 	}
 
-	public async Task RemoveDetalle(DescripcionProductoD detalle)
+	public async Task RemoveDetailLab(DetalleLaboratorioProducto detalle)
 	{
-		var detalleEncontrado = productos.DescripcionProductos.FirstOrDefault(d => d.Categoria == descripcionProductoD.Categoria && d.Descripción == descripcionProductoD.Descripción);
+		var detalleEncontrado = productos.detalleLabProducto.FirstOrDefault(d => d.Laboratorios == detalle.Laboratorios && d.Cantidad == detalle.Cantidad && d.Precio == detalle.Precio);
 		if (detalleEncontrado != null)
 		{
-			productos.DescripcionProductos.Remove(detalleEncontrado);
+			productos.detalleLabProducto.Remove(detalleEncontrado);
+			CantidadTotal -= detalle.Cantidad;
 			StateHasChanged();
 		}
 		else
 		{
 			var mensaje = new NotificationMessage
-			{
-				Severity = NotificationSeverity.Error,
-				Summary = "Error",
-				Detail = "No se pudo eliminar el detalle. Asegúrese de seleccionar una categoría y una descripción.",
-				Duration = 5_000
-			};
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "No se pudo eliminar el detalle. Asegúrese de seleccionar un laboratorio, una cantidad y un precio.",
+					Duration = 5_000
+				};
 			notificacionesService.Notify(mensaje);
 		}
+
 	}
-	*@
-	
+
+	private void CalcularCantidadTotal()
+	{
+		CantidadTotal = 0;
+		foreach (var detalle in productos.detalleLabProducto)
+		{
+			CantidadTotal += detalle.Cantidad;
+		}
+	}
+
 }
