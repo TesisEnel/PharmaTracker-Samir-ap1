@@ -8,56 +8,34 @@
 @using Microsoft.AspNetCore.Components.Authorization
 
 
+<PageTitle>Login</PageTitle>
 
-<form>
+<div class="container mt-md-5">
+    <div class="row justify-content-md-center">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h2 text-center">PharmaTracker</h1>
+                </div>
+                <div class="card-body">
+                        <div class="form-floating mb-3">
+                            <input id="email" class="form-control" @bind="login.Correo" autofocus placeholder="Email" />
+                            <label for="email">Email</label>
+                        </div>
 
-    <div class="form-outline mb-4">
-        <input type="email" id="form2Example1" class="form-control" />
-        <label class="form-label" for="form2Example1">Email address</label>
-    </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" id="password" class="form-control" placeholder="Password" @bind="login.Clave" />
+                            <label for="passwword">Password</label>
+                        </div>
 
-    <div class="form-outline mb-4">
-        <input type="password" id="form2Example2" class="form-control" />
-        <label class="form-label" for="form2Example2">Password</label>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col d-flex justify-content-center">
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
-                <label class="form-check-label" for="form2Example31"> Remember me </label>
+                        <div class="d-grid gap-2">
+                        <button class="btn btn-lg btn-primary btn-block" type="submit" @onclick="IniciarSesion">Sign in</button>
+                        </div>
+                </div>
             </div>
         </div>
-
-        <div class="col">
-
-            <a href="#!">Forgot password?</a>
-        </div>
     </div>
-
-    <button type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
-
-    <div class="text-center">
-        <p>Not a member? <a href="#!">Register</a></p>
-        <p>or sign up with:</p>
-        <button type="button" class="btn btn-link btn-floating mx-1">
-            <i class="fab fa-facebook-f"></i>
-        </button>
-
-        <button type="button" class="btn btn-link btn-floating mx-1">
-            <i class="fab fa-google"></i>
-        </button>
-
-        <button type="button" class="btn btn-link btn-floating mx-1">
-            <i class="fab fa-twitter"></i>
-        </button>
-
-        <button type="button" class="btn btn-link btn-floating mx-1">
-            <i class="fab fa-github"></i>
-        </button>
-    </div>
-</form>
+</div>
 
 @code {
 
