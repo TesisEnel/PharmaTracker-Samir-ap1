@@ -3,6 +3,10 @@
 @page "/R_Clientes/{ClienteId:int}"
 @inject HttpClient httpClient
 
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = "Administrador, Vendedor")]
+
 <EditForm Model="Cliente" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
 

@@ -2,6 +2,10 @@
 @inject HttpClient httpClient
 @using PharmaTracker.Shared;
 
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = "Administrador, Vendedor")]
+
 <div class="card-header mt-4">
 
     <div class="card-header">
