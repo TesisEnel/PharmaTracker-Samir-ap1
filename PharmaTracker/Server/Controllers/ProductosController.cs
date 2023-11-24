@@ -86,6 +86,10 @@ namespace PharmaTracker.Server.Controllers
         [HttpPost]
 		public async Task<ActionResult<Productos>> PostProductos(Productos productos)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 			if (productos.ProductoId <= 0 || !ProductosExists(productos.ProductoId))
 			{
 				_context.Productos.Add(productos);
@@ -128,14 +132,14 @@ namespace PharmaTracker.Server.Controllers
             {
                 return BadRequest();
             }
-            var productosDesc = await _context.DescripcionProductoD.FirstOrDefaultAsync(dp => dp.ProductoId == id);
-            var productosComp = await _context.ComponentesProductoD.FirstOrDefaultAsync(cp => cp.ProductoId == id);
-            if(productosDesc is not null && productosComp is not null)
+            var productosLab = await _context.DetalleLaboratorioProducto.FirstOrDefaultAsync(x => x.ProductoId == id);
+
+            if (productosLab is not null)
             {
                 return NotFound();
 			}
-            _context.DescripcionProductoD.Remove(productosDesc);
-            _context.ComponentesProductoD.Remove(productosComp);
+           _context.DetalleLaboratorioProducto.Remove(productosLab);
+
             await _context.SaveChangesAsync();
 
             return Ok();
