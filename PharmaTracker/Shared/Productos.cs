@@ -21,6 +21,8 @@ namespace PharmaTracker.Shared
 
         [Required(ErrorMessage = "La unidad es obligatorio")]
         public string Unidad { get; set; }
+        [Required(ErrorMessage = "La categoría es obligatorio")]
+        public string Categoria { get; set; }
 
         public ICollection<DetalleLaboratorioProducto> detalleLabProducto { get; set; }
 	}
