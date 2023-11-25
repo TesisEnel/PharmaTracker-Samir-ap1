@@ -14,28 +14,31 @@
     <div class="row justify-content-md-center">
         <div class="col-sm-6">
             <div class="card">
-                <div class="card-header">
-                    <h1 class="h2 text-center">PharmaTracker</h1>
+                <div class="card-header text-center">
+                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177958331487371284/image.png?ex=6574662f&is=6561f12f&hm=41407a243b348be3b1aeaa524d6ee18dc1b40bbd3928ad074115e1a990b52f01&=&format=webp&width=982&height=420" alt="Logo de PharmaTracker" class="mb-3" style="max-width: 100px;" />
+
+                    <h1 class="h2">PharmaTracker</h1>
                 </div>
                 <div class="card-body">
-                        <div class="form-floating mb-3">
-                            <input id="email" class="form-control" @bind="login.Correo" autofocus placeholder="Email" />
-                            <label for="email">Email</label>
-                        </div>
+                    <div class="form-floating mb-3">
+                        <input id="email" class="form-control" @bind="login.Correo" autofocus placeholder="Email" />
+                        <label for="email">Email</label>
+                    </div>
 
-                        <div class="form-floating mb-3">
-                            <input type="password" id="password" class="form-control" placeholder="Password" @bind="login.Clave" />
-                            <label for="passwword">Password</label>
-                        </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" id="password" class="form-control" placeholder="Password" @bind="login.Clave" />
+                        <label for="password">Password</label>
+                    </div>
 
-                        <div class="d-grid gap-2">
+                    <div class="d-grid gap-2">
                         <button class="btn btn-lg btn-primary btn-block" type="submit" @onclick="IniciarSesion">Sign in</button>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 @code {
 
