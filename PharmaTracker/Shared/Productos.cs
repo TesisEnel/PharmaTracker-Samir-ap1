@@ -15,14 +15,14 @@ namespace PharmaTracker.Shared
         public DateTime Fecha { get; set; } = DateTime.Now;
         [Required(ErrorMessage = "El nombre del producto es obligatorio")]
         [RegularExpression(@"^[a-zA-ZáéíóúüÁÉÍÓÚÜ\s]+$", ErrorMessage = "Solo se permiten letras y espacios")]
-        public string NombreProducto { get; set; }
+        public string? NombreProducto { get; set; }
         [Required(ErrorMessage = "La exitencia es obligatorio")]
         public int? Existencia { get; set; }
 
         [Required(ErrorMessage = "La unidad es obligatorio")]
-        public string Unidad { get; set; }
+        public string? Unidad { get; set; }
         [Required(ErrorMessage = "La categoría es obligatorio")]
-        public string Categoria { get; set; }
+        public string? Categoria { get; set; }
 
         public ICollection<DetalleLaboratorioProducto> detalleLabProducto { get; set; }
 	}

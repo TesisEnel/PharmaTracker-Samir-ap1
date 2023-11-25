@@ -48,24 +48,6 @@ namespace PharmaTracker.Server.Migrations
                     b.ToTable("Clientes");
                 });
 
-            modelBuilder.Entity("PharmaTracker.Shared.ComponentesProductoD", b =>
-                {
-                    b.Property<int>("ComponentesProductoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Descripción")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ComponentesProductoId");
-
-                    b.ToTable("ComponentesProductoD");
-                });
-
             modelBuilder.Entity("PharmaTracker.Shared.DescripcionProductoD", b =>
                 {
                     b.Property<int>("DetalleProductoId")
@@ -156,7 +138,12 @@ namespace PharmaTracker.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Existencia")
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("Existencia")
+                        .IsRequired()
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("FacturasFacturaId")
@@ -165,22 +152,11 @@ namespace PharmaTracker.Server.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Laboratorio")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("NombreProducto")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Precio")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Unidad")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("imagen")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
