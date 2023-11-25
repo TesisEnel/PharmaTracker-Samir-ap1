@@ -1,40 +1,115 @@
 ﻿@page "/O_Productos"
-
+@inject NotificationService notificacionesService
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 
 <PageTitle>Lista de Productos - PharmaTracker</PageTitle>
 
+@*Diseño para el ajuste de las imagenes*@
+<style>
+    .card-img-top {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+</style>
+
+
+
 <div class="card-header">
-	<h3 class="card align-items-center">Tienda</h3>
+	<h3>Tienda PharmaTracker</h3>
 </div>
 
 
-        @*Prueba*@
+<div class="container mt-2">
+    <div class="card shadow-lg">
+        <div class="card-header"
+                style="background-color: #f8f9fa;">
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="" class="card-img-top" alt="Opción 1">
-                <div class="card-body">
-                    <h5 class="card-title">Prueba</h5>
+            <div class="container mt-4">
+                <div class="row">
+
+                    <div class="col-md-4 mb-4">
+                        <button type="button" class="btn btn-link">
+                            <div class="card">
+                                <img src="https://media.discordapp.net/attachments/855103306766352395/1177965996812800003/image.png?ex=65746d53&is=6561f853&hm=2a8b15d10f863efb14306945361d785735382d607c51529c4a1a37b6f55173aa&=&format=webp&width=507&height=363" class="card-img-top" alt="Opción 1">
+                                <div class="card-body">
+                                    <h5 class="card-title">Aplicaciones de Salud</h5>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <button type="button" class="btn btn-link">
+                            <div class="card">
+                                <img src="https://media.discordapp.net/attachments/855103306766352395/1177965770471387216/image.png?ex=65746d1d&is=6561f81d&hm=a9c85c09e7840ade5f6e7fda946fff6ade66132bef9931ea90fa8b1f901d91c6&=&format=webp&width=450&height=460" class="card-img-top" alt="Opción 2">
+                                <div class="card-body">
+                                    <h5 class="card-title">Bebes y Niños</h5>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <button type="button" class="btn btn-link">
+                            <div class="card">
+                                <img src="https://media.discordapp.net/attachments/855103306766352395/1177965390651985920/image.png?ex=65746cc2&is=6561f7c2&hm=98d41f3ea71e7364610813ff5126d8af6e0f8b65ce62e0e77c63bb50dfb09099&=&format=webp&width=406&height=467" class="card-img-top" alt="Opción 3">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        Cuidado Personal
+                                    </h5>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-4">
+                        <button type="button" class="btn btn-link">
+                            <div class="card">
+                                <img src="https://media.discordapp.net/attachments/855103306766352395/1177964623299870750/image.png?ex=65746c0b&is=6561f70b&hm=c5ff2bde4b35e47355fcd3faaf7633bf9d9a816bf0b29d2f17781cbdd86f1182&=&format=webp&width=405&height=461" class="card-img-top" alt="Opción 4">
+                                <div class="card-body">
+                                    <h5 class="card-title">Medicamento</h5>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <button type="button" class="btn btn-link">
+                            <div class="card">
+                                <img src="https://media.discordapp.net/attachments/855103306766352395/1177963907600617472/image.png?ex=65746b61&is=6561f661&hm=8f5e0378b8b6306561b19ae72e7cc8c5f823f2bec75d4790fb424670010d9b56&=&format=webp&width=458&height=445" class="card-img-top" alt="Opción 5">
+                                <div class="card-body">
+                                    <h5 class="card-title">Planificaci&oacute;n Familiar</h5>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <button type="button" class="btn btn-link">
+                            <div class="card">
+                                <img src="https://media.discordapp.net/attachments/855103306766352395/1177964288405671936/image.png?ex=65746bbb&is=6561f6bb&hm=aa553ecd4ca4c42f7024ba8c186c74169ed8d35a768921d87f6e24f1264df952&=&format=webp&width=345&height=442" class="card-img-top" alt="Opción 6">
+                                <div class="card-body">
+                                    <h5 class="card-title">Salud y Nutrición</h5>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="https://cdn-icons-png.flaticon.com/512/883/883356.png" class="card-img-top" alt="Opción 2">
-                <div class="card-body">
-                    <h5 class="card-title">Medicamento</h5>
-                </div>
-            </div>
         </div>
     </div>
-</div
+</div>
+
 
 @code {
+
 
 }
