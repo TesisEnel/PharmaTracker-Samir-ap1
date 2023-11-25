@@ -25,6 +25,7 @@
 				<label class="form-label" @for="productos.ProductoId">Producto Id:</label>
 				<div class="input-group">
 					<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="productos.ProductoId" />
+					<ValidationMessage For="@(() => productos.ProductoId)" />
 					<div class="ms-2">
 						<button class="btn btn-primary" type="button" @onclick="Buscar">
 							<i class="oi oi-magnifying-glass" />
@@ -39,7 +40,7 @@
 			<div class="form-group mb-2">
 				<label class="form-label" @for="productos.Fecha">Fecha:</label>
 				<div class="input-group">
-					<InputDate id="Fecha" class="form-control" @bind-Value="productos.Fecha" />
+					<InputDate max="@DateTime.Now.ToString("yyyy-MM-dd")" id="Fecha" class="form-control" @bind-Value="productos.Fecha" />
 				</div>
 				@if (FechaFutura(productos.Fecha))
 				{
@@ -55,22 +56,22 @@
 	<div class="row">
 		<div class="col-md-6 mb-3">
 			<label class="form-label" @for="productos.NombreProducto">Nombre del Producto:</label>
-			<InputText id="NombreProducto" @bind-Value="productos.NombreProducto" class="form-control" required />
+			<InputText id="NombreProducto" @bind-Value="productos.NombreProducto" class="form-control"  required />
 			<ValidationMessage For="@(() => productos.NombreProducto)" />
 		</div>
 
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<label class="form-label" for="productos.Categoria">Categor&iacute;a :</label>
 			<div class="input-group">
-				<div class="form-group mb-3">
+				<div class="form-group mb-2">
 					<InputSelect id="Unidad" class="form-select" @bind-Value="productos.Categoria">
 						<option value="" disabled selected>Elija una categor&iacute;a</option>
-						<option value="MEDICAMENTO">UD</option>
-						<option value="CUIDADO PERSONAL">BLI</option>
-						<option value="SALUD Y NUTRICION">BARR</option>
-						<option value="APLICACIONES DE SALUD">BLLA</option>
-						<option value="BEBES Y NIÑOS">SUSP</option>
-						<option value="PLANIFICACIÓN FAMILIAR">PAQ</option>
+						<option value="MEDICAMENTO">MEDICAMENTO</option>
+						<option value="CUIDADO PERSONAL">CUIDADO PERSONAL</option>
+						<option value="SALUD Y NUTRICION">SALUD Y NUTRICION</option>
+						<option value="APLICACIONES DE SALUD">APLICACIONES DE SALUD</option>
+						<option value="BEBES Y NIÑOS">BEBES Y NIÑOS</option>
+						<option value="PLANIFICACIÓN FAMILIAR">PLANIFICACIÓN FAMILIAR</option>
 					</InputSelect>
 					<ValidationMessage For="@(() => productos.Categoria)" />
 				</div>
@@ -131,7 +132,7 @@
 			<div class="col-md-2">
 				<div class="form-group">
 					<label>Cantidad</label>
-					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="laboratorioProducto.Cantidad" />
+					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="laboratorioProducto.Cantidad" required />
 				</div>
 			</div>
 
@@ -139,7 +140,7 @@
 			<div class="col-md-2">
 				<div class="form-group">
 					<label>Precio</label>
-					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="laboratorioProducto.Precio" />
+					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="laboratorioProducto.Precio" required />
 				</div>
 			</div>
 
@@ -198,7 +199,10 @@
 		<div class="btn-group">
 			<button type="button" class="btn btn-outline-primary" @onclick="Nuevo"> Nuevo <i class="oi oi-file" /></button>
 			<button type="submit" class="btn btn-outline-success" @onclick="Guardar"> Guardar <i class="oi oi-document" /></button>
-			<button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+
+			<AuthorizeView Roles="Administrador">
+				<button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+			</AuthorizeView>
 		</div>
 	</div>
 
@@ -211,7 +215,6 @@
 	public Productos productos { get; set; } = new Productos();
 	public IEnumerable<DetalleLaboratorioProducto> detalleLaboratorioProductos { get; set; } = new List<DetalleLaboratorioProducto>();
 
-	public DescripcionProductoD descripcionProductoD { get; set; } = new DescripcionProductoD();
 	public DetalleLaboratorioProducto laboratorioProducto { get; set; } = new DetalleLaboratorioProducto();
 
 	public bool detalleLaboratorio = false;
@@ -259,7 +262,7 @@
 	public async Task Nuevo()
 	{
 		this.productos = new Productos();
-		this.descripcionProductoD = new DescripcionProductoD();
+		this.laboratorioProducto = new DetalleLaboratorioProducto();
 
 		var mensaje = new NotificationMessage
 			{
@@ -319,10 +322,31 @@
 			notificacionesService.Notify(mensaje);
 			return;
 		}
-		else
+
+		var DetalleElimar = new List<DetalleLaboratorioProducto>();
+		foreach (var detalle in productos.detalleLabProducto)
 		{
-			Nuevo();
+			DetalleElimar.Add(detalle);
 		}
+
+		foreach (var detalle in DetalleElimar)
+		{
+			RemoveDetailLab(detalle);
+		}
+
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Eliminado",
+					Detail = "Producto Eliminado con exito",
+					Duration = 5_000
+				};
+			notificacionesService.Notify(mensaje);
+		}
+		Nuevo();
+
+
 	}
 
 	@*Detalle Laboratorio*@
@@ -358,13 +382,14 @@
 		}
 	}
 
-	public async Task RemoveDetailLab(DetalleLaboratorioProducto detalle)
+	public async Task RemoveDetailLab(DetalleLaboratorioProducto Removedetalle)
 	{
-		var detalleEncontrado = productos.detalleLabProducto.FirstOrDefault(d => d.Laboratorios == detalle.Laboratorios && d.Cantidad == detalle.Cantidad && d.Precio == detalle.Precio);
+		var detalleEncontrado = productos.detalleLabProducto.FirstOrDefault(d => d.Laboratorios == Removedetalle.Laboratorios && d.Cantidad == Removedetalle.Cantidad && d.Precio == Removedetalle.Precio);
 		if (detalleEncontrado != null)
 		{
 			productos.detalleLabProducto.Remove(detalleEncontrado);
-			CantidadTotal -= detalle.Cantidad;
+			CantidadTotal -= Removedetalle.Cantidad;
+			await httpClient.DeleteAsync($"api/Productos/DeleteProductosLab/{Removedetalle.Laboratorios}/{Removedetalle.Cantidad}/{Removedetalle.Precio}");
 			StateHasChanged();
 		}
 		else
@@ -393,6 +418,12 @@
 	private bool FechaFutura(DateTime fecha)
 	{
 		return fecha > DateTime.Now;
+	}
+
+	public void ConvertirAMayusculas(ChangeEventArgs args)
+	{
+		productos.NombreProducto = args.Value?.ToString().ToUpper();
+
 	}
 
 }
