@@ -2,6 +2,8 @@
 @page "/R_Productos/{RProductosId:int}"
 
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
 
 @attribute [Authorize(Roles ="Administrador, Vendedor")]
 @inject NotificationService notificacionesService
@@ -199,10 +201,13 @@
 		<div class="btn-group">
 			<button type="button" class="btn btn-outline-primary" @onclick="Nuevo"> Nuevo <i class="oi oi-file" /></button>
 			<button type="submit" class="btn btn-outline-success" @onclick="Guardar"> Guardar <i class="oi oi-document" /></button>
-
 			<AuthorizeView Roles="Administrador">
-				<button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+                <Authorized Context="not_for_vendedor">
+                    <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+                </Authorized>
 			</AuthorizeView>
+
+
 		</div>
 	</div>
 

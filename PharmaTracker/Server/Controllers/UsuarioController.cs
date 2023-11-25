@@ -19,7 +19,7 @@ namespace PharmaTracker.Server.Controllers
                 sesionDTO.Correo = login.Correo;
                 sesionDTO.Rol = "Administrador";
             }
-            else if (login.Correo == "vendedor@gmail.com" && login.Clave == "vendedor")
+            else if (login.Correo == "ve" && login.Clave == "ve")
             {
                 sesionDTO.Nombre = "vendedor";
                 sesionDTO.Correo = login.Correo;
