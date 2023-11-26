@@ -6,25 +6,26 @@
 
 @inject NotificationService NotificationService
 
-
 <PageTitle>Index</PageTitle>
-
-<h1>Proyecto Final</h1>
-
-<marquee> Luis J. Paulino y Samir E. Castillo </marquee>
-
-<RadzenButton Click="@ButtonClicked" Text="ola"></RadzenButton>
-
 
 <AuthorizeView>
     <Authorized>
-        <h1>Bienvenido @context.User.Identity.Name</h1>
+
+        <div class="card-header text-center">
+            <img src="https://media.discordapp.net/attachments/855103306766352395/1177958331487371284/image.png?ex=6574662f&is=6561f12f&hm=41407a243b348be3b1aeaa524d6ee18dc1b40bbd3928ad074115e1a990b52f01&=&format=webp&width=982&height=420" alt="Logo de PharmaTracker" class="mb-3" style="max-width: 100px;" />
+
+            <h1 class="h2">PharmaTracker</h1>
+        </div>
+        <h1 class="mt-5">Proyecto Final</h1>
+        <h5>Bienvenido @context.User.Identity.Name</h5
+
+
     </Authorized>
 </AuthorizeView>
 
+<marquee> Luis J. Paulino y Samir E. Castillo </marquee>
+
 @code {
-    void ButtonClicked()
-    {
-        //
-    }
+
+
 }
