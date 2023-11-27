@@ -2,9 +2,10 @@
 @page "/R_Productos/{RProductosId:int}"
 
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
 
 @attribute [Authorize(Roles ="Administrador, Vendedor")]
-
 @inject NotificationService notificacionesService
 @inject HttpClient httpClient
 
@@ -16,38 +17,70 @@
 
 <EditForm Model="productos" OnValidSubmit="Guardar">
 	<DataAnnotationsValidator />
+	<ValidationSummary />
 
-	@* ID *@
-	<div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4 mt-4">
-		<label class="form-label" @for="productos.ProductoId">Producto Id</label>
-		<div class="d-flex align-items-center">
-			<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="productos.ProductoId" />
-			<ValidationMessage For="@(() => productos.ProductoId)" />
-			<button class="btn btn-primary ml-2" type="button" @onclick="Buscar">
-				<i class="oi oi-magnifying-glass" />
-			</button>
-		</div>
-	</div>
+	<div class="row">
 
-	@* Fecha *@
-	<div class="col-md-6 mt-2">
-		<div Class="form-group mb-2">
-			<label class="form-label" @for="productos.Fecha">Fecha:</label>
-			<div class="input-group ">
-				<InputDate id="Fecha" class="form-control" @bind-Value="productos.Fecha" />
+		@*ID*@
+		<div class="col-md-3 mt-2">
+			<div class="form-group mb-2">
+				<label class="form-label" @for="productos.ProductoId">Producto Id:</label>
+				<div class="input-group">
+					<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="productos.ProductoId" />
+					<ValidationMessage For="@(() => productos.ProductoId)" />
+					<div class="ms-2">
+						<button class="btn btn-primary" type="button" @onclick="Buscar">
+							<i class="oi oi-magnifying-glass" />
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
+
+		@* Fecha *@
+		<div class="col-md-2 mt-2 ms-2">
+			<div class="form-group mb-2">
+				<label class="form-label" @for="productos.Fecha">Fecha:</label>
+				<div class="input-group">
+					<InputDate max="@DateTime.Now.ToString("yyyy-MM-dd")" id="Fecha" class="form-control" @bind-Value="productos.Fecha" />
+				</div>
+				@if (FechaFutura(productos.Fecha))
+				{
+					<p class="text-danger">No se pueden registrar fechas futuras.</p>
+				}
+			</div>
+		</div>
+
 	</div>
+
 
 	@* NombreProducto y Unidad *@
 	<div class="row">
 		<div class="col-md-6 mb-3">
 			<label class="form-label" @for="productos.NombreProducto">Nombre del Producto:</label>
-			<InputText id="NombreProducto" @bind-Value="productos.NombreProducto" class="form-control" />
+			<InputText id="NombreProducto" @bind-Value="productos.NombreProducto" class="form-control"  required />
 			<ValidationMessage For="@(() => productos.NombreProducto)" />
 		</div>
 
-		<div class="col-md-4">
+		<div class="col-md-3">
+			<label class="form-label" for="productos.Categoria">Categor&iacute;a :</label>
+			<div class="input-group">
+				<div class="form-group mb-2">
+					<InputSelect id="Unidad" class="form-select" @bind-Value="productos.Categoria">
+						<option value="" disabled selected>Elija una categor&iacute;a</option>
+						<option value="MEDICAMENTO">MEDICAMENTO</option>
+						<option value="CUIDADO PERSONAL">CUIDADO PERSONAL</option>
+						<option value="SALUD Y NUTRICION">SALUD Y NUTRICION</option>
+						<option value="APLICACIONES DE SALUD">APLICACIONES DE SALUD</option>
+						<option value="BEBES Y NIÑOS">BEBES Y NIÑOS</option>
+						<option value="PLANIFICACIÓN FAMILIAR">PLANIFICACIÓN FAMILIAR</option>
+					</InputSelect>
+					<ValidationMessage For="@(() => productos.Categoria)" />
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-2">
 			<label class="form-label" for="productos.Unidad">Unidad:</label>
 			<div class="input-group">
 				<div class="form-group mb-3">
@@ -72,10 +105,10 @@
 						<option value="POLV">POLV</option>
 						<option value="LATA">LATA </option>
 					</InputSelect>
+					<ValidationMessage For="@(() => productos.Unidad)" />
 				</div>
 			</div>
 		</div>
-
 
 	</div>
 
@@ -85,7 +118,6 @@
 	<div class="card-header mt-4">
 
 		<h5>Laboratorios</h5>
-
 
 		<div class="row form-inline align-items-center mt-3">
 
@@ -102,7 +134,7 @@
 			<div class="col-md-2">
 				<div class="form-group">
 					<label>Cantidad</label>
-					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="laboratorioProducto.Cantidad" />
+					<InputNumber id="Existencia" min="0" class="form-control" @bind-Value="laboratorioProducto.Cantidad" required />
 				</div>
 			</div>
 
@@ -110,7 +142,7 @@
 			<div class="col-md-2">
 				<div class="form-group">
 					<label>Precio</label>
-					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="laboratorioProducto.Precio" />
+					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="laboratorioProducto.Precio" required />
 				</div>
 			</div>
 
@@ -129,7 +161,7 @@
 				<label class="form-label mt-3" @for="productos.imagen">Foto:</label>
 				<div class="input-group">
 					<span class="input-group-text">Seleccionar Imagen:</span>
-					<InputText @bind-Value="laboratorioProducto.imagen" class="form-control"></InputText>
+					<InputText @bind-Value="laboratorioProducto.imagen" class="form-control" placeholder="Url de la imagen"></InputText>
 				</div>
 			</div>
 		</div>
@@ -159,20 +191,23 @@
 				}
 				<tr>
 					<td></td>
-					@* <td class="mt-4">Cantidad Total: @CantidadTotal </td> *@
+					<td class="mt-4">Cantidad Total: @CantidadTotal </td> 
 				</tr>
 			</tbody>
 		</table>
 	</div>
 
-
-
-
 	<div class="d-flex justify-content-center mb-4 mt-4">
 		<div class="btn-group">
 			<button type="button" class="btn btn-outline-primary" @onclick="Nuevo"> Nuevo <i class="oi oi-file" /></button>
 			<button type="submit" class="btn btn-outline-success" @onclick="Guardar"> Guardar <i class="oi oi-document" /></button>
-			<button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+			<AuthorizeView Roles="Administrador">
+                <Authorized Context="not_for_vendedor">
+                    <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+                </Authorized>
+			</AuthorizeView>
+
+
 		</div>
 	</div>
 
@@ -185,7 +220,6 @@
 	public Productos productos { get; set; } = new Productos();
 	public IEnumerable<DetalleLaboratorioProducto> detalleLaboratorioProductos { get; set; } = new List<DetalleLaboratorioProducto>();
 
-	public DescripcionProductoD descripcionProductoD { get; set; } = new DescripcionProductoD();
 	public DetalleLaboratorioProducto laboratorioProducto { get; set; } = new DetalleLaboratorioProducto();
 
 	public bool detalleLaboratorio = false;
@@ -233,7 +267,7 @@
 	public async Task Nuevo()
 	{
 		this.productos = new Productos();
-		this.descripcionProductoD = new DescripcionProductoD();
+		this.laboratorioProducto = new DetalleLaboratorioProducto();
 
 		var mensaje = new NotificationMessage
 			{
@@ -245,9 +279,9 @@
 		notificacionesService.Notify(mensaje);
 	}
 
-
 	public async Task Guardar()
 	{
+		productos.Existencia = CantidadTotal;
 		using var response = await httpClient.PostAsJsonAsync("api/Productos", productos);
 		if (!response.IsSuccessStatusCode)
 		{
@@ -293,14 +327,34 @@
 			notificacionesService.Notify(mensaje);
 			return;
 		}
-		else
+
+		var DetalleElimar = new List<DetalleLaboratorioProducto>();
+		foreach (var detalle in productos.detalleLabProducto)
 		{
-			Nuevo();
+			DetalleElimar.Add(detalle);
 		}
+
+		foreach (var detalle in DetalleElimar)
+		{
+			RemoveDetailLab(detalle);
+		}
+
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Eliminado",
+					Detail = "Producto Eliminado con exito",
+					Duration = 5_000
+				};
+			notificacionesService.Notify(mensaje);
+		}
+		Nuevo();
+
+
 	}
 
 	@*Detalle Laboratorio*@
-
 
 	bool ValidarDetailLab()
 	{
@@ -333,13 +387,14 @@
 		}
 	}
 
-	public async Task RemoveDetailLab(DetalleLaboratorioProducto detalle)
+	public async Task RemoveDetailLab(DetalleLaboratorioProducto Removedetalle)
 	{
-		var detalleEncontrado = productos.detalleLabProducto.FirstOrDefault(d => d.Laboratorios == detalle.Laboratorios && d.Cantidad == detalle.Cantidad && d.Precio == detalle.Precio);
+		var detalleEncontrado = productos.detalleLabProducto.FirstOrDefault(d => d.Laboratorios == Removedetalle.Laboratorios && d.Cantidad == Removedetalle.Cantidad && d.Precio == Removedetalle.Precio);
 		if (detalleEncontrado != null)
 		{
 			productos.detalleLabProducto.Remove(detalleEncontrado);
-			CantidadTotal -= detalle.Cantidad;
+			CantidadTotal -= Removedetalle.Cantidad;
+			await httpClient.DeleteAsync($"api/Productos/DeleteProductosLab/{Removedetalle.Laboratorios}/{Removedetalle.Cantidad}/{Removedetalle.Precio}");
 			StateHasChanged();
 		}
 		else
@@ -363,6 +418,17 @@
 		{
 			CantidadTotal += detalle.Cantidad;
 		}
+	}
+
+	private bool FechaFutura(DateTime fecha)
+	{
+		return fecha > DateTime.Now;
+	}
+
+	public void ConvertirAMayusculas(ChangeEventArgs args)
+	{
+		productos.NombreProducto = args.Value?.ToString().ToUpper();
+
 	}
 
 }

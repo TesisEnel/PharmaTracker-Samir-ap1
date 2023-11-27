@@ -13,17 +13,17 @@ namespace PharmaTracker.Shared
         public int ProductoId { get; set; }
         [Required(ErrorMessage = "El nombre del producto es obligatorio")]
         public DateTime Fecha { get; set; } = DateTime.Now;
-        public string NombreProducto { get; set; }
-        [Required(ErrorMessage = "El precio es obligatorio")]   
-        public int Precio { get; set; }
-        [Required(ErrorMessage = "El laboratorio es obligatorio")]
-        public string Laboratorio { get; set; }
+        [Required(ErrorMessage = "El nombre del producto es obligatorio")]
+        [RegularExpression(@"^[a-zA-ZáéíóúüÁÉÍÓÚÜ\s]+$", ErrorMessage = "Solo se permiten letras y espacios")]
+        public string? NombreProducto { get; set; }
         [Required(ErrorMessage = "La exitencia es obligatorio")]
-        public int Existencia { get; set; }
-        [Required(ErrorMessage = "La unidad es obligatorio")]
-        public string Unidad { get; set; }
-        public string imagen { get; set; }
+        public int? Existencia { get; set; }
 
-		public ICollection<DetalleLaboratorioProducto> detalleLabProducto { get; set; }
+        [Required(ErrorMessage = "La unidad es obligatorio")]
+        public string? Unidad { get; set; }
+        [Required(ErrorMessage = "La categoría es obligatorio")]
+        public string? Categoria { get; set; }
+
+        public ICollection<DetalleLaboratorioProducto> detalleLabProducto { get; set; }
 	}
 }

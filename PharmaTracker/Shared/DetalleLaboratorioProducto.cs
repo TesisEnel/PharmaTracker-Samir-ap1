@@ -14,7 +14,7 @@ namespace PharmaTracker.Shared
 		[ForeignKey("ProductoId")]
 		public int ProductoId { get; set; }
 		[Required(ErrorMessage ="El laboratorio es obligatorio")]
-		[RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Solo se permiten letras")]
+		[RegularExpression(@"^[a-zA-Z\s®]+$", ErrorMessage = "Solo se permiten letras y el símbolo ®")]
 		public string? Laboratorios { get; set; }
 		[Required(ErrorMessage = "La cantidad es obligatorio")]
 		public int Cantidad { get; set; }
