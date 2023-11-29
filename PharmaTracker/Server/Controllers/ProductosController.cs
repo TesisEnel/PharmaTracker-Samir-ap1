@@ -40,12 +40,16 @@ namespace PharmaTracker.Server.Controllers
           {
               return NotFound();
           }
-            var productos = await _context.Productos.FindAsync(id);
+            var productos = await _context.Productos.Include(e => e.detalleLabProducto)
+				.Where(e => e.ProductoId == id)
+				.FirstOrDefaultAsync();
 
-            if (productos == null)
+			if (productos == null)
             {
                 return NotFound();
             }
+            productos.Existencia = productos.detalleLabProducto.Sum(d => d.Cantidad);
+
 
             return productos;
         }
@@ -125,16 +129,16 @@ namespace PharmaTracker.Server.Controllers
         }
 
         //Delete: api/Productos
-        [HttpDelete("DeleteProductosMes/{id}")]
-        public async Task<IActionResult> DeleteProductosMes(int id)
+        [HttpDelete("DeleteProductosLab/{id}")]
+        public async Task<IActionResult> DeleteProductosLab(int id)
         {
             if(id <= 0)
             {
                 return BadRequest();
             }
-            var productosLab = await _context.DetalleLaboratorioProducto.FirstOrDefaultAsync(x => x.ProductoId == id);
+            var productosLab = await _context.DetalleLaboratorioProducto.FirstOrDefaultAsync(x => x.DetalleLaboratorioProductoId == id);
 
-            if (productosLab is not null)
+            if (productosLab is null)
             {
                 return NotFound();
 			}
