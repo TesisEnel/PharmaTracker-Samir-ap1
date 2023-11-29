@@ -47,10 +47,10 @@ namespace PharmaTracker.Server.Controllers
                 sesionDTO.Rol = "Vendedor";
             }
 
-           /* else if (vendedorFound != null && vendedorFound.Email == login.Correo && vendedorFound.Contraseña != login.Clave)
-            {
-                StatusCode(StatusCodes.Status401Unauthorized, "Contraseña incorrecta");
-            }*/
+            /* else if (vendedorFound != null && vendedorFound.Email == login.Correo && vendedorFound.Contraseña != login.Clave)
+             {
+                 StatusCode(StatusCodes.Status401Unauthorized, "Contraseña incorrecta");
+             }*/
 
             var clienteFound = await _context.Clientes.FirstOrDefaultAsync(x => x.Email == login.Correo && x.Contraseña == login.Clave);
 
@@ -65,20 +65,20 @@ namespace PharmaTracker.Server.Controllers
             {
                 return StatusCode(StatusCodes.Status401Unauthorized, "Contraseña incorrecta");
             }*/
-
+/*
             else if (clienteFound == null || vendedorFound == null || adminFound == null)
             {
                 return StatusCode(StatusCodes.Status401Unauthorized, "Usuario no encontrado");
             }
-            else if(login.Clave != adminFound.Contraseña || login.Clave != vendedorFound.Contraseña || login.Clave != clienteFound.Contraseña)
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized, "Contraseña no encontrada");
-            }
-
-/*            else if (clienteFound == null && vendedorFound == null && userFound == null)
+            else if (login.Clave != adminFound.Contraseña || login.Clave != vendedorFound.Contraseña || login.Clave != clienteFound.Contraseña)
             {
                 return StatusCode(StatusCodes.Status401Unauthorized, "Contraseña no encontrada");
             }*/
+
+            /*            else if (clienteFound == null && vendedorFound == null && userFound == null)
+                        {
+                            return StatusCode(StatusCodes.Status401Unauthorized, "Contraseña no encontrada");
+                        }*/
 
             return StatusCode(StatusCodes.Status200OK, sesionDTO);
         }
