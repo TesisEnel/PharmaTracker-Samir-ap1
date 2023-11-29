@@ -143,12 +143,7 @@ else
             {
                 <div class="row">
                     <div class="col-md-4">@producto.NombreProducto</div>
-                    <div class="col-md-3">
-                        @if (producto.detalleLabProducto != null && producto.detalleLabProducto.Any())
-                        {
-                            @producto.detalleLabProducto.First().Precio
-                        }
-                    </div>
+                    @*<div class="col-md-3">RD$ @producto.Precio</div>*@
                     <div class="col-md-3">@producto.Unidad</div>
                     <div class="col-md-2">
                         <button class="btn btn-success" @onclick="() => AgregarACompra(producto)">
@@ -171,7 +166,7 @@ else
 
     private bool MostrarProducto = false;
 
-    private string categoria;
+    private string? categoria;
 
     public async Task BuscarProductos(string categoria)
     {
