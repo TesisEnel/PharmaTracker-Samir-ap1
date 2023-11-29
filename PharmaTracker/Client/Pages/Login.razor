@@ -29,7 +29,6 @@
                         <input type="password" id="password" class="form-control" placeholder="Password" @bind="login.Clave" />
                         <label for="password">Password</label>
                     </div>
-
                     <div class="d-grid gap-2">
                         <button class="btn btn-lg btn-primary btn-block" type="submit" @onclick="IniciarSesion">Sign in</button>
                     </div>
@@ -47,6 +46,7 @@
     private async Task IniciarSesion()
     {
         var loginResponse = await httpClient.PostAsJsonAsync<LoginDTO>("/api/Usuario/Login", login);
+
         if (loginResponse.IsSuccessStatusCode)
         {
             var userSession = await loginResponse.Content.ReadFromJsonAsync<SesionDTO>();
@@ -55,14 +55,17 @@
 
             navManager.NavigateTo("/Index");
         }
+
+        if(loginResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            var mensaje = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = loginResponse.Content.ReadAsStringAsync().Result,
+                Duration = 4_000
+            };
+            notificationService.Notify(mensaje);
+        }
     }
-
-    private string prismTransform = "translateZ(-100px)";
-
-    private void ShowSignup() => prismTransform = "translateZ(-100px) rotateY(-90deg)";
-    private void ShowLogin() => prismTransform = "translateZ(-100px)";
-    private void ShowForgotPassword() => prismTransform = "translateZ(-100px) rotateY(-180deg)";
-    private void ShowSubscribe() => prismTransform = "translateZ(-100px) rotateX(-90deg)";
-    private void ShowContactUs() => prismTransform = "translateZ(-100px) rotateY(90deg)";
-    private void ShowThankYou() => prismTransform = "translateZ(-100px) rotateX(90deg)";
 }

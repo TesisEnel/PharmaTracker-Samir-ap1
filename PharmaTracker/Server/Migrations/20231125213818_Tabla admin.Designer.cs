@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PharmaTracker.Server.DAL;
 
@@ -10,9 +11,11 @@ using PharmaTracker.Server.DAL;
 namespace PharmaTracker.Server.Migrations
 {
     [DbContext(typeof(PharmaTracketContext))]
-    partial class PharmaTracketContextModelSnapshot : ModelSnapshot
+    [Migration("20231125213818_Tabla admin")]
+    partial class Tablaadmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
@@ -101,6 +104,46 @@ namespace PharmaTracker.Server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PharmaTracker.Shared.ComponentesProductoD", b =>
+                {
+                    b.Property<int>("ComponentesProductoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Descripción")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ComponentesProductoId");
+
+                    b.ToTable("ComponentesProductoD");
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.DescripcionProductoD", b =>
+                {
+                    b.Property<int>("DetalleProductoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Descripción")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DetalleProductoId");
+
+                    b.ToTable("DescripcionProductoD");
+                });
+
             modelBuilder.Entity("PharmaTracker.Shared.DetalleLaboratorioProducto", b =>
                 {
                     b.Property<int>("DetalleLaboratorioProductoId")
@@ -169,12 +212,7 @@ namespace PharmaTracker.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Categoria")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("Existencia")
-                        .IsRequired()
+                    b.Property<int>("Existencia")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("FacturasFacturaId")
@@ -183,11 +221,22 @@ namespace PharmaTracker.Server.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Laboratorio")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("NombreProducto")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Precio")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Unidad")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("imagen")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

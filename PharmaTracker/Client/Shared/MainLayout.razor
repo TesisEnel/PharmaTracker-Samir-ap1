@@ -12,11 +12,7 @@
         <NavMenu />
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a @onclick="CerrarSesion" href="javascript:void(0)">Logout</a>
-        </div>
-            
+    <main>         
         <article class="content px-4">
             @Body
         </article>
@@ -24,10 +20,5 @@
 </div>
 
 @code {
-    private async Task CerrarSesion()
-    {
-        var authenticationExt = (AuthenticacionExtension)authenticationProvider;
-        await authenticationExt.UpdateStatusAuthentication(null);
-        navManager.NavigateTo("/",true);
-    }
+
 }
