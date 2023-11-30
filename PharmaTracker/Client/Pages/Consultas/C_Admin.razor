@@ -1,0 +1,144 @@
+﻿@page "/C_Admin"
+
+@inject HttpClient httpClient
+@inject NotificationService notificacionesService
+@using PharmaTracker.Shared;
+
+<div class="card-header mt-4">
+
+	<div class="card-header">
+		<h3>Consulta de Administradores</h3>
+	</div>
+
+	<div class="row mt-2">
+		<label class="mt-2 fs-6">Filtrar por:</label>
+
+		<div class="col-md-3">
+			<select class="form-select form-select-sm" @bind="opciones">
+				<option value="0" disabled selected>Elija una opción</option>
+				<option value="1">ID</option>
+				<option value="2">Nombre</option>
+			</select>
+		</div>
+
+		<div class="col-md-3">
+			@if (opciones == 1)
+			{
+				<input type="number" min="0" class="form-control form-control-sm" @bind="auxAdmin.AdminId" />
+			}
+			else if (opciones == 2)
+			{
+				<input type="text" class="form-control form-control-sm" @bind="auxAdmin.Nombre" />
+			}
+		</div>
+
+		<div class="col-md-2">
+			<button class="btn btn-primary btn-sm" type="button" @onclick="Buscar">
+				<i class="oi oi-magnifying-glass" />
+			</button>
+		</div>
+
+
+		<div class="card-body">
+			<div class="table-responsive ">
+				<table border="1" class="table table-bordered table-striped ">
+					<thead>
+						<tr class="table-secondary">
+							<th>ID</th>
+							<th>Nombre</th>
+							<th>Dirreci&oacute;n</th>
+							<th>Email</th>
+
+							<th>Ver</th>
+						</tr>
+					</thead>
+					<tbody>
+						@if (admin != null)
+						{
+							@foreach (var table in admin)
+							{
+								<tr>
+									<td>@table.AdminId</td>
+									<td>@table.Nombre</td>
+									<td>@table.Dirección</td>
+									<td>@table.Email</td>
+									<td><a href="R_Admin/@table.AdminId"> <i class="oi oi-eye"> </i></a></td>
+								</tr>
+							}
+						}
+					</tbody>
+
+					<div class="card-header-tabs">
+						<div class="col col-md-mt-4">
+							<span class="ml-2">Resultados: @conteo</span>
+						</div>
+					</div>
+
+				</table>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+@code {
+
+	public List<Admin> admin { get; set; }
+	public Admin auxAdmin { get; set; } = new Admin();
+
+	public int opciones { get; set; }
+	public int conteo { get; set; }
+
+	public async Task Buscar()
+	{
+		switch (opciones)
+		{
+			case 0:
+				if (opciones == 0)
+				{
+					notificacionesService.Notify(new NotificationMessage
+						{
+							Severity = NotificationSeverity.Warning,
+							Summary = "Filtro requerido",
+							Detail = "Debe elegir un filtro antes de realizar la búsqueda.",
+							Duration = 5000
+						});
+					return;
+				}
+				break;
+			case 1:
+				if (auxAdmin.AdminId != 0)
+				{
+					admin = (await httpClient.GetFromJsonAsync<List<Admin>>($"api/Admins"))
+						.Where(p => p.AdminId == auxAdmin.AdminId)
+						.ToList();
+					StateHasChanged();
+				}
+				else
+				{
+					admin = (await httpClient.GetFromJsonAsync<List<Admin>>($"api/Admins"))
+						.ToList();
+					StateHasChanged();
+				}
+				break;
+			case 2:
+				if (!string.IsNullOrEmpty(auxAdmin.Nombre))
+				{
+					admin = (await httpClient.GetFromJsonAsync<List<Admin>>($"api/Admins"))
+						.Where(p => p.Nombre.Contains(auxAdmin.Nombre))
+						.ToList();
+					StateHasChanged();
+				}
+				else
+				{
+					admin = (await httpClient.GetFromJsonAsync<List<Admin>>($"api/Admins"))
+						.ToList();
+					StateHasChanged();
+				}
+				break;
+		}
+		conteo = admin.Count;
+	}
+}
