@@ -10,16 +10,24 @@ namespace PharmaTracker.Shared
     public class Admin
     {
         [Key]
-        public int AdminId { get; set; }
-        [Required(ErrorMessage = "El nombre es obligatorio")]
-        public string? Nombre { get; set; }
-        [Required(ErrorMessage = "La dirección es obligatorio")]
-        public string? Dirección { get; set; }
-        [Required(ErrorMessage = "El teléfono es obligatorio")]
-        public string? Teléfono { get; set; }
-        [Required(ErrorMessage = "El Email es obligatorio")]
-        public string? Email { get; set; }
-        [Required(ErrorMessage = "La contraseña es obligatoria")]
-        public string? Contraseña { get; set; }
-    }
+		public int AdminId { get; set; }
+
+		[Required(ErrorMessage = "El nombre es obligatorio")]
+		[RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Solo se permiten letras y espacios")]
+		public string? Nombre { get; set; }
+
+		[Required(ErrorMessage = "La dirección es obligatoria")]
+		public string? Dirección { get; set; }
+
+		[Required(ErrorMessage = "El teléfono es obligatorio")]
+		[RegularExpression(@"^\d{10}$", ErrorMessage = "El teléfono debe tener 10 dígitos")]
+		public string? Teléfono { get; set; }
+
+		[Required(ErrorMessage = "El Email es obligatorio")]
+		[EmailAddress(ErrorMessage = "La dirección de correo electrónico no es válida")]
+		public string? Email { get; set; }
+
+		[Required(ErrorMessage = "La contraseña es obligatoria")]
+		public string? Contraseña { get; set; }
+	}
 }
