@@ -125,6 +125,7 @@
 						<th>Fecha</th>
 						<th>Nombre del Producto</th>
 						<th>Existencia</th>
+						<th>Precio</th>
 						<th>Categor&iacute;a</th>
 						<th>Unidad</th>
 						<th>Ver</th>
@@ -140,6 +141,7 @@
 								<td>@table.Fecha.ToString("MM/dd/yyyy")</td>
 								<td>@table.NombreProducto.ToUpper()</td>
 								<td>@table.Existencia</td>
+								<td>$RD @table.Precio</td>
 								<td>@table.Categoria</td>
 								<td>@table.Unidad</td>
 								<td><a href="R_Productos/@table.ProductoId"> <i class="oi oi-eye"> </i></a></td>

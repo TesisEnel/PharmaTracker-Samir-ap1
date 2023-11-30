@@ -3,6 +3,9 @@
 @inject HttpClient httpClient
 @inject NotificationService notificacionesService
 
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
 <style>
     .card-img-top 
     {
@@ -143,7 +146,7 @@ else
             {
                 <div class="row">
                     <div class="col-md-4">@producto.NombreProducto</div>
-                    @*<div class="col-md-3">RD$ @producto.Precio</div>*@
+                    <div class="col-md-3">RD$ @producto.Precio</div>
                     <div class="col-md-3">@producto.Unidad</div>
                     <div class="col-md-2">
                         <button class="btn btn-success" @onclick="() => AgregarACompra(producto)">
@@ -167,6 +170,7 @@ else
     private bool MostrarProducto = false;
 
     private string? categoria;
+
 
     public async Task BuscarProductos(string categoria)
     {

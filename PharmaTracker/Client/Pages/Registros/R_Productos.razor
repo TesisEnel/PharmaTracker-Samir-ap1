@@ -20,8 +20,7 @@
 	<ValidationSummary />
 
 	<div class="row">
-
-		@*ID*@
+		<!-- ID -->
 		<div class="col-md-3 mt-2">
 			<div class="form-group mb-2">
 				<label class="form-label" @for="productos.ProductoId">Producto Id:</label>
@@ -37,8 +36,8 @@
 			</div>
 		</div>
 
-		@* Fecha *@
-		<div class="col-md-2 mt-2 ms-2">
+		<!-- Fecha -->
+		<div class="col-md-3 mt-2 ms-5">
 			<div class="form-group mb-2">
 				<label class="form-label" @for="productos.Fecha">Fecha:</label>
 				<div class="input-group">
@@ -50,33 +49,23 @@
 				}
 			</div>
 		</div>
-
 	</div>
 
 
-	@* NombreProducto y Unidad *@
-	<div class="row">
-		<div class="col-md-6 mb-3">
+	@*NombreProducto, Precio, Unidad y Categoria*@
+	<div class="row mt-2">
+
+		
+		<div class="col-md-4 mb-3">
 			<label class="form-label" @for="productos.NombreProducto">Nombre del Producto:</label>
 			<InputText id="NombreProducto" @bind-Value="productos.NombreProducto" class="form-control"  required />
 			<ValidationMessage For="@(() => productos.NombreProducto)" />
-		</div>
+		</div
 
-		<div class="col-md-3">
-			<label class="form-label" for="productos.Categoria">Categor&iacute;a :</label>
-			<div class="input-group">
-				<div class="form-group mb-2">
-					<InputSelect id="Unidad" class="form-select" @bind-Value="productos.Categoria">
-						<option value="" disabled selected>Elija una categor&iacute;a</option>
-						<option value="MEDICAMENTO">MEDICAMENTO</option>
-						<option value="CUIDADO PERSONAL">CUIDADO PERSONAL</option>
-						<option value="SALUD Y NUTRICION">SALUD Y NUTRICION</option>
-						<option value="APLICACIONES DE SALUD">APLICACIONES DE SALUD</option>
-						<option value="BEBES Y NIÑOS">BEBES Y NIÑOS</option>
-						<option value="PLANIFICACIÓN FAMILIAR">PLANIFICACIÓN FAMILIAR</option>
-					</InputSelect>
-					<ValidationMessage For="@(() => productos.Categoria)" />
-				</div>
+		<div class="col-md-2 mt-2">
+			<div class="form-group">
+				<label>Precio:</label>
+				<InputNumber id="Precio" min="0" class="form-control" @bind-Value="productos.Precio" required placeholder="$RD" />
 			</div>
 		</div>
 
@@ -110,7 +99,26 @@
 			</div>
 		</div>
 
+		<div class="col-md-3">
+			<label class="form-label" for="productos.Categoria">Categor&iacute;a :</label>
+			<div class="input-group">
+				<div class="form-group mb-2">
+					<InputSelect id="Unidad" class="form-select" @bind-Value="productos.Categoria">
+						<option value="" disabled selected>Elija una categor&iacute;a</option>
+						<option value="MEDICAMENTO">MEDICAMENTO</option>
+						<option value="CUIDADO PERSONAL">CUIDADO PERSONAL</option>
+						<option value="SALUD Y NUTRICION">SALUD Y NUTRICION</option>
+						<option value="APLICACIONES DE SALUD">APLICACIONES DE SALUD</option>
+						<option value="BEBES Y NIÑOS">BEBES Y NIÑOS</option>
+						<option value="PLANIFICACIÓN FAMILIAR">PLANIFICACIÓN FAMILIAR</option>
+					</InputSelect>
+					<ValidationMessage For="@(() => productos.Categoria)" />
+				</div>
+			</div>
+		</div>
+
 	</div>
+
 
 
 	@*Detalle laboratorio*@
@@ -138,13 +146,6 @@
 				</div>
 			</div>
 
-			@*Precio*@
-			<div class="col-md-2">
-				<div class="form-group">
-					<label>Precio</label>
-					<InputNumber id="Precio" min="0" class="form-control" @bind-Value="laboratorioProducto.Precio" required />
-				</div>
-			</div>
 
 			@*Boton + Add *@
 			<div class="col-md-4">
@@ -155,24 +156,11 @@
 
 		</div>
 
-		@*Imagen*@
-		<div class="col-md-5">
-			<div Class="form-group">
-				<label class="form-label mt-3" @for="productos.imagen">Foto:</label>
-				<div class="input-group">
-					<span class="input-group-text">Seleccionar Imagen:</span>
-					<InputText @bind-Value="laboratorioProducto.imagen" class="form-control" placeholder="Url de la imagen"></InputText>
-				</div>
-			</div>
-		</div>
-
 		<table class="table table-sm mt-4">
 			<thead>
 				<tr>
 					<th>Laboratorio</th>
 					<th>Cantidad</th>
-					<th>Precio</th>
-					<th>Imagen</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -183,16 +171,10 @@
 						<tr>
 							<td>@laboratorio.Laboratorios.ToUpper()</td>
 							<td>@laboratorio.Cantidad</td>
-							<td>RD$@laboratorio.Precio</td>
-							<td>@laboratorio.imagen</td>
 							<td><button type="button" class="btn btn-danger oi oi-trash" @onclick=@(() => RemoveDetailLab(laboratorio))></button></td>
 						</tr>
 					}
 				}
-				<tr>
-					<td></td>
-					<td class="mt-4">Cantidad Total: @CantidadTotal </td> 
-				</tr>
 			</tbody>
 		</table>
 	</div>
@@ -221,6 +203,8 @@
 	public IEnumerable<DetalleLaboratorioProducto> detalleLaboratorioProductos { get; set; } = new List<DetalleLaboratorioProducto>();
 
 	public DetalleLaboratorioProducto laboratorioProducto { get; set; } = new DetalleLaboratorioProducto();
+
+	public DetalleLaboratorioProducto detalleRemovido { get; set; } = new DetalleLaboratorioProducto();
 
 	public bool detalleLaboratorio = false;
 	public bool detalleCantidad = false;
@@ -360,9 +344,8 @@
 	{
 		detalleLaboratorio = string.IsNullOrEmpty(laboratorioProducto.Laboratorios);
 		detalleCantidad = laboratorioProducto.Cantidad <= 0;
-		detallePrecio = laboratorioProducto.Precio <= 0;
 
-		return !detalleLaboratorio && !detalleCantidad && !detallePrecio;
+		return !detalleLaboratorio && !detalleCantidad;
 	}
 
 	public async Task AddDetailLab()
@@ -375,7 +358,6 @@
 				{
 					Laboratorios = laboratorioProducto.Laboratorios,
 					Cantidad = laboratorioProducto.Cantidad,
-					Precio = laboratorioProducto.Precio
 				};
 
 			productos.detalleLabProducto.Add(detalle);
@@ -383,18 +365,20 @@
 
 			CantidadTotal = productos.detalleLabProducto.Sum(d => d.Cantidad);
 
+			await UpdateExistenciaProducto();
+
 			StateHasChanged();
 		}
 	}
 
 	public async Task RemoveDetailLab(DetalleLaboratorioProducto Removedetalle)
 	{
-		var detalleEncontrado = productos.detalleLabProducto.FirstOrDefault(d => d.Laboratorios == Removedetalle.Laboratorios && d.Cantidad == Removedetalle.Cantidad && d.Precio == Removedetalle.Precio);
+		var detalleEncontrado = productos.detalleLabProducto.FirstOrDefault(d => d.Laboratorios == Removedetalle.Laboratorios && d.Cantidad == Removedetalle.Cantidad);
 		if (detalleEncontrado != null)
 		{
 			productos.detalleLabProducto.Remove(detalleEncontrado);
 			CantidadTotal -= Removedetalle.Cantidad;
-			await httpClient.DeleteAsync($"api/Productos/DeleteProductosLab/{Removedetalle.Laboratorios}/{Removedetalle.Cantidad}/{Removedetalle.Precio}");
+			await httpClient.DeleteAsync($"api/Productos/DeleteProductosLab/{Removedetalle.Laboratorios}/{Removedetalle.Cantidad}");
 			StateHasChanged();
 		}
 		else
@@ -429,6 +413,36 @@
 	{
 		productos.NombreProducto = args.Value?.ToString().ToUpper();
 
+	}
+
+	public async Task UpdateExistenciaProducto()
+	{
+		productos.Existencia = CantidadTotal;
+
+		var response = await httpClient.PutAsJsonAsync($"api/Productos/UpdateProducto/{productos.ProductoId}", productos);
+
+		if (response.IsSuccessStatusCode)
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Actualizado",
+					Detail = "Existencia del producto actualizada con exito",
+					Duration = 5_000
+				};
+			notificacionesService.Notify(mensaje);
+		}
+		else
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "No se pudo actualizar la existencia del producto",
+					Duration = 5_000
+				};
+			notificacionesService.Notify(mensaje);
+		}
 	}
 
 }

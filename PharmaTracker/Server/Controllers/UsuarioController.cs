@@ -31,6 +31,8 @@ namespace PharmaTracker.Server.Controllers
                 sesionDTO.Nombre = adminFound!.Nombre!;
                 sesionDTO.Correo = login.Correo;
                 sesionDTO.Rol = "Administrador";
+
+                return StatusCode(StatusCodes.Status200OK, sesionDTO);
             }
 
             /*else if (userFound != null && userFound.Email == login.Correo && userFound.Contraseña != login.Clave)
@@ -45,6 +47,8 @@ namespace PharmaTracker.Server.Controllers
                 sesionDTO.Nombre = vendedorFound.Nombre;
                 sesionDTO.Correo = login.Correo;
                 sesionDTO.Rol = "Vendedor";
+
+                return StatusCode(StatusCodes.Status200OK, sesionDTO);
             }
 
             /* else if (vendedorFound != null && vendedorFound.Email == login.Correo && vendedorFound.Contraseña != login.Clave)
@@ -59,6 +63,8 @@ namespace PharmaTracker.Server.Controllers
                 sesionDTO.Nombre = clienteFound.Nombre;
                 sesionDTO.Correo = login.Correo;
                 sesionDTO.Rol = "Cliente";
+
+                return StatusCode(StatusCodes.Status200OK, sesionDTO);
             }
 
             /*else if (clienteFound != null && clienteFound.Email == login.Correo && clienteFound.Contraseña != login.Clave)

@@ -18,8 +18,5 @@ namespace PharmaTracker.Shared
 		public string? Laboratorios { get; set; }
 		[Required(ErrorMessage = "La cantidad es obligatorio")]
 		public int Cantidad { get; set; }
-		[Required(ErrorMessage = "El precio es obligatorio")]
-		public int Precio { get; set; }
-		public string? imagen { get; set; }
-	}
+    }
 }
