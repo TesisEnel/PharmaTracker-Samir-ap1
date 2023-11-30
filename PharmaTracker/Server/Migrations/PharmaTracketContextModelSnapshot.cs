@@ -59,6 +59,25 @@ namespace PharmaTracker.Server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
+                {
+                    b.Property<int>("CestaDCompraId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Pago")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CestaDCompraId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("CestaDCompra");
+                });
+
             modelBuilder.Entity("PharmaTracker.Shared.Clientes", b =>
                 {
                     b.Property<int>("ClienteId")
@@ -114,17 +133,11 @@ namespace PharmaTracker.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Precio")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("ProductoId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("ProductosProductoId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("imagen")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("DetalleLaboratorioProductoId");
 
@@ -173,6 +186,9 @@ namespace PharmaTracker.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("CestaDCompraId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("Existencia")
                         .IsRequired()
                         .HasColumnType("INTEGER");
@@ -187,11 +203,17 @@ namespace PharmaTracker.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("Precio")
+                        .IsRequired()
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Unidad")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ProductoId");
+
+                    b.HasIndex("CestaDCompraId");
 
                     b.HasIndex("FacturasFacturaId");
 
@@ -240,6 +262,17 @@ namespace PharmaTracker.Server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
+                {
+                    b.HasOne("PharmaTracker.Shared.Clientes", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
             modelBuilder.Entity("PharmaTracker.Shared.DetalleLaboratorioProducto", b =>
                 {
                     b.HasOne("PharmaTracker.Shared.Productos", null)
@@ -249,9 +282,18 @@ namespace PharmaTracker.Server.Migrations
 
             modelBuilder.Entity("PharmaTracker.Shared.Productos", b =>
                 {
+                    b.HasOne("PharmaTracker.Shared.CestaDCompra", null)
+                        .WithMany("productos")
+                        .HasForeignKey("CestaDCompraId");
+
                     b.HasOne("PharmaTracker.Shared.Facturas", null)
                         .WithMany("ListaProductos")
                         .HasForeignKey("FacturasFacturaId");
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
+                {
+                    b.Navigation("productos");
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.Facturas", b =>

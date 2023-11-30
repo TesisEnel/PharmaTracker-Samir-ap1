@@ -11,14 +11,75 @@ using PharmaTracker.Server.DAL;
 namespace PharmaTracker.Server.Migrations
 {
     [DbContext(typeof(PharmaTracketContext))]
-    [Migration("20231123210331_add_class_Laboratorio")]
-    partial class add_class_Laboratorio
+    [Migration("20231130191942_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
+
+            modelBuilder.Entity("PharmaTracker.Shared.Admin", b =>
+                {
+                    b.Property<int>("AdminId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Contraseña")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Dirección")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Teléfono")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AdminId");
+
+                    b.ToTable("Admin");
+
+                    b.HasData(
+                        new
+                        {
+                            AdminId = 1,
+                            Contraseña = "admin",
+                            Dirección = "Calle 789",
+                            Email = "admin@gmail.com",
+                            Nombre = "Admin",
+                            Teléfono = "1234567890"
+                        });
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
+                {
+                    b.Property<int>("CestaDCompraId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Pago")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CestaDCompraId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("CestaDCompra");
+                });
 
             modelBuilder.Entity("PharmaTracker.Shared.Clientes", b =>
                 {
@@ -49,46 +110,17 @@ namespace PharmaTracker.Server.Migrations
                     b.HasKey("ClienteId");
 
                     b.ToTable("Clientes");
-                });
 
-            modelBuilder.Entity("PharmaTracker.Shared.ComponentesProductoD", b =>
-                {
-                    b.Property<int>("ComponentesProductoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Descripción")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ComponentesProductoId");
-
-                    b.ToTable("ComponentesProductoD");
-                });
-
-            modelBuilder.Entity("PharmaTracker.Shared.DescripcionProductoD", b =>
-                {
-                    b.Property<int>("DetalleProductoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Categoria")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Descripción")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("DetalleProductoId");
-
-                    b.ToTable("DescripcionProductoD");
+                    b.HasData(
+                        new
+                        {
+                            ClienteId = 1,
+                            Contraseña = "cliente",
+                            Dirección = "Calle 123",
+                            Email = "cliente@gmail.com",
+                            Nombre = "Juan Perez",
+                            Teléfono = "1234567890"
+                        });
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.DetalleLaboratorioProducto", b =>
@@ -104,17 +136,11 @@ namespace PharmaTracker.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Precio")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("ProductoId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("ProductosProductoId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("imagen")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("DetalleLaboratorioProductoId");
 
@@ -159,7 +185,15 @@ namespace PharmaTracker.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Existencia")
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("CestaDCompraId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Existencia")
+                        .IsRequired()
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("FacturasFacturaId")
@@ -168,26 +202,21 @@ namespace PharmaTracker.Server.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Laboratorio")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("NombreProducto")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Precio")
+                    b.Property<int?>("Precio")
+                        .IsRequired()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Unidad")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("imagen")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("ProductoId");
+
+                    b.HasIndex("CestaDCompraId");
 
                     b.HasIndex("FacturasFacturaId");
 
@@ -223,6 +252,28 @@ namespace PharmaTracker.Server.Migrations
                     b.HasKey("VendedorId");
 
                     b.ToTable("Vendedor");
+
+                    b.HasData(
+                        new
+                        {
+                            VendedorId = 1,
+                            Contraseña = "vendedor",
+                            Dirección = "Calle 456",
+                            Email = "vendedor@gmail.com",
+                            Nombre = "Pedro Castillo",
+                            Teléfono = "0987654321"
+                        });
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
+                {
+                    b.HasOne("PharmaTracker.Shared.Clientes", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.DetalleLaboratorioProducto", b =>
@@ -234,9 +285,18 @@ namespace PharmaTracker.Server.Migrations
 
             modelBuilder.Entity("PharmaTracker.Shared.Productos", b =>
                 {
+                    b.HasOne("PharmaTracker.Shared.CestaDCompra", null)
+                        .WithMany("productos")
+                        .HasForeignKey("CestaDCompraId");
+
                     b.HasOne("PharmaTracker.Shared.Facturas", null)
                         .WithMany("ListaProductos")
                         .HasForeignKey("FacturasFacturaId");
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
+                {
+                    b.Navigation("productos");
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.Facturas", b =>

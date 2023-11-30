@@ -6,11 +6,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PharmaTracker.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class @new : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Admin",
+                columns: table => new
+                {
+                    AdminId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Nombre = table.Column<string>(type: "TEXT", nullable: false),
+                    Dirección = table.Column<string>(type: "TEXT", nullable: false),
+                    Teléfono = table.Column<string>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    Contraseña = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Admin", x => x.AdminId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Clientes",
                 columns: table => new
@@ -64,20 +81,48 @@ namespace PharmaTracker.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CestaDCompra",
+                columns: table => new
+                {
+                    CestaDCompraId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ClienteId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Pago = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CestaDCompra", x => x.CestaDCompraId);
+                    table.ForeignKey(
+                        name: "FK_CestaDCompra_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Productos",
                 columns: table => new
                 {
                     ProductoId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
                     NombreProducto = table.Column<string>(type: "TEXT", nullable: false),
                     Precio = table.Column<int>(type: "INTEGER", nullable: false),
-                    Laboratorio = table.Column<string>(type: "TEXT", nullable: false),
                     Existencia = table.Column<int>(type: "INTEGER", nullable: false),
+                    Unidad = table.Column<string>(type: "TEXT", nullable: false),
+                    Categoria = table.Column<string>(type: "TEXT", nullable: false),
+                    CestaDCompraId = table.Column<int>(type: "INTEGER", nullable: true),
                     FacturasFacturaId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Productos", x => x.ProductoId);
+                    table.ForeignKey(
+                        name: "FK_Productos_CestaDCompra_CestaDCompraId",
+                        column: x => x.CestaDCompraId,
+                        principalTable: "CestaDCompra",
+                        principalColumn: "CestaDCompraId");
                     table.ForeignKey(
                         name: "FK_Productos_Factura_FacturasFacturaId",
                         column: x => x.FacturasFacturaId,
@@ -86,54 +131,55 @@ namespace PharmaTracker.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ComponentesProductoD",
+                name: "DetalleLaboratorioProducto",
                 columns: table => new
                 {
-                    ComponentesProductoId = table.Column<int>(type: "INTEGER", nullable: false)
+                    DetalleLaboratorioProductoId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ProductoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Descripción = table.Column<string>(type: "TEXT", nullable: false),
+                    Laboratorios = table.Column<string>(type: "TEXT", nullable: false),
+                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false),
                     ProductosProductoId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ComponentesProductoD", x => x.ComponentesProductoId);
+                    table.PrimaryKey("PK_DetalleLaboratorioProducto", x => x.DetalleLaboratorioProductoId);
                     table.ForeignKey(
-                        name: "FK_ComponentesProductoD_Productos_ProductosProductoId",
+                        name: "FK_DetalleLaboratorioProducto_Productos_ProductosProductoId",
                         column: x => x.ProductosProductoId,
                         principalTable: "Productos",
                         principalColumn: "ProductoId");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "DescripcionProductoD",
-                columns: table => new
-                {
-                    DetalleProductoId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ProductoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Descripción = table.Column<string>(type: "TEXT", nullable: false),
-                    ProductosProductoId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DescripcionProductoD", x => x.DetalleProductoId);
-                    table.ForeignKey(
-                        name: "FK_DescripcionProductoD_Productos_ProductosProductoId",
-                        column: x => x.ProductosProductoId,
-                        principalTable: "Productos",
-                        principalColumn: "ProductoId");
-                });
+            migrationBuilder.InsertData(
+                table: "Admin",
+                columns: new[] { "AdminId", "Contraseña", "Dirección", "Email", "Nombre", "Teléfono" },
+                values: new object[] { 1, "admin", "Calle 789", "admin@gmail.com", "Admin", "1234567890" });
+
+            migrationBuilder.InsertData(
+                table: "Clientes",
+                columns: new[] { "ClienteId", "Contraseña", "Dirección", "Email", "Nombre", "Teléfono" },
+                values: new object[] { 1, "cliente", "Calle 123", "cliente@gmail.com", "Juan Perez", "1234567890" });
+
+            migrationBuilder.InsertData(
+                table: "Vendedor",
+                columns: new[] { "VendedorId", "Contraseña", "Dirección", "Email", "Nombre", "Teléfono" },
+                values: new object[] { 1, "vendedor", "Calle 456", "vendedor@gmail.com", "Pedro Castillo", "0987654321" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ComponentesProductoD_ProductosProductoId",
-                table: "ComponentesProductoD",
+                name: "IX_CestaDCompra_ClienteId",
+                table: "CestaDCompra",
+                column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DetalleLaboratorioProducto_ProductosProductoId",
+                table: "DetalleLaboratorioProducto",
                 column: "ProductosProductoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DescripcionProductoD_ProductosProductoId",
-                table: "DescripcionProductoD",
-                column: "ProductosProductoId");
+                name: "IX_Productos_CestaDCompraId",
+                table: "Productos",
+                column: "CestaDCompraId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Productos_FacturasFacturaId",
@@ -145,13 +191,10 @@ namespace PharmaTracker.Server.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "Admin");
 
             migrationBuilder.DropTable(
-                name: "ComponentesProductoD");
-
-            migrationBuilder.DropTable(
-                name: "DescripcionProductoD");
+                name: "DetalleLaboratorioProducto");
 
             migrationBuilder.DropTable(
                 name: "Vendedor");
@@ -160,7 +203,13 @@ namespace PharmaTracker.Server.Migrations
                 name: "Productos");
 
             migrationBuilder.DropTable(
+                name: "CestaDCompra");
+
+            migrationBuilder.DropTable(
                 name: "Factura");
+
+            migrationBuilder.DropTable(
+                name: "Clientes");
         }
     }
 }
