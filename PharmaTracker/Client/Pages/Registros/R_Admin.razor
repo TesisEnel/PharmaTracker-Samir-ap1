@@ -1,7 +1,280 @@
 ﻿@page "/R_Admin"
+@page "/R_Admin/{RAdminId:int}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components
 
-<h3>R_Admin</h3>
+
+@attribute [Authorize(Roles = "Administrador")]
+@inject NotificationService notificacionesService
+@inject HttpClient httpClient
+
+<PageTitle>Registro de Admins</PageTitle>
+
+<div class="card-header">
+	<h3>Registros de Administradores</h3>
+</div>
+
+<EditForm Model="admin" OnValidSubmit="Guardar">
+	<DataAnnotationsValidator />
+
+	<div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+
+				@*ID*@
+				<div class="col-md-3 mt-2">
+					<div class="form-group mb-2">
+						<label class="form-label" @for="admin.AdminId">Admin Id:</label>
+						<div class="input-group">
+							<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="admin.AdminId" />
+							<ValidationMessage For="@(() => admin.AdminId)" />
+							<div class="ms-2">
+								<button class="btn btn-primary" type="button" @onclick="Buscar">
+									<i class="oi oi-magnifying-glass" />
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				@*Nombre*@
+				<div class="col-md-6 mt-2">
+					<div class="form-group mb-3">
+						<label class="form-label" @for="admin.Nombre">Nombre:</label>
+						<InputText id="NombreProducto" class="form-control" @bind-Value="admin.Nombre" />
+						<ValidationMessage For="@(() => admin.Nombre)" />
+					</div>
+				</div>
+
+				<div class="row">
+
+					@*Email*@
+					<div class="col-md-6 mt-2">
+						<div class="form-group">
+							<label for="Email">Email:</label>
+							<InputText @bind-Value="admin.Email" class="form-control" id="Email" placeholder="Ingrese su correo electr&oacute;nico" />
+							<ValidationMessage For="@(() => admin.Email)" />
+						</div>
+					</div>
+
+					@*Password*@
+
+					<div class="col-md-5">
+						<div class="form-group ">
+							<label class="form-label" @for="admin.Contraseña">Contraseña </label>
+							<div class="input-group">
+								<InputText @bind-Value="admin.Contraseña" type="@((mostrarContraseña) ? "text" : "password")" class="form-control" id="Contraseña" placeholder="Ingrese su contraseña" />
+								<div class="ms-2">
+									<button @onclick="MostrarContraseña" class="btn btn-outline-secondary" type="button">
+										@if (mostrarContraseña)
+										{
+											<i class="oi oi-eye"></i>
+										}
+										else
+										{
+											<i class="oi oi-eye"></i>
+										}
+									</button>
+								</div>
+								<ValidationMessage For="@(() => admin.Contraseña)" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				@*Dirrecion*@
+				<div class="col-md-7 mt-3">
+					<div class="form-group mb-2">
+						<label class="form-label" @for="admin.Dirección">Dirreci&oacute;n:</label>
+						<InputTextArea id="Dirrecion" class="form-control" @bind-Value="admin.Dirección" />
+						<ValidationMessage For="@(() => admin.Dirección)" />
+					</div>
+				</div>
+
+				@*Aqui te deje para que hagas el detalle *@
+
+				<div class="card-header mt-4">
+
+					<h5>Tel&eacute;fono</h5>
+
+					<div class="row form-inline align-items-center mt-3">
+
+						@*Telefono*@
+
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>Tel&eacute;fono</label>
+								<InputText @bind-Value="admin.Teléfono" class="form-control align-middle" placeholder="xxx-xxx-xxxx" maxlength="14" />
+								<ValidationMessage For="@(() => admin.Teléfono)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div class="d-flex justify-content-center mb-4 mt-4">
+		<div class="btn-group">
+			<button type="button" class="btn btn-outline-primary" @onclick="Nuevo"> Nuevo <i class="oi oi-file" /></button>
+			<button type="submit" class="btn btn-outline-success" @onclick="Guardar"> Guardar <i class="oi oi-document" /></button>
+			<button type="button" class="btn btn-outline-danger" @onclick="Eliminar"> Eliminar <i class="oi oi-trash" /></button>
+		</div>
+	</div>
+
+</EditForm>
+
 
 @code {
+	[Parameter]
+	public int RAdminId { get; set; }
 
+	public Admin admin { get; set; } = new Admin();
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (RAdminId > 0)
+		{
+			this.admin.AdminId = RAdminId; 
+			await Buscar();
+		}
+	}
+
+	@*Guardad, Buscar, Eliminar y Nuevo*@
+
+	public async Task Buscar()
+	{
+		var adminNotNull = (await httpClient.GetFromJsonAsync<List<Admin>>($"api/Admins"))
+							.ToList().Any(a => a.AdminId == admin.AdminId);
+		if (adminNotNull)
+		{
+			var adminEncontrado = await httpClient.GetFromJsonAsync<Admin>($"api/Admins/{admin.AdminId}");
+			if (adminEncontrado != null)
+			{
+				this.admin = adminEncontrado;
+				var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Busqueda Exitosa",
+					Detail = "Se ha encontrado el administrador",
+					Duration = 5_000
+				};
+				notificacionesService.Notify(mensaje);
+			}
+		}
+		else
+		{
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "Busqueda Fallida",
+					Detail = "No se ha encontrado el administrador",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+		}
+	}
+
+	public async Task Guardar()
+	{
+		using var reponse = await httpClient.PostAsJsonAsync("api/Admins", admin);
+		if(!reponse.IsSuccessStatusCode)
+		{
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "Error",
+				Detail = "No se ha podido guardar el administrador",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+			return;
+		}
+
+		var adminDevuelto = await reponse.Content.ReadFromJsonAsync<Admin>();
+		if(adminDevuelto is not null)
+		{
+			this.admin = adminDevuelto;
+			StateHasChanged();
+			var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "Guardado Exitoso",
+				Detail = "Se ha guardado el administrador",
+				Duration = 5_000
+			};
+			notificacionesService.Notify(mensaje);
+			Nuevo();
+		}
+	}
+
+	public void Nuevo()
+	{
+		this.admin = new Admin();
+		var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "Nuevo ",
+				Detail = "Se ha limpiado las casillas",
+				Duration = 5_000
+			};
+		notificacionesService.Notify(mensaje);
+	}
+
+	public async Task Eliminar()
+	{
+		using var response = await httpClient.DeleteAsync($"api/Admins/{admin.AdminId}");
+		if (!response.IsSuccessStatusCode)
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "No se ha podido eliminar el administrador",
+					Duration = 5_000
+				};
+			notificacionesService.Notify(mensaje);
+			return;
+		}
+		else
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Eliminado Exitoso",
+					Detail = "Se ha eliminado el administrador",
+					Duration = 5_000
+				};
+			notificacionesService.Notify(mensaje);
+			Nuevo();
+		}
+	}
+
+	public void FormatoTelefono(ChangeEventArgs e)
+	{
+		string valor = e.Value.ToString();
+		int len = valor.Length;
+		if (len > 6)
+		{
+			admin.Teléfono = valor.Substring(0, 3) + "-" + valor.Substring(3, 3) + "-" + valor.Substring(6);
+		}
+		else if (len == 6)
+		{
+			admin.Teléfono = valor.Substring(0, 3) + "-" + valor.Substring(3);
+		}
+		else
+		{
+			admin.Teléfono = valor;
+		}
+	}
+
+	private bool mostrarContraseña = false;
+
+	private void MostrarContraseña()
+	{
+		mostrarContraseña = !mostrarContraseña;
+	}
 }
