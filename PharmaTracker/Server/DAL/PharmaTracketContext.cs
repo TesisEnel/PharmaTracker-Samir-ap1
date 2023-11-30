@@ -15,6 +15,7 @@ namespace PharmaTracker.Server.DAL
         public DbSet<Facturas> Factura { get; set; }
         public DbSet<Vendedor> Vendedor { get; set; }
         public DbSet<Admin> Admin { get; set; }
+        public DbSet<CestaDCompra> CestaDCompra { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,6 +49,7 @@ namespace PharmaTracker.Server.DAL
                     Email = "admin@gmail.com",
                     Contraseña = "admin"
                 });
+
         }
     }
 }
