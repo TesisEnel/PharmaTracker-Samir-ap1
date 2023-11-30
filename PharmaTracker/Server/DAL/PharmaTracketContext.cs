@@ -1,5 +1,6 @@
 ﻿using PharmaTracker.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PharmaTracker.Server.DAL
 {
@@ -49,7 +50,6 @@ namespace PharmaTracker.Server.DAL
                     Email = "admin@gmail.com",
                     Contraseña = "admin"
                 });
-
         }
     }
 }
