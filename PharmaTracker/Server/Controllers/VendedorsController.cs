@@ -90,18 +90,24 @@ namespace PharmaTracker.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Vendedor>> PostVendedor(Vendedor vendedor)
         {
-            if (!VendedorExists(vendedor.VendedorId))
-                _context.Vendedor.Add(vendedor);
-            else
-                _context.Vendedor.Update(vendedor);
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+			if (vendedor.VendedorId<= 0 || !VendedorExists(vendedor.VendedorId))
+			{
+				_context.Vendedor.Add(vendedor);
+			}
+			else
+			{
+				_context.Vendedor.Update(vendedor);
+			}
+			await _context.SaveChangesAsync();
+			return Ok(vendedor);
+		}
 
-            await _context.SaveChangesAsync();
-
-            return Ok(vendedor);
-        }
-
-        // DELETE: api/Vendedors/5
-        [HttpDelete("{id}")]
+		// DELETE: api/Vendedors/5
+		[HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVendedor(int id)
         {
             if (_context.Vendedor == null)
