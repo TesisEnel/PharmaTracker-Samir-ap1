@@ -105,7 +105,6 @@ namespace PharmaTracker.Server.Controllers
 			}
             await _context.SaveChangesAsync();
             return Ok(admin);
-
 		}
 
 		// DELETE: api/Admins/5
