@@ -23,7 +23,6 @@ namespace PharmaTracker.Shared
 		[Required]
 		public List<Productos>? ListaProductos { get; set; }
 
-
 		[Required(ErrorMessage ="El descuento es requerido (Si no tiene es 0.00)")]
 		public decimal Descuento { get; set; }
 		[Required(ErrorMessage = "El total es obligatorio")]

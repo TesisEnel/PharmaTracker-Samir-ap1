@@ -16,161 +16,218 @@
 </style>
 
 
-<div class="card-header d-flex justify-content-between align-items-center">
-    <div>
-        <h3>Tienda PharmaTracker</h3>
-    </div>
-
-
-
-
-    @if (MostrarProducto)
-    {
-        <div class="ml-auto">
-            <button type="button" class="oi oi-arrow-circle-left" @onclick="() => MostrarProducto = false"></button>
-        </div>
-    }
-</div>
-
-<div class="d-flex align-items-center mt-3">
-    <div class="mr-3">
-        <select @bind="categoria" class="form-select">
-            <option value="" disabled selected>Seleccione una categoría</option>
-            <option value="MEDICAMENTO">MEDICAMENTO</option>
-            <option value="CUIDADO PERSONAL">CUIDADO PERSONAL</option>
-            <option value="SALUD Y NUTRICION">SALUD Y NUTRICION</option>
-            <option value="APLICACIONES DE SALUD">APLICACIONES DE SALUD</option>
-            <option value="BEBES Y NIÑOS">BEBES Y NIÑOS</option>
-            <option value="PLANIFICACIÓN FAMILIAR">PLANIFICACIÓN FAMILIAR</option>
-        </select>
-    </div>
-
-    <div>
-        <button @onclick="() => BuscarProductos(categoria)" class="btn btn-primary">Buscar</button>
-    </div>
-</div>
-
-@if (!MostrarProducto)
+@if (MostrarCesta)
 {
-    <div class="container mt-2">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3>Sus Art&iacute;culos en el Carrito de Compras</h3>
+            <a href="/O_Productos" class="btn btn-link">
+                <i class="oi oi-arrow-circle-left"></i>
+            </a>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+    </table>
+   
+            <tbody>
+        @foreach (var producto in cestaDCompra)
+        {
+            <tr>
+                <td>@producto.</td>
+                <td>@producto.Producto</td>
+                <td>@producto.Cantidad</td>
+                <td>@(producto.PrecioTotal * producto.Cantidad)</td>
+            </tr>
+        }
+    </tbody>
+}
+else
+{
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <h3>Tienda PharmaTracker</h3>
+        </div>
+
+        @*Cesta*@
         <div class="card shadow-lg">
-            <div class="card-header" style="background-color: #f8f9fa;">
+            <div class="row">
+                <button>
+                    ( @totalDproductos art&iacute;culos / $@totalDCompra )
+                    <a href="/ShoppinCart_Productos" @onclick="() => MostrarCesta = true">
+                        <i class="oi oi-basket"></i>
+                    </a>
+                </button>
+            </div>
+        </div>
 
-                <div class="container mt-4">
-                    <div class="row">
+        @if (MostrarProducto)
+        {
+            <div class="ml-auto">
+                <button type="button" class="oi oi-arrow-circle-left" @onclick="() => MostrarProducto = false"></button>
+            </div>
+        }
+    </div>
 
-                        <div class="col-md-4 mb-4">
-                            <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
-                                <div class="card">
-                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177965996812800003/image.png?ex=65746d53&is=6561f853&hm=2a8b15d10f863efb14306945361d785735382d607c51529c4a1a37b6f55173aa&=&format=webp&width=507&height=363" class="card-img-top" alt="Opción 1">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Aplicaciones de Salud</h5>
+    <div class="d-flex align-items-center mt-3">
+        <div class="mr-3">
+            <select @bind="categoria" class="form-select">
+                <option value="" disabled selected>Seleccione una categoría</option>
+                <option value="MEDICAMENTO">MEDICAMENTO</option>
+                <option value="CUIDADO PERSONAL">CUIDADO PERSONAL</option>
+                <option value="SALUD Y NUTRICION">SALUD Y NUTRICION</option>
+                <option value="APLICACIONES DE SALUD">APLICACIONES DE SALUD</option>
+                <option value="BEBES Y NIÑOS">BEBES Y NIÑOS</option>
+                <option value="PLANIFICACIÓN FAMILIAR">PLANIFICACIÓN FAMILIAR</option>
+            </select>
+        </div>
+
+        <div>
+            <button @onclick="() => BuscarProductos(categoria)" class="btn btn-primary">Buscar</button>
+        </div>
+    </div>
+
+    @if (!MostrarProducto)
+    {
+        <div class="container mt-2">
+            <div class="card shadow-lg">
+                <div class="card-header" style="background-color: #f8f9fa;">
+
+                    <div class="container mt-4">
+                        <div class="row">
+
+                            <div class="col-md-4 mb-4">
+                                <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
+                                    <div class="card">
+                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177965996812800003/image.png?ex=65746d53&is=6561f853&hm=2a8b15d10f863efb14306945361d785735382d607c51529c4a1a37b6f55173aa&=&format=webp&width=507&height=363" class="card-img-top" alt="Opción 1">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Aplicaciones de Salud</h5>
+                                        </div>
                                     </div>
-                                </div>
-                            </button>
+                                </button>
+                            </div>
+
+                            <div class="col-md-4 mb-4">
+                                <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
+                                    <div class="card">
+                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177965770471387216/image.png?ex=65746d1d&is=6561f81d&hm=a9c85c09e7840ade5f6e7fda946fff6ade66132bef9931ea90fa8b1f901d91c6&=&format=webp&width=450&height=460" class="card-img-top" alt="Opción 2">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Bebes y Niños</h5>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="col-md-4 mb-4">
+                                <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
+                                    <div class="card">
+                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177965390651985920/image.png?ex=65746cc2&is=6561f7c2&hm=98d41f3ea71e7364610813ff5126d8af6e0f8b65ce62e0e77c63bb50dfb09099&=&format=webp&width=406&height=467" class="card-img-top" alt="Opción 3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Cuidado Personal
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="col-md-4 mb-4">
-                            <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
-                                <div class="card">
-                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177965770471387216/image.png?ex=65746d1d&is=6561f81d&hm=a9c85c09e7840ade5f6e7fda946fff6ade66132bef9931ea90fa8b1f901d91c6&=&format=webp&width=450&height=460" class="card-img-top" alt="Opción 2">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Bebes y Niños</h5>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
+                        <div class="row">
 
-                        <div class="col-md-4 mb-4">
-                            <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
-                                <div class="card">
-                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177965390651985920/image.png?ex=65746cc2&is=6561f7c2&hm=98d41f3ea71e7364610813ff5126d8af6e0f8b65ce62e0e77c63bb50dfb09099&=&format=webp&width=406&height=467" class="card-img-top" alt="Opción 3">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            Cuidado Personal
-                                        </h5>
+                            <div class="col-md-4 mb-4">
+                                <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
+                                    <div class="card">
+                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177964623299870750/image.png?ex=65746c0b&is=6561f70b&hm=c5ff2bde4b35e47355fcd3faaf7633bf9d9a816bf0b29d2f17781cbdd86f1182&=&format=webp&width=405&height=461" class="card-img-top" alt="Opción 4">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Medicamento</h5>
+                                        </div>
                                     </div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
+                                </button>
+                            </div>
 
-                    <div class="row">
-
-                        <div class="col-md-4 mb-4">
-                            <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
-                                <div class="card">
-                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177964623299870750/image.png?ex=65746c0b&is=6561f70b&hm=c5ff2bde4b35e47355fcd3faaf7633bf9d9a816bf0b29d2f17781cbdd86f1182&=&format=webp&width=405&height=461" class="card-img-top" alt="Opción 4">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Medicamento</h5>
+                            <div class="col-md-4 mb-4">
+                                <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
+                                    <div class="card">
+                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177963907600617472/image.png?ex=65746b61&is=6561f661&hm=8f5e0378b8b6306561b19ae72e7cc8c5f823f2bec75d4790fb424670010d9b56&=&format=webp&width=458&height=445" class="card-img-top" alt="Opción 5">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Planificaci&oacute;n Familiar</h5>
+                                        </div>
                                     </div>
-                                </div>
-                            </button>
-                        </div>
+                                </button>
+                            </div>
 
-                        <div class="col-md-4 mb-4">
-                            <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
-                                <div class="card">
-                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177963907600617472/image.png?ex=65746b61&is=6561f661&hm=8f5e0378b8b6306561b19ae72e7cc8c5f823f2bec75d4790fb424670010d9b56&=&format=webp&width=458&height=445" class="card-img-top" alt="Opción 5">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Planificaci&oacute;n Familiar</h5>
+                            <div class="col-md-4 mb-4">
+                                <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
+                                    <div class="card">
+                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177964288405671936/image.png?ex=65746bbb&is=6561f6bb&hm=aa553ecd4ca4c42f7024ba8c186c74169ed8d35a768921d87f6e24f1264df952&=&format=webp&width=345&height=442" class="card-img-top" alt="Opción 6">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Salud y Nutrición</h5>
+                                        </div>
                                     </div>
-                                </div>
-                            </button>
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <button type="button" class="btn btn-link" @onclick="() => MostrarProducto = true">
-                                <div class="card">
-                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177964288405671936/image.png?ex=65746bbb&is=6561f6bb&hm=aa553ecd4ca4c42f7024ba8c186c74169ed8d35a768921d87f6e24f1264df952&=&format=webp&width=345&height=442" class="card-img-top" alt="Opción 6">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Salud y Nutrición</h5>
-                                    </div>
-                                </div>
-                            </button>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-}
-else
-{
-    <div class="container mt-2">
-        <div class="card shadow-lg">
-
-
-            @foreach (var producto in productos.Where(p => p.Existencia > 0))
-            {
-                <div class="row">
-                    <div class="col-md-4">@producto.NombreProducto</div>
-                    <div class="col-md-3">RD$ @producto.Precio</div>
-                    <div class="col-md-3">@producto.Unidad</div>
-                    <div class="col-md-2">
-                        <button class="btn btn-success" @onclick="() => AgregarACompra(producto)">
-                            <i class="oi oi-cart"></i>
-                        </button>
+    }
+    else
+    {
+        <div class="container mt-2">
+            <div class="card shadow-lg">
+                @foreach (var producto in productos.Where(p => p.Existencia > 0))
+                {
+                    <div class="row">
+                        <div class="col-md-4">@producto.NombreProducto</div>
+                        <div class="col-md-3">RD$ @producto.Precio</div>
+                        <div class="col-md-3">@producto.Unidad</div>
+                        <div class="col-md-2">
+                            <button class="btn btn-success" @onclick="() => AgregarACompra(producto)">
+                                <i class="oi oi-cart"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-            }
+                }
+            </div>
         </div>
-    </div>
+    }
 }
+
 
 @code {
 
     public List<Productos> productos { get; set; } = new List<Productos>();
     public Productos auxProducto { get; set; } = new Productos();
 
-    public DetalleLaboratorioProducto detalleLaboratorio { get; set; } = new DetalleLaboratorioProducto();
+    public List<CestaDCompra> cestaDCompra { get; set; } = new List<CestaDCompra>();
+    public CestaDCompra auxCesta { get; set; } = new CestaDCompra();
+
+
+
 
     private bool MostrarProducto = false;
+    private bool MostrarCesta = false;
 
-    private string? categoria;
+    public string? categoria;
 
+    public int totalDCompra;
+    public int totalDproductos; 
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        totalDCompra = 0;
+        totalDproductos = 0;
+    }
 
     public async Task BuscarProductos(string categoria)
     {
@@ -196,13 +253,42 @@ else
 
     public void AgregarACompra(Productos producto)
     {
-        var mensaje = new NotificationMessage
-            {
-                Severity = NotificationSeverity.Success,
-                Summary = "Agregado al carrito",
-                Detail = "Su producto ha sido agregado al carrito",
-                Duration = 5_000
-            };
-        notificacionesService.Notify(mensaje);
+        if (producto.Existencia > 0)
+        {
+            producto.Existencia--;
+            var cestaProducto = new CestaDCompra
+                {
+                    Producto = producto,
+                    Cantidad = 1,
+                    PrecioTotal = producto.Precio ?? 0
+                };
+            cestaDCompra.Add(cestaProducto);
+
+            totalDCompra += producto.Precio ?? 0;
+            totalDproductos++;
+
+
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Agregado al carrito",
+                    Duration = 1_000
+                };
+            notificacionesService.Notify(mensaje);
+
+            StateHasChanged();
+        }
+        else
+        {
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Warning,
+                    Summary = "Existencia insuficiente",
+                    Detail = "No hay suficiente existencia para este producto.",
+                    Duration = 1_000
+                };
+            notificacionesService.Notify(mensaje);
+        }
     }
+
 }
