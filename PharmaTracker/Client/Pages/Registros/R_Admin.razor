@@ -6,7 +6,7 @@
 
 
 @attribute [Authorize(Roles = "Administrador")]
-@inject NotificationService notificacionesService
+@inject NotificationService notificationService
 @inject HttpClient httpClient
 
 <PageTitle>Registro de Admins</PageTitle>
@@ -121,10 +121,10 @@
 								<span class="oi oi-plus">Agregar</span>
 							</button>
 						</div>
-						@if (ValidacionDetalle.Length > 0)
+						@* @if (ValidacionDetalle.Length > 0)
 						{
 							<label class="text-danger">@ValidacionDetalle</label>
-						}
+						} *@
 					</div>
 
 					<hr />
@@ -178,13 +178,15 @@
 	public int RAdminId { get; set; }
 
 	public Admin admin { get; set; } = new Admin();
+	public AdminDetalle adminDetalle { get; set; } = new AdminDetalle();
 
 	public IEnumerable<AdminTiposTelefonos> TiposTelefonosList { get; set; } = Enumerable.Empty<AdminTiposTelefonos>();
 
 	public int TipoTelefonoSeleccionado { get; set; } = 0;
 	public string TelefonoSeleccionado { get; set; } = string.Empty;
 
-	public string ValidacionDetalle { get; set; } = string.Empty;
+	public string ValidacionDetalle { get; set; }
+	public bool detalleAdmin { get; set; } = false;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -225,7 +227,7 @@
 					Detail = "Se ha encontrado el administrador",
 					Duration = 5_000
 				};
-				notificacionesService.Notify(mensaje);
+				notificationService.Notify(mensaje);
 			}
 		}
 		else
@@ -237,7 +239,7 @@
 					Detail = "No se ha encontrado el administrador",
 				Duration = 5_000
 			};
-			notificacionesService.Notify(mensaje);
+			notificationService.Notify(mensaje);
 		}
 	}
 
@@ -259,7 +261,13 @@
 			await UpdateExistenciaProducto();
 
 			StateHasChanged();
-		}	*@
+		}
+
+
+	
+		
+		
+		*@
 
 	public async Task AgregarDetalle()
 	{
@@ -269,7 +277,7 @@
 		{
 			var detalle = new AdminDetalle
             {
-                AdminTipoId = TipoTelefonoSeleccionado,
+                AdminTipoId = admin.AdminId,
                 AdminTelefono = TelefonoSeleccionado
             };
 			admin.AdminDetalle.Add(detalle);
@@ -291,18 +299,16 @@
 
 	public bool ValidarDetalle()
 	{
-		ValidacionDetalle = string.Empty;
-		if (TipoTelefonoSeleccionado <= 0)
-		{
-			ValidacionDetalle = "El Tipo de teléfono es obligatorio";
-		}
+		detalleAdmin = string.IsNullOrEmpty(ValidacionDetalle);
 
-		if (String.IsNullOrWhiteSpace(TelefonoSeleccionado))
-		{
-			ValidacionDetalle += "El Teléfono es obligatorio";
-		}
+		return !detalleAdmin;
 
-		return ValidacionDetalle.Length == 0;
+
+		@*
+		public bool detalleLaboratorio = false;
+	public bool detalleCantidad = false;
+	public bool detallePrecio = false;
+	*@
 	}
 
 	public string DescripcionTipo(int tipoId)
@@ -332,7 +338,7 @@
 				Detail = "No se ha podido guardar el administrador",
 				Duration = 5_000
 			};
-			notificacionesService.Notify(mensaje);
+			notificationService.Notify(mensaje);
 			return;
 		}
 
@@ -348,7 +354,7 @@
 				Detail = "Se ha guardado el administrador",
 				Duration = 5_000
 			};
-			notificacionesService.Notify(mensaje);
+			notificationService.Notify(mensaje);
 			Nuevo();
 		}
 	}
@@ -356,7 +362,6 @@
 	public void Nuevo()
 	{
 		this.admin = new Admin();
-		ValidacionDetalle = string.Empty;
 		TipoTelefonoSeleccionado = 0;
 		TelefonoSeleccionado = string.Empty;
 		var mensaje = new NotificationMessage
@@ -366,7 +371,7 @@
 				Detail = "Se ha limpiado las casillas",
 				Duration = 5_000
 			};
-		notificacionesService.Notify(mensaje);
+		notificationService.Notify(mensaje);
 	}
 
 	public async Task Eliminar()
@@ -381,7 +386,7 @@
 					Detail = "No se ha podido eliminar el administrador",
 					Duration = 5_000
 				};
-			notificacionesService.Notify(mensaje);
+			notificationService.Notify(mensaje);
 			return;
 		}
 		else
@@ -393,7 +398,7 @@
 					Detail = "Se ha eliminado el administrador",
 					Duration = 5_000
 				};
-			notificacionesService.Notify(mensaje);
+			notificationService.Notify(mensaje);
 			Nuevo();
 		}
 	}
