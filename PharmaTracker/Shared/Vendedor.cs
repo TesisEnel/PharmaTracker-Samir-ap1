@@ -13,10 +13,12 @@ namespace PharmaTracker.Shared
 		[Key]
 		public int VendedorId { get; set; }
 		[Required(ErrorMessage = "El nombre es obligatorio")]
+		[RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Solo se permiten letras y espacios")]
 		public string? Nombre { get; set; }
 		[Required(ErrorMessage = "La dirección es obligatorio")]
 		public string? Dirección { get; set; }
 		[Required(ErrorMessage = "El Email es obligatorio")]
+		[EmailAddress(ErrorMessage = "La dirección de correo electrónico no es válida")]
 		public string? Email { get; set; }
 		[Required(ErrorMessage ="La contraseña es obligatoria")]
 		public string? Contraseña { get; set; }
