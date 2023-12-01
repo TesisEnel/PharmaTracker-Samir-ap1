@@ -21,16 +21,31 @@
                 </div>
                 <div class="card-body">
                     <div class="form-floating mb-3">
-                        <input id="email" class="form-control" @bind="login.Correo" autofocus placeholder="Email" />
-                        <label for="email">Email</label>
+                        <input id="email" class="form-control" @bind="login.Correo" autofocus placeholder="Correo" />
+                        <label for="email">Correo</label>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <input type="password" id="password" class="form-control" placeholder="Password" @bind="login.Clave" />
-                        <label for="password">Password</label>
+                    <div class="input-group mb-3">
+                        <div class="form-floating">
+                            <input type=@((mostrarContraseña) ? "text" : "password") id="Contraseña" class="form-control" placeholder="Contraseña" @bind="login.Clave" />
+                            <label for="Contraseña">Contraseña</label>
+                        </div>
+                        <button @onclick="MostrarContraseña" class="btn btn-secondary" type="button">
+                            @if (mostrarContraseña)
+                            {
+                                <i class="oi oi-eye"></i>
+                            }
+                            else
+                            {
+                                <i class="oi oi-dial"></i>
+                            }
+                        </button>
                     </div>
+
+                    <p> ¿No tienes una cuenta? <a href="Registro">Registrate</a></p>
+
                     <div class="d-grid gap-2">
-                        <button class="btn btn-lg btn-primary btn-block" type="submit" @onclick="IniciarSesion">Sign in</button>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit" @onclick="IniciarSesion">Iniciar Sesión</button>
                     </div>
                 </div>
             </div>
@@ -67,5 +82,12 @@
             };
             notificationService.Notify(mensaje);
         }
+    }
+
+    private bool mostrarContraseña = false;
+
+    private void MostrarContraseña()
+    {
+        mostrarContraseña = !mostrarContraseña;
     }
 }
