@@ -1,7 +1,408 @@
 ﻿@page "/R_Vendedor"
+@page "/R_Vendedor/{RVendedorId:int}"
+@inject HttpClient httpClient
+@inject NotificationService notificationService
 
-<h3>R_Vendedor</h3>
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components
+
+@attribute [Authorize(Roles = "Administrador")]
+
+<PageTitle>Registro de Vendedores</PageTitle>
+
+<div class="card-header">
+	<h3>Registros de Vendedores</h3>
+</div>
+
+<EditForm Model="vendedor" OnValidSubmit="Guardar">
+	<DataAnnotationsValidator />
+
+	<div class="container">
+		<div class="card shadow-lg">
+			<div class="card-header">
+
+				@*ID*@
+				<div class="col-md-3 mt-2">
+					<div class="form-group mb-2">
+						<label class="form-label" @for="vendedor.VendedorId">vendedor Id:</label>
+						<div class="input-group">
+							<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="vendedor.VendedorId" />
+							<ValidationMessage For="@(() => vendedor.VendedorId)" />
+							<div class="ms-2">
+								<button class="btn btn-primary" type="button" @onclick="Buscar">
+									<i class="oi oi-magnifying-glass" />
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				@*Nombre*@
+				<div class="col-md-6 mt-2">
+					<div class="form-group mb-3">
+						<label class="form-label" @for="vendedor.Nombre">Nombre:</label>
+						<InputText id="NombreProducto" class="form-control" @bind-Value="vendedor.Nombre" />
+						<ValidationMessage For="@(() => vendedor.Nombre)" />
+					</div>
+				</div>
+
+				<div class="row">
+
+					@*Email*@
+					<div class="col-md-6 mt-2">
+						<div class="form-group">
+							<label for="Email">Email:</label>
+							<InputText @bind-Value="vendedor.Email" class="form-control" id="Email" placeholder="Ingrese su correo electr&oacute;nico" />
+							<ValidationMessage For="@(() => vendedor.Email)" />
+						</div>
+					</div>
+
+					@*Password*@
+
+					<div class="col-md-5">
+						<div class="form-group ">
+							<label class="form-label" @for="vendedor.Contraseña">Contraseña </label>
+							<div class="input-group">
+								<InputText @bind-Value="vendedor.Contraseña" type="@((mostrarContraseña) ? "text" : "password")" class="form-control" id="Contraseña" placeholder="Ingrese su contraseña" />
+								<div class="ms-2">
+									<button @onclick="MostrarContraseña" class="btn btn-outline-secondary" type="button">
+										@if (mostrarContraseña)
+										{
+											<i class="oi oi-dial"></i>
+										}
+										else
+										{
+											<i class="oi oi-eye"></i>
+										}
+									</button>
+								</div>
+								<ValidationMessage For="@(() => vendedor.Contraseña)" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				@*Direccion*@
+				<div class="col-md-7 mt-3">
+					<div class="form-group mb-2">
+						<label class="form-label" @for="vendedor.Dirección">Direcci&oacute;n:</label>
+						<InputTextArea id="Dirrecion" class="form-control" @bind-Value="vendedor.Dirección" />
+						<ValidationMessage For="@(() => vendedor.Dirección)" />
+					</div>
+				</div>
+
+				@*Aqui te deje para que hagas el detalle *@
+
+				<fieldset class="border-success border border-1">
+					<h3>Tel&eacute;fonos del vendedor</h3>
+					<div class="row m-1">
+						@*TipoTelefono *@
+						<div class="col-2">
+							<label>TipoTelefono:</label>
+							<InputSelect class="form-select" @bind-Value="TipoTelefonoSeleccionado">
+								<option value="0" disabled selected> [Seleccione] </option>
+								@foreach (var tipo in TiposTelefonosList)
+								{
+									<option value="@tipo.VendedorTipoId">@tipo.VendedorDescripcion </option>
+								}
+							</InputSelect>
+						</div>
+
+						<div class="col-2">
+							<label>Telefono</label>
+							<InputText class="form-control" @bind-Value="TelefonoSeleccionado"></InputText>
+						</div>
+
+						<div class="col-2">
+							<br>
+							<button type="button" class="btn btn-primary input-group-text" @onclick="AgregarDetalle">
+								<span class="oi oi-plus">Agregar</span>
+							</button>
+						</div>
+						@* @if (ValidacionDetalle.Length > 0)
+						{
+						<label class="text-danger">@ValidacionDetalle</label>
+						} *@
+					</div>
+
+					<hr />
+					<table class="table table-bordered table-light m-1">
+						<thead class="thead">
+							<tr class="table">
+								<th>Tipo Telefono</th>
+								<th>Telefono</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var detalle in vendedor.VendedorDetalle)
+							{
+								<tr>
+									<td>@(DescripcionTipo(detalle.VendedorTipoId))</td>
+									<td>@detalle.VendedorTelefono</td>
+									<td> <button @onclick="@(() => RemoverDetalle(detalle))"><i class="oi oi-trash" /> Eliminar</button> </td>
+								</tr>
+							}
+						</tbody>
+					</table>
+					<div class="row justify-content-between">
+						<div class="col-4">
+							<label>Cantidad Telefonos</label>
+							<div class="input-group mb-3">
+								<span class="form-control">@vendedor.VendedorDetalle.Count()</span>
+							</div>
+						</div>
+					</div>
+
+					<hr />
+				</fieldset>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-center mb-4 mt-4">
+		<div class="btn-group">
+			<button type="button" class="btn btn-outline-primary" @onclick="Nuevo"> Nuevo <i class="oi oi-file" /></button>
+			<button type="submit" class="btn btn-outline-success" @onclick="Guardar"> Guardar <i class="oi oi-document" /></button>
+			<button type="button" class="btn btn-outline-danger" @onclick="Eliminar"> Eliminar <i class="oi oi-trash" /></button>
+		</div>
+	</div>
+
+</EditForm>
 
 @code {
+	[Parameter]
+	public int RVendedorId { get; set; }
 
+	public Vendedor vendedor { get; set; } = new Vendedor();
+	public VendedorDetalle vendedorDetalle { get; set; } = new VendedorDetalle();
+
+	public IEnumerable<VendedorTiposTelefonos> TiposTelefonosList { get; set; } = Enumerable.Empty<VendedorTiposTelefonos>();
+
+	public int TipoTelefonoSeleccionado { get; set; } = 0;
+	public string TelefonoSeleccionado { get; set; } = string.Empty;
+
+	public string ValidacionDetalle { get; set; }
+	public bool detalleVendedor { get; set; } = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await CargarTiposTelefonos();
+
+		if (RVendedorId > 0)
+		{
+			this.vendedor.VendedorId = RVendedorId;
+			await Buscar();
+		}
+	}
+
+	private async Task CargarTiposTelefonos()
+	{
+		var encontrados = await httpClient.GetFromJsonAsync<List<VendedorTiposTelefonos>>($"api/VendedorTiposTelefonos");
+		if (encontrados != null)
+		{
+			TiposTelefonosList = encontrados;
+		}
+	}
+
+	@*Guardad, Buscar, Eliminar y Nuevo*@
+
+	public async Task Buscar()
+	{
+		var vendedorNotNull = (await httpClient.GetFromJsonAsync<List<Vendedor>>($"api/Vendedors"))
+							.ToList().Any(a => a.VendedorId == vendedor.VendedorId);
+		if (vendedorNotNull)
+		{
+			var vendedorEncontrado = await httpClient.GetFromJsonAsync<Vendedor>($"api/Vendedors/{vendedor.VendedorId}");
+			if (vendedorEncontrado != null)
+			{
+				this.vendedor = vendedorEncontrado;
+				var mensaje = new NotificationMessage
+					{
+						Severity = NotificationSeverity.Success,
+						Summary = "Busqueda Exitosa",
+						Detail = "Se ha encontrado el vendedor",
+						Duration = 5_000
+					};
+				notificationService.Notify(mensaje);
+			}
+		}
+		else
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Busqueda Fallida",
+					Detail = "No se ha encontrado el vendedor",
+					Duration = 5_000
+				};
+			notificationService.Notify(mensaje);
+		}
+	}
+
+	@*productos.detalleLabProducto ??= new List<DetalleLaboratorioProducto>();
+
+		if (ValidarDetailLab())
+		{
+			var detalle = new DetalleLaboratorioProducto
+				{
+					Laboratorios = laboratorioProducto.Laboratorios,
+					Cantidad = laboratorioProducto.Cantidad,
+				};
+
+			productos.detalleLabProducto.Add(detalle);
+			laboratorioProducto = new DetalleLaboratorioProducto();
+
+			CantidadTotal = productos.detalleLabProducto.Sum(d => d.Cantidad);
+
+			await UpdateExistenciaProducto();
+
+			StateHasChanged();
+		}
+		*@
+
+	public async Task AgregarDetalle()
+	{
+		vendedor.VendedorDetalle ??= new List<VendedorDetalle>();
+
+		if (!ValidarDetalle())
+		{
+			var detalle = new VendedorDetalle
+				{
+					VendedorTipoId = vendedor.VendedorId,
+					VendedorTelefono = TelefonoSeleccionado
+				};
+			vendedor.VendedorDetalle.Add(detalle);
+			TipoTelefonoSeleccionado = 0;
+			TelefonoSeleccionado = string.Empty;
+			StateHasChanged();
+		}
+		return;
+
+		// vendedor.VendedorDetalle.Add(new VendedorDetalle()
+		// 	{
+		// 		VendedorTipoId = TipoTelefonoSeleccionado,
+		// 		VendedorTelefono = TelefonoSeleccionado
+		// 	});
+		// TipoTelefonoSeleccionado = 0;
+		// TelefonoSeleccionado = string.Empty;
+		// StateHasChanged();
+	}
+
+	public bool ValidarDetalle()
+	{
+		detalleVendedor = string.IsNullOrEmpty(ValidacionDetalle);
+
+		return !detalleVendedor;
+
+
+		@*
+		public bool detalleLaboratorio = false;
+	public bool detalleCantidad = false;
+	public bool detallePrecio = false;
+	*@
+	}
+
+	public string DescripcionTipo(int tipoId)
+	{
+		var tipoTelefono = TiposTelefonosList.FirstOrDefault(t => t.VendedorTipoId == tipoId);
+
+		return tipoTelefono!.VendedorDescripcion;
+	}
+
+	public void RemoverDetalle(VendedorDetalle detalleRemover)
+	{
+		TipoTelefonoSeleccionado = detalleRemover.VendedorTipoId;
+		TelefonoSeleccionado = detalleRemover.VendedorTelefono;
+
+		vendedor.VendedorDetalle.Remove(detalleRemover);
+	}
+
+	public async Task Guardar()
+	{
+		using var reponse = await httpClient.PostAsJsonAsync("api/Vendedors", vendedor);
+		if (!reponse.IsSuccessStatusCode)
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "No se ha podido guardar el vendedor",
+					Duration = 5_000
+				};
+			notificationService.Notify(mensaje);
+			return;
+		}
+
+		var vendedorDevuelto = await reponse.Content.ReadFromJsonAsync<Vendedor>();
+		if (vendedorDevuelto is not null)
+		{
+			this.vendedor = vendedorDevuelto;
+			StateHasChanged();
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Guardado Exitoso",
+					Detail = "Se ha guardado el vendedor",
+					Duration = 5_000
+				};
+			notificationService.Notify(mensaje);
+			Nuevo();
+		}
+	}
+
+	public void Nuevo()
+	{
+		this.vendedor = new Vendedor();
+		TipoTelefonoSeleccionado = 0;
+		TelefonoSeleccionado = string.Empty;
+		var mensaje = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "Nuevo ",
+				Detail = "Se ha limpiado las casillas",
+				Duration = 5_000
+			};
+		notificationService.Notify(mensaje);
+	}
+
+	public async Task Eliminar()
+	{
+		using var response = await httpClient.DeleteAsync($"api/Vendedors/{vendedor.VendedorId}");
+		if (!response.IsSuccessStatusCode)
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "No se ha podido eliminar el vendedor",
+					Duration = 5_000
+				};
+			notificationService.Notify(mensaje);
+			return;
+		}
+		else
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Eliminado Exitoso",
+					Detail = "Se ha eliminado el vendedor",
+					Duration = 5_000
+				};
+			notificationService.Notify(mensaje);
+			Nuevo();
+		}
+	}
+
+
+
+	private bool mostrarContraseña = false;
+
+	private void MostrarContraseña()
+	{
+		mostrarContraseña = !mostrarContraseña;
+	}
 }
