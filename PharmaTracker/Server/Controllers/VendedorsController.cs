@@ -36,11 +36,15 @@ namespace PharmaTracker.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Vendedor>> GetVendedor(int id)
         {
-          if (_context.Vendedor == null)
-          {
-              return NotFound();
-          }
-            var vendedor = await _context.Vendedor.FindAsync(id);
+            if (_context.Vendedor == null)
+            {
+                return NotFound();
+            }
+
+            var vendedor = await _context.Vendedor
+                .Include(a => a.VendedorDetalle)
+                .Where(a => a.VendedorId == id)
+                .FirstOrDefaultAsync();
 
             if (vendedor == null)
             {
@@ -86,14 +90,14 @@ namespace PharmaTracker.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Vendedor>> PostVendedor(Vendedor vendedor)
         {
-          if (_context.Vendedor == null)
-          {
-              return Problem("Entity set 'PharmaTracketContext.Vendedor'  is null.");
-          }
-            _context.Vendedor.Add(vendedor);
+            if (!VendedorExists(vendedor.VendedorId))
+                _context.Vendedor.Add(vendedor);
+            else
+                _context.Vendedor.Update(vendedor);
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetVendedor", new { id = vendedor.VendedorId }, vendedor);
+            return Ok(vendedor);
         }
 
         // DELETE: api/Vendedors/5

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,11 +37,15 @@ namespace PharmaTracker.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Admin>> GetAdmin(int id)
         {
-          if (_context.Admin == null)
-          {
-              return NotFound();
-          }
-            var admin = await _context.Admin.FindAsync(id);
+            if (_context.Admin == null)
+            {
+                return NotFound();
+            }
+
+            var admin = await _context.Admin
+                .Include(a => a.AdminDetalle)
+                .Where(a => a.AdminId == id)
+                .FirstOrDefaultAsync();
 
             if (admin == null)
             {
@@ -48,8 +53,8 @@ namespace PharmaTracker.Server.Controllers
             }
 
             return admin;
-        }
 
+        }
         // PUT: api/Admins/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -86,26 +91,25 @@ namespace PharmaTracker.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Admin>> PostAdmin(Admin admin)
         {
-          if (_context.Admin == null)
-          {
-              return Problem("Entity set 'PharmaTracketContext.Admin'  is null.");
-          }
-          if(admin.AdminId <= 0 || !AdminExists(admin.AdminId))
-          {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (admin.AdminId <= 0 || !AdminExists(admin.AdminId))
+            {
 				_context.Admin.Add(admin);
-	      }
-          else
-          {
-                _context.Admin.Update(admin);
-          }
-
+			}
+			else
+            {
+				_context.Admin.Update(admin);
+			}
             await _context.SaveChangesAsync();
-
             return Ok(admin);
-        }
 
-        // DELETE: api/Admins/5
-        [HttpDelete("{id}")]
+		}
+
+		// DELETE: api/Admins/5
+		[HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAdmin(int id)
         {
             if (_context.Admin == null)
