@@ -69,7 +69,7 @@
 									<button @onclick="MostrarContraseña" class="btn btn-outline-secondary" type="button">
 										@if (mostrarContraseña)
 										{
-											<i class="oi oi-eye"></i>
+											<i class="oi oi-dial"></i>
 										}
 										else
 										{
@@ -84,10 +84,10 @@
 
 				</div>
 
-				@*Dirrecion*@
+				@*Direccion*@
 				<div class="col-md-7 mt-3">
 					<div class="form-group mb-2">
-						<label class="form-label" @for="admin.Dirección">Dirreci&oacute;n:</label>
+						<label class="form-label" @for="admin.Dirección">Direcci&oacute;n:</label>
 						<InputTextArea id="Dirrecion" class="form-control" @bind-Value="admin.Dirección" />
 						<ValidationMessage For="@(() => admin.Dirección)" />
 					</div>
@@ -95,23 +95,68 @@
 
 				@*Aqui te deje para que hagas el detalle *@
 
-				<div class="card-header mt-4">
+				<fieldset class="border-success border border-1">
+					<h3>Tel&eacute;fonos del admin</h3>
+					<div class="row m-1">
+						@*TipoTelefono *@
+						<div class="col-2">
+							<label>TipoTelefono:</label>
+							<InputSelect class="form-select" @bind-Value="TipoTelefonoSeleccionado">
+								<option value="0" disabled selected> [Seleccione] </option>
+								@foreach (var tipo in TiposTelefonosList)
+								{
+									<option value="@tipo.AdminTipoId">@tipo.AdminDescripcion </option>
+								}
+							</InputSelect>
+						</div>
 
-					<h5>Tel&eacute;fono</h5>
+						<div class="col-2">
+							<label>Telefono</label>
+							<InputText class="form-control" @bind-Value="TelefonoSeleccionado"></InputText>
+						</div>
 
-					<div class="row form-inline align-items-center mt-3">
+						<div class="col-2">
+							<br>
+							<button type="button" class="btn btn-primary input-group-text" @onclick="AgregarDetalle">
+								<span class="oi oi-plus">Agregar</span>
+							</button>
+						</div>
+						@if (ValidacionDetalle.Length > 0)
+						{
+							<label class="text-danger">@ValidacionDetalle</label>
+						}
+					</div>
 
-						@*Telefono*@
-
-						<div class="col-md-2">
-							<div class="form-group">
-								<label>Tel&eacute;fono</label>
-								<InputText @bind-Value="admin.Teléfono" class="form-control align-middle" placeholder="xxx-xxx-xxxx" maxlength="14" />
-								<ValidationMessage For="@(() => admin.Teléfono)" />
+					<hr />
+					<table class="table table-bordered table-light m-1">
+						<thead class="thead">
+							<tr class="table">
+								<th>Tipo Telefono</th>
+								<th>Telefono</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var detalle in admin.AdminDetalle)
+							{
+								<tr>
+									<td>@(DescripcionTipo(detalle.AdminTipoId))</td>
+									<td>@detalle.AdminTelefono</td>
+									<td> <button @onclick="@(() => RemoverDetalle(detalle))"><i class="oi oi-trash" /> Eliminar</button>   </td>
+								</tr>
+							}
+						</tbody>
+					</table>
+					<div class="row justify-content-between">
+						<div class="col-4">
+							<label>Cantidad Telefonos</label>
+							<div class="input-group mb-3">
+								<span class="form-control">@admin.AdminDetalle.Count()</span>
 							</div>
 						</div>
 					</div>
-				</div>
+
+					<hr />
+				</fieldset>
 				
 			</div>
 		</div>
@@ -134,14 +179,32 @@
 
 	public Admin admin { get; set; } = new Admin();
 
+	public IEnumerable<AdminTiposTelefonos> TiposTelefonosList { get; set; } = Enumerable.Empty<AdminTiposTelefonos>();
+
+	public int TipoTelefonoSeleccionado { get; set; } = 0;
+	public string TelefonoSeleccionado { get; set; } = string.Empty;
+
+	public string ValidacionDetalle { get; set; } = string.Empty;
+
 	protected override async Task OnInitializedAsync()
 	{
+		await CargarTiposTelefonos();
+
 		if (RAdminId > 0)
 		{
 			this.admin.AdminId = RAdminId; 
 			await Buscar();
 		}
 	}
+
+	private async Task CargarTiposTelefonos()
+    {
+        var encontrados = await httpClient.GetFromJsonAsync<List<AdminTiposTelefonos>>($"api/AdminTiposTelefonos");
+		if (encontrados != null)
+        {
+            TiposTelefonosList = encontrados;
+        }
+    }
 
 	@*Guardad, Buscar, Eliminar y Nuevo*@
 
@@ -176,6 +239,85 @@
 			};
 			notificacionesService.Notify(mensaje);
 		}
+	}
+
+	@*productos.detalleLabProducto ??= new List<DetalleLaboratorioProducto>();
+
+		if (ValidarDetailLab())
+		{
+			var detalle = new DetalleLaboratorioProducto
+				{
+					Laboratorios = laboratorioProducto.Laboratorios,
+					Cantidad = laboratorioProducto.Cantidad,
+				};
+
+			productos.detalleLabProducto.Add(detalle);
+			laboratorioProducto = new DetalleLaboratorioProducto();
+
+			CantidadTotal = productos.detalleLabProducto.Sum(d => d.Cantidad);
+
+			await UpdateExistenciaProducto();
+
+			StateHasChanged();
+		}	*@
+
+	public async Task AgregarDetalle()
+	{
+		admin.AdminDetalle ??= new List<AdminDetalle>();
+
+		if (!ValidarDetalle())
+		{
+			var detalle = new AdminDetalle
+            {
+                AdminTipoId = TipoTelefonoSeleccionado,
+                AdminTelefono = TelefonoSeleccionado
+            };
+			admin.AdminDetalle.Add(detalle);
+			TipoTelefonoSeleccionado = 0;
+			TelefonoSeleccionado = string.Empty;
+			StateHasChanged();
+		}
+		return;
+
+		// admin.AdminDetalle.Add(new AdminDetalle()
+		// 	{
+		// 		AdminTipoId = TipoTelefonoSeleccionado,
+		// 		AdminTelefono = TelefonoSeleccionado
+		// 	});
+		// TipoTelefonoSeleccionado = 0;
+		// TelefonoSeleccionado = string.Empty;
+		// StateHasChanged();
+	}
+
+	public bool ValidarDetalle()
+	{
+		ValidacionDetalle = string.Empty;
+		if (TipoTelefonoSeleccionado <= 0)
+		{
+			ValidacionDetalle = "El Tipo de teléfono es obligatorio";
+		}
+
+		if (String.IsNullOrWhiteSpace(TelefonoSeleccionado))
+		{
+			ValidacionDetalle += "El Teléfono es obligatorio";
+		}
+
+		return ValidacionDetalle.Length == 0;
+	}
+
+	public string DescripcionTipo(int tipoId)
+	{
+		var tipoTelefono = TiposTelefonosList.FirstOrDefault(t => t.AdminTipoId == tipoId);
+
+		return tipoTelefono!.AdminDescripcion;
+	}
+
+	public void RemoverDetalle(AdminDetalle detalleRemover)
+	{
+		TipoTelefonoSeleccionado = detalleRemover.AdminTipoId;
+		TelefonoSeleccionado = detalleRemover.AdminTelefono;
+
+		admin.AdminDetalle.Remove(detalleRemover);
 	}
 
 	public async Task Guardar()
@@ -214,6 +356,9 @@
 	public void Nuevo()
 	{
 		this.admin = new Admin();
+		ValidacionDetalle = string.Empty;
+		TipoTelefonoSeleccionado = 0;
+		TelefonoSeleccionado = string.Empty;
 		var mensaje = new NotificationMessage
 			{
 				Severity = NotificationSeverity.Success,
@@ -253,23 +398,7 @@
 		}
 	}
 
-	public void FormatoTelefono(ChangeEventArgs e)
-	{
-		string valor = e.Value.ToString();
-		int len = valor.Length;
-		if (len > 6)
-		{
-			admin.Teléfono = valor.Substring(0, 3) + "-" + valor.Substring(3, 3) + "-" + valor.Substring(6);
-		}
-		else if (len == 6)
-		{
-			admin.Teléfono = valor.Substring(0, 3) + "-" + valor.Substring(3);
-		}
-		else
-		{
-			admin.Teléfono = valor;
-		}
-	}
+	
 
 	private bool mostrarContraseña = false;
 
