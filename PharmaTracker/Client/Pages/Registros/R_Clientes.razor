@@ -127,7 +127,7 @@
 
     public async Task Eliminar()
     {
-        using var response = await httpClient.DeleteAsync($"api/Tickets/{Cliente.ClienteId}");
+        using var response = await httpClient.DeleteAsync($"api/Clientes/{Cliente.ClienteId}");
         if (!response.IsSuccessStatusCode)
         {
             Mensaje = response.ReasonPhrase ?? "error";
