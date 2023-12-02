@@ -14,7 +14,6 @@ namespace PharmaTracker.Shared
         [Required(ErrorMessage = "El nombre del producto es obligatorio")]
         public DateTime Fecha { get; set; } = DateTime.Now;
         [Required(ErrorMessage = "El nombre del producto es obligatorio")]
-        [RegularExpression(@"^[a-zA-ZáéíóúüÁÉÍÓÚÜ\s]+$", ErrorMessage = "Solo se permiten letras y espacios")]
         public string? NombreProducto { get; set; }
 		[Required(ErrorMessage = "El precio es obligatorio")]
 		public int? Precio { get; set; }

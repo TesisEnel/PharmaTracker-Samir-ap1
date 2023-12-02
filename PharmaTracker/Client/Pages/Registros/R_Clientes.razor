@@ -20,7 +20,8 @@
                 <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
                     <label>Cliente Id:</label>
                     <div class="input-group mb-3">
-                        <InputNumber @bind-Value="Cliente.ClienteId" class="form-control" aria-describedby="BotonBuscar" />
+                        <InputNumber min="0" @bind-Value="Cliente.ClienteId" class="form-control" aria-describedby="BotonBuscar" />
+                        <ValidationMessage For="@(() => Cliente.ClienteId)" />
                         <button @onclick="Buscar" class="btn btn-outline-primary" type="button" id="BotonBuscar"><i class="oi oi-magnifying-glass" /></button>
                     </div>
                 </div>
@@ -39,7 +40,7 @@
 
                 <div class="mb-3">
                     <label class="form-label" for="Teléfono">Teléfono:</label>
-                    <InputText @bind-Value="Cliente.Teléfono" class="form-control" />
+                    <InputText @bind-Value="Cliente.Teléfono" class="form-control" maxlength="10" />
                     <ValidationMessage For="@(() => Cliente.Teléfono)" />
                 </div>
 
@@ -51,25 +52,33 @@
 
                 <div class="mb-3">
                     <label class="form-label" for="Contraseña">Contraseña:</label>
-                    <InputText type="password" @bind-Value="Cliente.Contraseña" class="form-control" />
+                    <InputText @bind-Value="Cliente.Contraseña" type="@((mostrarContraseña) ? "text" : "password")" class="form-control" />
                     <ValidationMessage For="@(() => Cliente.Contraseña)" />
+                    <div class="ms-2">
+                        <button @onclick="MostrarContraseña" class="btn btn-outline-secondary" type="button">
+                            @if (mostrarContraseña)
+                            {
+                                <i class="oi oi-dial"></i>
+                            }
+                            else
+                            {
+                                <i class="oi oi-eye"></i>
+                            }
+                        </button>
+                    </div>
                 </div>
 
             </div>
             <div class="card-footer d-flex justify-content-center">
                 <div class="btn-group">
                     <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">Nuevo <i class="oi oi-file" /></button>
-                    <button type="submit" class="btn btn-outline-success">Guardar <i class="oi oi-document" /></button>
+                    <button type="submit" class="btn btn-outline-success" @onclick="Guardar">Guardar <i class="oi oi-document" /></button>
                     <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
                 </div>
             </div>
         </div>
     </div>
-
-
 </EditForm>
-<label>@Mensaje</label>
-
 
 @code {
 
@@ -79,7 +88,7 @@
 
     public Clientes Cliente { get; set; } = new Clientes();
 
-    public string Mensaje { get; set; } = string.Empty;
+    public bool mostrarContraseña = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,15 +101,32 @@
 
     public async Task Buscar()
     {
-        var clienteEncontrado = await httpClient.GetFromJsonAsync<Clientes>($"api/Clientes/{Cliente.ClienteId}");
-        if (clienteEncontrado != null)
+        var clienteNotNull = (await httpClient.GetFromJsonAsync<List<Clientes>>($"api/Clientes")).ToList().Any(a => a.ClienteId == Cliente.ClienteId);
+        if (clienteNotNull)
         {
-            this.Cliente = clienteEncontrado;
-            StateHasChanged();
-        }
-        else
-        {
-            Mensaje = "Cliente no encontrado";
+            var clienteEncontrado = await httpClient.GetFromJsonAsync<Clientes>($"api/Clientes/{Cliente.ClienteId}");
+				if(clienteEncontrado != null){
+					this.Cliente = clienteEncontrado;
+					StateHasChanged();
+					var mensaje = new NotificationMessage
+						{
+							Severity = NotificationSeverity.Success,
+							Summary = "Busqueda Exitosa",
+							Detail = "Se ha encontrado el cliente",
+							Duration = 5_000
+						};
+					notificationService.Notify(mensaje);
+				}
+			}
+			else{
+				var mensaje = new NotificationMessage
+					{
+						Severity = NotificationSeverity.Error,
+						Summary = "Busqueda Fallida",
+						Detail = "No se ha encontrado el cliente",
+						Duration = 5_000
+					};
+				notificationService.Notify(mensaje);
         }
     }
 
@@ -140,18 +166,48 @@
     public void Nuevo()
     {
         this.Cliente = new Clientes();
-        Mensaje = string.Empty;
+        var mensaje = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Nuevo ",
+                Detail = "Se ha limpiado las casillas",
+                Duration = 5_000
+            };
+        notificationService.Notify(mensaje);
     }
 
     public async Task Eliminar()
     {
         using var response = await httpClient.DeleteAsync($"api/Clientes/{Cliente.ClienteId}");
-        if (!response.IsSuccessStatusCode)
-        {
-            Mensaje = response.ReasonPhrase ?? "error";
-            return;
-        }
-        else
-            Nuevo();
+        if(!response.IsSuccessStatusCode)
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "No se ha podido eliminar el cliente",
+					Duration = 5_000
+				};
+			notificationService.Notify(mensaje);
+			return;
+		}
+		else
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Eliminado Exitoso",
+					Detail = "Se ha eliminado el cliente",
+					Duration = 5_000
+				};
+			notificationService.Notify(mensaje);
+			Nuevo();
+		}
+    }
+
+
+    public void MostrarContraseña()
+    {
+        mostrarContraseña = !mostrarContraseña;
     }
 }

@@ -25,7 +25,7 @@
 				@*ID*@
 				<div class="col-md-3 mt-2">
 					<div class="form-group mb-2">
-						<label class="form-label" @for="vendedor.VendedorId">vendedor Id:</label>
+						<label class="form-label" @for="vendedor.VendedorId">Vendedor Id:</label>
 						<div class="input-group">
 							<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="vendedor.VendedorId" />
 							<ValidationMessage For="@(() => vendedor.VendedorId)" />
@@ -85,7 +85,7 @@
 				</div>
 
 				@*Direccion*@
-				<div class="col-md-7 mt-3">
+				<div class="col-md-7 mt-3 mb-4">
 					<div class="form-group mb-2">
 						<label class="form-label" @for="vendedor.Dirección">Direcci&oacute;n:</label>
 						<InputTextArea id="Direccion" class="form-control" @bind-Value="vendedor.Dirección" />
