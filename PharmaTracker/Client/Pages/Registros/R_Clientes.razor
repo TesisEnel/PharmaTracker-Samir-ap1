@@ -2,6 +2,7 @@
 @page "/R_Clientes"
 @page "/R_Clientes/{ClienteId:int}"
 @inject HttpClient httpClient
+@inject NotificationService notificationService
 
 @using Microsoft.AspNetCore.Authorization
 
@@ -50,7 +51,7 @@
 
                 <div class="mb-3">
                     <label class="form-label" for="Contraseña">Contraseña:</label>
-                    <InputText @bind-Value="Cliente.Contraseña" class="form-control" />
+                    <InputText type="password" @bind-Value="Cliente.Contraseña" class="form-control" />
                     <ValidationMessage For="@(() => Cliente.Contraseña)" />
                 </div>
 
@@ -105,17 +106,34 @@
 
     public async Task Guardar()
     {
-        using var response = await httpClient.PostAsJsonAsync("api/Clientes", Cliente);
-        if (!response.IsSuccessStatusCode)
+        using var reponse = await httpClient.PostAsJsonAsync("api/Clientes", Cliente);
+        if (!reponse.IsSuccessStatusCode)
         {
-            Mensaje = response.ReasonPhrase ?? "error";
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "No se pudo registrar",
+                    Duration = 5_000
+                };
+            notificationService.Notify(mensaje);
             return;
         }
-        var clienteDevuelto = await response.Content.ReadFromJsonAsync<Clientes>();
+
+        var clienteDevuelto = await reponse.Content.ReadFromJsonAsync<Clientes>();
         if (clienteDevuelto is not null)
         {
-            Cliente = clienteDevuelto;
+            this.Cliente = clienteDevuelto;
             StateHasChanged();
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Registrado correctamente",
+                    Detail = "El cliente fue registrado con éxito",
+                    Duration = 5_000
+                };
+            notificationService.Notify(mensaje);
+            Nuevo();
         }
     }
 
