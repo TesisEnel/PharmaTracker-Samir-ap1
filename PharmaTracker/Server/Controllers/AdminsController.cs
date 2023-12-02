@@ -85,7 +85,7 @@ namespace PharmaTracker.Server.Controllers
 			{
 				return Problem("Entity set 'PharmaTracketContext.Admin'  is null.");
 			}
-			_context.Admin.Add(admin);
+
 			if (admin.AdminId <= 0 || !AdminExists(admin.AdminId))
 			{
 				_context.Admin.Add(admin);
