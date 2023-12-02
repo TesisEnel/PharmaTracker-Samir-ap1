@@ -20,14 +20,15 @@
                     <h1 class="h2">PharmaTracker</h1>
                 </div>
                 <div class="card-body">
+
                     <div class="form-floating mb-3">
-                        <input id="email" class="form-control" @bind="login.Correo" autofocus placeholder="Correo" />
-                        <label for="email">Correo</label>
+                            <input id="email" class="form-control" @bind="login.Correo" placeholder="Correo" />
+                            <label for="email">Correo</label>
                     </div>
 
                     <div class="input-group mb-3">
-                        <div class="form-floating">
-                            <input type=@((mostrarContraseña) ? "text" : "password") id="Contraseña" class="form-control" placeholder="Contraseña" @bind="login.Clave" />
+                        <div class="form-floating form-floating-group flex-grow-1">
+                            <input type=@((mostrarContraseña) ? "text" : "password") class="form-control" name="Contraseña" @bind="login.Clave" placeholder="Contraseña">
                             <label for="Contraseña">Contraseña</label>
                         </div>
                         <button @onclick="MostrarContraseña" class="btn btn-secondary" type="button">
