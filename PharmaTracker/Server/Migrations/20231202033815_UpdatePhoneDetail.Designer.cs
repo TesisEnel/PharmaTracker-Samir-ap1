@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PharmaTracker.Server.DAL;
 
@@ -10,9 +11,11 @@ using PharmaTracker.Server.DAL;
 namespace PharmaTracker.Server.Migrations
 {
     [DbContext(typeof(PharmaTracketContext))]
-    partial class PharmaTracketContextModelSnapshot : ModelSnapshot
+    [Migration("20231202033815_UpdatePhoneDetail")]
+    partial class UpdatePhoneDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
@@ -76,6 +79,38 @@ namespace PharmaTracker.Server.Migrations
                     b.HasIndex("AdminId");
 
                     b.ToTable("AdminDetalle");
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.AdminTiposTelefonos", b =>
+                {
+                    b.Property<int>("AdminTipoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AdminDescripcion")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AdminTipoId");
+
+                    b.ToTable("AdminTiposTelefonos");
+
+                    b.HasData(
+                        new
+                        {
+                            AdminTipoId = 1,
+                            AdminDescripcion = "Telefono"
+                        },
+                        new
+                        {
+                            AdminTipoId = 2,
+                            AdminDescripcion = "Celular"
+                        },
+                        new
+                        {
+                            AdminTipoId = 3,
+                            AdminDescripcion = "Oficina"
+                        });
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
@@ -287,25 +322,53 @@ namespace PharmaTracker.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("VendedorId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("VendedorIdId")
+                    b.Property<int>("VendedorId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("VendedorTelefono")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("VendedorTipos")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("VendedorTipoId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("VendedorDetalleId");
 
                     b.HasIndex("VendedorId");
 
                     b.ToTable("VendedorDetalle");
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.VendedorTiposTelefonos", b =>
+                {
+                    b.Property<int>("VendedorTipoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("VendedorDescripcion")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("VendedorTipoId");
+
+                    b.ToTable("VendedorTiposTelefonos");
+
+                    b.HasData(
+                        new
+                        {
+                            VendedorTipoId = 1,
+                            VendedorDescripcion = "Telefono"
+                        },
+                        new
+                        {
+                            VendedorTipoId = 2,
+                            VendedorDescripcion = "Celular"
+                        },
+                        new
+                        {
+                            VendedorTipoId = 3,
+                            VendedorDescripcion = "Oficina"
+                        });
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.AdminDetalle", b =>
@@ -344,7 +407,9 @@ namespace PharmaTracker.Server.Migrations
                 {
                     b.HasOne("PharmaTracker.Shared.Vendedor", null)
                         .WithMany("VendedorDetalle")
-                        .HasForeignKey("VendedorId");
+                        .HasForeignKey("VendedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.Admin", b =>
