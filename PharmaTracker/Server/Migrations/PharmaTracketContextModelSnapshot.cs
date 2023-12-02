@@ -39,6 +39,10 @@ namespace PharmaTracker.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Teléfono")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("AdminId");
 
                     b.ToTable("Admin");
@@ -50,7 +54,8 @@ namespace PharmaTracker.Server.Migrations
                             Contraseña = "admin",
                             Dirección = "Calle 789",
                             Email = "admin@gmail.com",
-                            Nombre = "Admin"
+                            Nombre = "Admin",
+                            Teléfono = "1234567890"
                         });
                 });
 
@@ -67,9 +72,8 @@ namespace PharmaTracker.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("AdminTipos")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("AdminTipoId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("AdminDetalleId");
 
@@ -78,30 +82,53 @@ namespace PharmaTracker.Server.Migrations
                     b.ToTable("AdminDetalle");
                 });
 
+            modelBuilder.Entity("PharmaTracker.Shared.AdminTiposTelefonos", b =>
+                {
+                    b.Property<int>("AdminTipoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AdminDescripcion")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AdminTipoId");
+
+                    b.ToTable("AdminTiposTelefonos");
+
+                    b.HasData(
+                        new
+                        {
+                            AdminTipoId = 1,
+                            AdminDescripcion = "Telefono"
+                        },
+                        new
+                        {
+                            AdminTipoId = 2,
+                            AdminDescripcion = "Celular"
+                        },
+                        new
+                        {
+                            AdminTipoId = 3,
+                            AdminDescripcion = "Oficina"
+                        });
+                });
+
             modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
                 {
                     b.Property<int>("CestaDCompraId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Cantidad")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("ClienteId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal?>("Precio")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("ProductoId")
+                    b.Property<bool>("Pago")
                         .HasColumnType("INTEGER");
-
-                    b.Property<decimal?>("Total")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("CestaDCompraId");
 
-                    b.HasIndex("ProductoId");
+                    b.HasIndex("ClienteId");
 
                     b.ToTable("CestaDCompra");
                 });
@@ -183,6 +210,9 @@ namespace PharmaTracker.Server.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<decimal>("Descuento")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
@@ -193,12 +223,8 @@ namespace PharmaTracker.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TipoPago")
-                        .IsRequired()
+                    b.Property<decimal>("Total")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Total")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("FacturaId");
 
@@ -214,6 +240,9 @@ namespace PharmaTracker.Server.Migrations
                     b.Property<string>("Categoria")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("CestaDCompraId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("Existencia")
                         .IsRequired()
@@ -238,6 +267,8 @@ namespace PharmaTracker.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("ProductoId");
+
+                    b.HasIndex("CestaDCompraId");
 
                     b.HasIndex("FacturasFacturaId");
 
@@ -266,6 +297,10 @@ namespace PharmaTracker.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Teléfono")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("VendedorId");
 
                     b.ToTable("Vendedor");
@@ -277,7 +312,8 @@ namespace PharmaTracker.Server.Migrations
                             Contraseña = "vendedor",
                             Dirección = "Calle 456",
                             Email = "vendedor@gmail.com",
-                            Nombre = "Pedro Castillo"
+                            Nombre = "Pedro Castillo",
+                            Teléfono = "0987654321"
                         });
                 });
 
@@ -287,25 +323,53 @@ namespace PharmaTracker.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("VendedorId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("VendedorIdId")
+                    b.Property<int>("VendedorId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("VendedorTelefono")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("VendedorTipos")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("VendedorTipoId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("VendedorDetalleId");
 
                     b.HasIndex("VendedorId");
 
                     b.ToTable("VendedorDetalle");
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.VendedorTiposTelefonos", b =>
+                {
+                    b.Property<int>("VendedorTipoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("VendedorDescripcion")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("VendedorTipoId");
+
+                    b.ToTable("VendedorTiposTelefonos");
+
+                    b.HasData(
+                        new
+                        {
+                            VendedorTipoId = 1,
+                            VendedorDescripcion = "Telefono"
+                        },
+                        new
+                        {
+                            VendedorTipoId = 2,
+                            VendedorDescripcion = "Celular"
+                        },
+                        new
+                        {
+                            VendedorTipoId = 3,
+                            VendedorDescripcion = "Oficina"
+                        });
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.AdminDetalle", b =>
@@ -319,11 +383,13 @@ namespace PharmaTracker.Server.Migrations
 
             modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
                 {
-                    b.HasOne("PharmaTracker.Shared.Productos", "Producto")
+                    b.HasOne("PharmaTracker.Shared.Clientes", "Cliente")
                         .WithMany()
-                        .HasForeignKey("ProductoId");
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Producto");
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.DetalleLaboratorioProducto", b =>
@@ -335,6 +401,10 @@ namespace PharmaTracker.Server.Migrations
 
             modelBuilder.Entity("PharmaTracker.Shared.Productos", b =>
                 {
+                    b.HasOne("PharmaTracker.Shared.CestaDCompra", null)
+                        .WithMany("productos")
+                        .HasForeignKey("CestaDCompraId");
+
                     b.HasOne("PharmaTracker.Shared.Facturas", null)
                         .WithMany("ListaProductos")
                         .HasForeignKey("FacturasFacturaId");
@@ -344,12 +414,19 @@ namespace PharmaTracker.Server.Migrations
                 {
                     b.HasOne("PharmaTracker.Shared.Vendedor", null)
                         .WithMany("VendedorDetalle")
-                        .HasForeignKey("VendedorId");
+                        .HasForeignKey("VendedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.Admin", b =>
                 {
                     b.Navigation("AdminDetalle");
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.CestaDCompra", b =>
+                {
+                    b.Navigation("productos");
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.Facturas", b =>
