@@ -1,7 +1,144 @@
 ﻿@page "/C_Vendedor"
+@inject HttpClient httpClient
+@inject NotificationService notificationService
 
-<h3>C_Vendedor</h3>
+<PageTitle>Consulta de Vendedores</PageTitle>
+
+<div class="card-header mt-4">
+
+	<div class="card-header">
+		<h3>Consulta de Vendedores</h3>
+	</div>
+
+	<div class="row mt-2">
+		<label class="mt-2 fs-6">Filtrar por:</label>
+
+		<div class="col-md-3">
+			<select class="form-select form-select-sm" @bind="opciones">
+				<option value="0" disabled selected>Elija una opción</option>
+				<option value="1">ID</option>
+				<option value="2">Nombre</option>
+			</select>
+		</div>
+
+		<div class="col-md-3">
+			@if (opciones == 1)
+			{
+				<input type="number" min="0" class="form-control form-control-sm" @bind="auxVendedor.VendedorId" />
+			}
+			else if (opciones == 2)
+			{
+				<input type="text" class="form-control form-control-sm" @bind="auxVendedor.Nombre" />
+			}
+		</div>
+
+		<div class="col-md-2">
+			<button class="btn btn-primary btn-sm" type="button" @onclick="Buscar">
+				<i class="oi oi-magnifying-glass" />
+			</button>
+		</div>
+
+
+		<div class="card-body">
+			<div class="table-responsive ">
+				<table border="1" class="table table-bordered table-striped ">
+					<thead>
+						<tr class="table-secondary">
+							<th>ID</th>
+							<th>Nombre</th>
+							<th>Direcci&oacute;n</th>
+							<th>Email</th>
+
+							<th>Ver</th>
+						</tr>
+					</thead>
+					<tbody>
+						@if (vendedor != null)
+						{
+							@foreach (var table in vendedor)
+							{
+								<tr>
+									<td>@table.VendedorId</td>
+									<td>@table.Nombre</td>
+									<td>@table.Dirección</td>
+									<td>@table.Email</td>
+									<td><a href="R_Vendedor/@table.VendedorId"> <i class="oi oi-eye"> </i></a></td>
+								</tr>
+							}
+						}
+					</tbody>
+
+					<div class="card-header-tabs">
+						<div class="col col-md-mt-4">
+							<span class="ml-2">Resultados: @conteo</span>
+						</div>
+					</div>
+
+				</table>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
 
 @code {
 
+	public List<Vendedor> vendedor { get; set; }
+	public Vendedor auxVendedor { get; set; } = new Vendedor();
+
+	public int opciones { get; set; }
+	public int conteo { get; set; }
+
+	public async Task Buscar()
+	{
+		switch (opciones)
+		{
+			case 0:
+				if (opciones == 0)
+				{
+					notificationService.Notify(new NotificationMessage
+						{
+							Severity = NotificationSeverity.Warning,
+							Summary = "Filtro requerido",
+							Detail = "Debe elegir un filtro antes de realizar la búsqueda.",
+							Duration = 5000
+						});
+					return;
+				}
+				break;
+			case 1:
+				if (auxVendedor.VendedorId != 0)
+				{
+					vendedor = (await httpClient.GetFromJsonAsync<List<Vendedor>>($"api/Vendedors"))
+						.Where(p => p.VendedorId == auxVendedor.VendedorId)
+						.ToList();
+					StateHasChanged();
+				}
+				else
+				{
+					vendedor = (await httpClient.GetFromJsonAsync<List<Vendedor>>($"api/Vendedors"))
+						.ToList();
+					StateHasChanged();
+				}
+				break;
+			case 2:
+				if (!string.IsNullOrEmpty(auxVendedor.Nombre))
+				{
+					vendedor = (await httpClient.GetFromJsonAsync<List<Vendedor>>($"api/Vendedors"))
+						.Where(p => p.Nombre.Contains(auxVendedor.Nombre))
+						.ToList();
+					StateHasChanged();
+				}
+				else
+				{
+					vendedor = (await httpClient.GetFromJsonAsync<List<Vendedor>>($"api/Vendedors"))
+						.ToList();
+					StateHasChanged();
+				}
+				break;
+		}
+		conteo = vendedor.Count;
+	}
 }
