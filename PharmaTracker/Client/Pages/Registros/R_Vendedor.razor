@@ -93,38 +93,38 @@
 					</div>
 				</div>
 
-				@*Aqui te deje para que hagas el detalle *@
+				@*Detalle Telefono*@
 
-				<fieldset class="border-success border border-1">
-					<h3>Tel&eacute;fonos del vendedor</h3>
+				<fieldset class="border-success border border-1 mt-2">
+					<h3>Tel&eacute;fonos del admin</h3>
 					<div class="row m-1">
+
 						@*TipoTelefono *@
-						<div class="col-2">
-							<label>TipoTelefono:</label>
-							<InputSelect class="form-select" @bind-Value="TipoTelefonoSeleccionado">
-								<option value="0" disabled selected> [Seleccione] </option>
-								@foreach (var tipo in TiposTelefonosList)
-								{
-									<option value="@tipo.VendedorTipoId">@tipo.VendedorDescripcion </option>
-								}
-							</InputSelect>
+						<div class="col-md-3 mt-2">
+							<label>Tipo Tel&eacute;fono:</label>
+							<div class="form-group mb-3">
+								<InputSelect class="form-select" @bind-Value="vendedorDetalle.VendedorTipos">
+									<option value="0" disabled selected> [Seleccione] </option>
+									<option value="Telefono">Tel&eacute;fono</option>
+									<option value="Celular">Celular</option>
+									<option value="Oficina">Oficina</option>
+								</InputSelect>
+								<ValidationMessage For="@(() => vendedorDetalle.VendedorTipos)" />
+							</div>
 						</div>
 
-						<div class="col-2">
-							<label>Telefono</label>
-							<InputText class="form-control" @bind-Value="TelefonoSeleccionado"></InputText>
+						<div class="col-md-3 ms-4 mt-2">
+							<label>Tel&eacute;fono:</label>
+							<InputText class="form-control" @bind-Value="vendedorDetalle.VendedorTelefono" maxlength="12" placeholder="Ej: xxx-xxx-xxxx"></InputText>
+							<ValidationMessage For="@(() => vendedorDetalle.VendedorTelefono)" />
 						</div>
 
 						<div class="col-2">
 							<br>
-							<button type="button" class="btn btn-primary input-group-text" @onclick="AgregarDetalle">
+							<button type="button" class="btn btn-success input-group-text" @onclick="AgregarDetalle">
 								<span class="oi oi-plus">Agregar</span>
 							</button>
 						</div>
-						@* @if (ValidacionDetalle.Length > 0)
-						{
-						<label class="text-danger">@ValidacionDetalle</label>
-						} *@
 					</div>
 
 					<hr />
@@ -139,16 +139,16 @@
 							@foreach (var detalle in vendedor.VendedorDetalle)
 							{
 								<tr>
-									<td>@(DescripcionTipo(detalle.VendedorTipoId))</td>
+									<td>@detalle.VendedorTipos</td>
 									<td>@detalle.VendedorTelefono</td>
-									<td> <button @onclick="@(() => RemoverDetalle(detalle))"><i class="oi oi-trash" /> Eliminar</button> </td>
+									<td> <button @onclick="@(() => RemoverDetalle(detalle))"><i class="oi oi-trash" /> Eliminar</button>   </td>
 								</tr>
 							}
 						</tbody>
 					</table>
 					<div class="row justify-content-between">
 						<div class="col-4">
-							<label>Cantidad Telefonos</label>
+							<label>Cantidad Tel&eacute;fonos</label>
 							<div class="input-group mb-3">
 								<span class="form-control">@vendedor.VendedorDetalle.Count()</span>
 							</div>
@@ -179,31 +179,17 @@
 	public Vendedor vendedor { get; set; } = new Vendedor();
 	public VendedorDetalle vendedorDetalle { get; set; } = new VendedorDetalle();
 
-	public IEnumerable<VendedorTiposTelefonos> TiposTelefonosList { get; set; } = Enumerable.Empty<VendedorTiposTelefonos>();
+	public bool detalleTipos = false;
+	public bool detalleTelefono = false;
 
-	public int TipoTelefonoSeleccionado { get; set; } = 0;
-	public string TelefonoSeleccionado { get; set; } = string.Empty;
-
-	public string ValidacionDetalle { get; set; }
-	public bool detalleVendedor { get; set; } = false;
 
 	protected override async Task OnInitializedAsync()
 	{
-		await CargarTiposTelefonos();
 
 		if (RVendedorId > 0)
 		{
 			this.vendedor.VendedorId = RVendedorId;
 			await Buscar();
-		}
-	}
-
-	private async Task CargarTiposTelefonos()
-	{
-		var encontrados = await httpClient.GetFromJsonAsync<List<VendedorTiposTelefonos>>($"api/VendedorTiposTelefonos");
-		if (encontrados != null)
-		{
-			TiposTelefonosList = encontrados;
 		}
 	}
 
@@ -242,84 +228,6 @@
 		}
 	}
 
-	@*productos.detalleLabProducto ??= new List<DetalleLaboratorioProducto>();
-
-		if (ValidarDetailLab())
-		{
-			var detalle = new DetalleLaboratorioProducto
-				{
-					Laboratorios = laboratorioProducto.Laboratorios,
-					Cantidad = laboratorioProducto.Cantidad,
-				};
-
-			productos.detalleLabProducto.Add(detalle);
-			laboratorioProducto = new DetalleLaboratorioProducto();
-
-			CantidadTotal = productos.detalleLabProducto.Sum(d => d.Cantidad);
-
-			await UpdateExistenciaProducto();
-
-			StateHasChanged();
-		}
-		*@
-
-	public async Task AgregarDetalle()
-	{
-		vendedor.VendedorDetalle ??= new List<VendedorDetalle>();
-
-		if (!ValidarDetalle())
-		{
-			var detalle = new VendedorDetalle
-				{
-					VendedorTipoId = vendedor.VendedorId,
-					VendedorTelefono = TelefonoSeleccionado
-				};
-			vendedor.VendedorDetalle.Add(detalle);
-			TipoTelefonoSeleccionado = 0;
-			TelefonoSeleccionado = string.Empty;
-			StateHasChanged();
-		}
-		return;
-
-		// vendedor.VendedorDetalle.Add(new VendedorDetalle()
-		// 	{
-		// 		VendedorTipoId = TipoTelefonoSeleccionado,
-		// 		VendedorTelefono = TelefonoSeleccionado
-		// 	});
-		// TipoTelefonoSeleccionado = 0;
-		// TelefonoSeleccionado = string.Empty;
-		// StateHasChanged();
-	}
-
-	public bool ValidarDetalle()
-	{
-		detalleVendedor = string.IsNullOrEmpty(ValidacionDetalle);
-
-		return !detalleVendedor;
-
-
-		@*
-		public bool detalleLaboratorio = false;
-	public bool detalleCantidad = false;
-	public bool detallePrecio = false;
-	*@
-	}
-
-	public string DescripcionTipo(int tipoId)
-	{
-		var tipoTelefono = TiposTelefonosList.FirstOrDefault(t => t.VendedorTipoId == tipoId);
-
-		return tipoTelefono!.VendedorDescripcion;
-	}
-
-	public void RemoverDetalle(VendedorDetalle detalleRemover)
-	{
-		TipoTelefonoSeleccionado = detalleRemover.VendedorTipoId;
-		TelefonoSeleccionado = detalleRemover.VendedorTelefono;
-
-		vendedor.VendedorDetalle.Remove(detalleRemover);
-	}
-
 	public async Task Guardar()
 	{
 		using var reponse = await httpClient.PostAsJsonAsync("api/Vendedors", vendedor);
@@ -356,8 +264,7 @@
 	public void Nuevo()
 	{
 		this.vendedor = new Vendedor();
-		TipoTelefonoSeleccionado = 0;
-		TelefonoSeleccionado = string.Empty;
+		this.vendedorDetalle = new VendedorDetalle();
 		var mensaje = new NotificationMessage
 			{
 				Severity = NotificationSeverity.Success,
@@ -397,6 +304,44 @@
 		}
 	}
 
+	@*Detalle Tlefono*@
+
+	public async Task AgregarDetalle()
+	{
+		vendedor.VendedorDetalle ??= new List<VendedorDetalle>();
+
+		if (ValidarDetalle())
+		{
+			var detalle = new VendedorDetalle
+				{
+					VendedorTelefono = vendedorDetalle.VendedorTelefono,
+					VendedorTipos = vendedorDetalle.VendedorTipos
+
+				};
+			vendedor.VendedorDetalle.Add(detalle);
+			vendedorDetalle = new VendedorDetalle();
+
+			StateHasChanged();
+		}
+		return;
+	}
+
+	public bool ValidarDetalle()
+	{
+		detalleTipos = string.IsNullOrEmpty(vendedorDetalle.VendedorTipos);
+		detalleTelefono = string.IsNullOrEmpty(vendedorDetalle.VendedorTelefono);
+
+		return !detalleTelefono && !detalleTipos;
+
+	}
+
+
+	public void RemoverDetalle(VendedorDetalle detalleRemover)
+	{
+		vendedorDetalle = detalleRemover;
+		vendedor.VendedorDetalle.Remove(detalleRemover);
+		StateHasChanged();
+	}
 
 
 	private bool mostrarContraseña = false;
