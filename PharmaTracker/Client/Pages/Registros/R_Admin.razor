@@ -85,7 +85,7 @@
 				</div>
 
 				@*Direccion*@
-				<div class="col-md-7 mt-3">
+				<div class="col-md-7 mt-3 mb-4">
 					<div class="form-group mb-2">
 						<label class="form-label" @for="admin.Dirección">Direcci&oacute;n:</label>
 						<InputTextArea id="Dirrecion" class="form-control" @bind-Value="admin.Dirección" />
@@ -93,38 +93,38 @@
 					</div>
 				</div>
 
-				@*Aqui te deje para que hagas el detalle *@
+				@*Detalle Telefono*@
 
-				<fieldset class="border-success border border-1">
+				<fieldset class="border-success border border-1 mt-2">
 					<h3>Tel&eacute;fonos del admin</h3>
 					<div class="row m-1">
+
 						@*TipoTelefono *@
-						<div class="col-2">
-							<label>TipoTelefono:</label>
-							<InputSelect class="form-select" @bind-Value="TipoTelefonoSeleccionado">
-								<option value="0" disabled selected> [Seleccione] </option>
-								@foreach (var tipo in TiposTelefonosList)
-								{
-									<option value="@tipo.AdminTipoId">@tipo.AdminDescripcion </option>
-								}
-							</InputSelect>
+						<div class="col-md-3 mt-2">
+							<label>Tipo Tel&eacute;fono:</label>
+							<div class="form-group mb-3">
+								<InputSelect class="form-select" @bind-Value="adminDetalle.AdminTipos">
+									<option value="0" disabled selected> [Seleccione] </option>
+									<option value="Telefono">Tel&eacute;fono</option>
+									<option value="Celular">Celular</option>
+									<option value="Oficina">Oficina</option>
+								</InputSelect>
+								<ValidationMessage For="@(() => adminDetalle.AdminTipos)" />
+							</div>
 						</div>
 
-						<div class="col-2">
-							<label>Telefono</label>
-							<InputText class="form-control" @bind-Value="TelefonoSeleccionado"></InputText>
+						<div class="col-md-3 ms-4 mt-2">
+							<label>Tel&eacute;fono:</label>
+							<InputText class="form-control" @bind-Value="adminDetalle.AdminTelefono" maxlength="12" placeholder="Ej: xxx-xxx-xxxx"></InputText>
+							<ValidationMessage For="@(() => adminDetalle.AdminTelefono)" />
 						</div>
 
 						<div class="col-2">
 							<br>
-							<button type="button" class="btn btn-primary input-group-text" @onclick="AgregarDetalle">
+							<button type="button" class="btn btn-success input-group-text" @onclick="AgregarDetalle">
 								<span class="oi oi-plus">Agregar</span>
 							</button>
 						</div>
-						@* @if (ValidacionDetalle.Length > 0)
-						{
-							<label class="text-danger">@ValidacionDetalle</label>
-						} *@
 					</div>
 
 					<hr />
@@ -139,7 +139,7 @@
 							@foreach (var detalle in admin.AdminDetalle)
 							{
 								<tr>
-									<td>@(DescripcionTipo(detalle.AdminTipoId))</td>
+									<td>@detalle.AdminTipos</td>
 									<td>@detalle.AdminTelefono</td>
 									<td> <button @onclick="@(() => RemoverDetalle(detalle))"><i class="oi oi-trash" /> Eliminar</button>   </td>
 								</tr>
@@ -174,23 +174,21 @@
 
 
 @code {
+
 	[Parameter]
 	public int RAdminId { get; set; }
 
 	public Admin admin { get; set; } = new Admin();
 	public AdminDetalle adminDetalle { get; set; } = new AdminDetalle();
 
-	public IEnumerable<AdminTiposTelefonos> TiposTelefonosList { get; set; } = Enumerable.Empty<AdminTiposTelefonos>();
 
-	public int TipoTelefonoSeleccionado { get; set; } = 0;
-	public string TelefonoSeleccionado { get; set; } = string.Empty;
 
-	public string ValidacionDetalle { get; set; }
-	public bool detalleAdmin { get; set; } = false;
+	public bool detalleTipos { get; set; } = false;
+	public bool detalleTipo { get; set; } = false;
+	public bool mostrarContraseña = false;
 
 	protected override async Task OnInitializedAsync()
 	{
-		await CargarTiposTelefonos();
 
 		if (RAdminId > 0)
 		{
@@ -199,27 +197,19 @@
 		}
 	}
 
-	private async Task CargarTiposTelefonos()
-    {
-        var encontrados = await httpClient.GetFromJsonAsync<List<AdminTiposTelefonos>>($"api/AdminTiposTelefonos");
-		if (encontrados != null)
-        {
-            TiposTelefonosList = encontrados;
-        }
-    }
-
 	@*Guardad, Buscar, Eliminar y Nuevo*@
 
 	public async Task Buscar()
 	{
-		var adminNotNull = (await httpClient.GetFromJsonAsync<List<Admin>>($"api/Admins"))
-							.ToList().Any(a => a.AdminId == admin.AdminId);
+		this.adminDetalle = new AdminDetalle();
+		var adminNotNull = (await httpClient.GetFromJsonAsync<List<Admin>>($"api/Admins")).ToList().Any(a => a.AdminId == admin.AdminId);
 		if (adminNotNull)
 		{
 			var adminEncontrado = await httpClient.GetFromJsonAsync<Admin>($"api/Admins/{admin.AdminId}");
 			if (adminEncontrado != null)
 			{
 				this.admin = adminEncontrado;
+				StateHasChanged();
 				var mensaje = new NotificationMessage
 				{
 					Severity = NotificationSeverity.Success,
@@ -241,89 +231,6 @@
 			};
 			notificationService.Notify(mensaje);
 		}
-	}
-
-	@*productos.detalleLabProducto ??= new List<DetalleLaboratorioProducto>();
-
-		if (ValidarDetailLab())
-		{
-			var detalle = new DetalleLaboratorioProducto
-				{
-					Laboratorios = laboratorioProducto.Laboratorios,
-					Cantidad = laboratorioProducto.Cantidad,
-				};
-
-			productos.detalleLabProducto.Add(detalle);
-			laboratorioProducto = new DetalleLaboratorioProducto();
-
-			CantidadTotal = productos.detalleLabProducto.Sum(d => d.Cantidad);
-
-			await UpdateExistenciaProducto();
-
-			StateHasChanged();
-		}
-
-
-	
-		
-		
-		*@
-
-	public async Task AgregarDetalle()
-	{
-		admin.AdminDetalle ??= new List<AdminDetalle>();
-
-		if (!ValidarDetalle())
-		{
-			var detalle = new AdminDetalle
-            {
-                AdminTipoId = admin.AdminId,
-                AdminTelefono = TelefonoSeleccionado
-            };
-			admin.AdminDetalle.Add(detalle);
-			TipoTelefonoSeleccionado = 0;
-			TelefonoSeleccionado = string.Empty;
-			StateHasChanged();
-		}
-		return;
-
-		// admin.AdminDetalle.Add(new AdminDetalle()
-		// 	{
-		// 		AdminTipoId = TipoTelefonoSeleccionado,
-		// 		AdminTelefono = TelefonoSeleccionado
-		// 	});
-		// TipoTelefonoSeleccionado = 0;
-		// TelefonoSeleccionado = string.Empty;
-		// StateHasChanged();
-	}
-
-	public bool ValidarDetalle()
-	{
-		detalleAdmin = string.IsNullOrEmpty(ValidacionDetalle);
-
-		return !detalleAdmin;
-
-
-		@*
-		public bool detalleLaboratorio = false;
-	public bool detalleCantidad = false;
-	public bool detallePrecio = false;
-	*@
-	}
-
-	public string DescripcionTipo(int tipoId)
-	{
-		var tipoTelefono = TiposTelefonosList.FirstOrDefault(t => t.AdminTipoId == tipoId);
-
-		return tipoTelefono!.AdminDescripcion;
-	}
-
-	public void RemoverDetalle(AdminDetalle detalleRemover)
-	{
-		TipoTelefonoSeleccionado = detalleRemover.AdminTipoId;
-		TelefonoSeleccionado = detalleRemover.AdminTelefono;
-
-		admin.AdminDetalle.Remove(detalleRemover);
 	}
 
 	public async Task Guardar()
@@ -362,8 +269,7 @@
 	public void Nuevo()
 	{
 		this.admin = new Admin();
-		TipoTelefonoSeleccionado = 0;
-		TelefonoSeleccionado = string.Empty;
+		this.adminDetalle = new AdminDetalle();
 		var mensaje = new NotificationMessage
 			{
 				Severity = NotificationSeverity.Success,
@@ -403,11 +309,61 @@
 		}
 	}
 
-	
+	@*Detalle Telefono*@
 
-	private bool mostrarContraseña = false;
+	public async Task AgregarDetalle()
+	{
+		admin.AdminDetalle ??= new List<AdminDetalle>();
 
-	private void MostrarContraseña()
+		if (ValidarDetalle())
+		{
+			var detalle = new AdminDetalle
+				{
+					AdminTipos = adminDetalle.AdminTipos,
+					AdminTelefono = adminDetalle.AdminTelefono,
+				};
+			admin.AdminDetalle.Add(detalle);
+
+			adminDetalle = new AdminDetalle();
+
+			StateHasChanged();
+
+		}
+	}
+
+
+	public bool ValidarDetalle()
+	{
+		detalleTipo = string.IsNullOrEmpty(adminDetalle.AdminTelefono);
+		detalleTipos = string.IsNullOrEmpty(adminDetalle.AdminTipos);
+
+		return !detalleTipo && !detalleTipos;
+
+	}
+
+
+	public void RemoverDetalle(AdminDetalle detalleRemover)
+	{
+		adminDetalle = detalleRemover;
+		admin.AdminDetalle.Remove(detalleRemover);
+		StateHasChanged();
+	}
+
+
+	@*
+	    public void RemoverDetalle(ProductoTerminadosDetalle detalle)
+    {
+        Detalles = detalle;
+        productosTerminados.ProductoTerminadosDetalle.Remove(detalle);
+        DetallesRemovidos.Add(detalle);
+        if (ListaDetalles.Any(d => d.DetalleId == detalle.DetalleId))
+            ListaDetalles.Remove(detalle);
+        StateHasChanged();
+    }
+	*@
+
+
+	public void MostrarContraseña()
 	{
 		mostrarContraseña = !mostrarContraseña;
 	}
