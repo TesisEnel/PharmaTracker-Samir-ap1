@@ -45,7 +45,6 @@
                 <td>@producto.</td>
                 <td>@producto.Producto</td>
                 <td>@producto.Cantidad</td>
-                <td>@(producto.PrecioTotal * producto.Cantidad)</td>
             </tr>
         }
     </tbody>
@@ -208,11 +207,8 @@ else
     public List<Productos> productos { get; set; } = new List<Productos>();
     public Productos auxProducto { get; set; } = new Productos();
 
-    public List<CestaDCompra> cestaDCompra { get; set; } = new List<CestaDCompra>();
-    public CestaDCompra auxCesta { get; set; } = new CestaDCompra();
-
-
-
+    public List<CarritoCompra> cestaDCompra { get; set; } = new List<CarritoCompra>();
+    public CarritoCompra auxCesta { get; set; } = new CarritoCompra();
 
     private bool MostrarProducto = false;
     private bool MostrarCesta = false;
@@ -256,11 +252,10 @@ else
         if (producto.Existencia > 0)
         {
             producto.Existencia--;
-            var cestaProducto = new CestaDCompra
+            var cestaProducto = new CarritoCompra
                 {
                     Producto = producto,
                     Cantidad = 1,
-                    PrecioTotal = producto.Precio ?? 0
                 };
             cestaDCompra.Add(cestaProducto);
 
