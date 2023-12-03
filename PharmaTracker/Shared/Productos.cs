@@ -27,6 +27,5 @@ namespace PharmaTracker.Shared
         public string? Categoria { get; set; }
         
         public ICollection<DetalleLaboratorioProducto>? detalleLabProducto { get; set; }
-        public ICollection<CarritoCompra>? carritoCompra { get; set; }
 	}
 }

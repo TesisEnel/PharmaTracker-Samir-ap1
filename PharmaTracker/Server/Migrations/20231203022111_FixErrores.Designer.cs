@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PharmaTracker.Server.DAL;
 
@@ -10,9 +11,11 @@ using PharmaTracker.Server.DAL;
 namespace PharmaTracker.Server.Migrations
 {
     [DbContext(typeof(PharmaTracketContext))]
-    partial class PharmaTracketContextModelSnapshot : ModelSnapshot
+    [Migration("20231203022111_FixErrores")]
+    partial class FixErrores
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
