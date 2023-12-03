@@ -28,6 +28,8 @@ namespace PharmaTracker.Shared
         public string? Unidad { get; set; }
         [Required(ErrorMessage = "La categoría es obligatoria")]
         public string? Categoria { get; set; }
+        [Required(ErrorMessage = "La descripción es obligatoria")]
+        public string? Descripcion { get; set; }
 
 		[ForeignKey("ProductoId")]
 		public ICollection<DetalleLaboratorioProducto> detalleLabProducto { get; set; } = new List<DetalleLaboratorioProducto>();
