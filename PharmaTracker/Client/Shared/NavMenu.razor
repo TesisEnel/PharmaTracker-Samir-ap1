@@ -32,19 +32,20 @@
         <div class="nav-item px-3">
             <AuthorizeView Roles="Administrador,Vendedor">
                 <Authorized>
-                    <NavLink class="nav-link" href="R_Productos">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Registro Productos
-                    </NavLink>
 
                     <NavLink class="nav-link" href="R_Clientes">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Registro Clientes
                     </NavLink>
+
                 </Authorized>
             </AuthorizeView>
 
             <AuthorizeView Roles="Administrador">
                 <Authorized>
 
+                    <NavLink class="nav-link" href="R_Productos">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Registro Productos
+                    </NavLink>
 
                     <NavLink class="nav-link" href="R_Vendedor">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Registro Vendedores
