@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PharmaTracker.Shared
 {
@@ -27,7 +28,10 @@ namespace PharmaTracker.Shared
         public string? Unidad { get; set; }
         [Required(ErrorMessage = "La categoría es obligatoria")]
         public string? Categoria { get; set; }
-        
-        public ICollection<DetalleLaboratorioProducto>? detalleLabProducto { get; set; }
-	}
+        [Required(ErrorMessage = "La descripción es obligatoria")]
+        public string? Descripcion { get; set; }
+
+		[ForeignKey("ProductoId")]
+		public ICollection<DetalleLaboratorioProducto> detalleLabProducto { get; set; } = new List<DetalleLaboratorioProducto>();
+	}	
 }

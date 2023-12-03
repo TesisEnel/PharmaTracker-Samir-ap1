@@ -17,10 +17,10 @@
 
 <EditForm Model="productos" OnValidSubmit="Guardar">
 	<DataAnnotationsValidator />
-	<ValidationSummary />
 
 	<div class="row">
-		<!-- ID -->
+
+		@*Id*@
 		<div class="col-md-3 mt-2">
 			<div class="form-group mb-2">
 				<label class="form-label" @for="productos.ProductoId">Producto Id:</label>
@@ -36,12 +36,13 @@
 			</div>
 		</div>
 		
-		<!-- Fecha -->
+		@*Fecha*@
 		<div class="col-md-3 mt-2 ms-5">
 			<div class="form-group mb-2">
 				<label class="form-label" @for="productos.Fecha">Fecha:</label>
 				<div class="input-group">
-					<InputDate max="@DateTime.Now.ToString("yyyy-MM-dd")" id="Fecha" class="form-control" @bind-Value="productos.Fecha" />
+					<InputDate min="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")"  max="@DateTime.Now.ToString("yyyy-MM-dd")" id="Fecha" class="form-control" @bind-Value="productos.Fecha" />
+					<ValidationMessage For="@(() => productos.Fecha)" />
 				</div>
 				@if (FechaFutura(productos.Fecha))
 				{
@@ -51,7 +52,6 @@
 		</div>
 		
 	</div>
-
 
 	@*NombreProducto, Precio, Unidad y Categoria*@
 	<div class="row mt-2">
@@ -71,7 +71,7 @@
 		</div>
 
 		<div class="col-md-2">
-			<label class="form-label" for="productos.Unidad">Unidad:</label>
+			<label class="form-label" for="productos.Unidad">Tipo de Unidad:</label>
 			<div class="input-group">
 				<div class="form-group mb-3">
 					<InputSelect id="Unidad" class="form-select" @bind-Value="productos.Unidad">
@@ -121,13 +121,23 @@
 	</div>
 
 	<div class="row">
-		<!-- Imagem -->
+
+		@*Imagen*@
 			<div class="form-group mb-2">
 				<label class="form-label" @for="Imagen">Imagen:</label>
 				<div class="input-group">
 					<InputText id="Imagen" class="form-control" @bind-Value="productos.Imagen" placeholder="Enlace de imagen"/>
 				</div>
 			</div>
+
+						@*Descripcion*@
+		<div class="form-group mb-2">
+			<label class="form-label" @for="Descripcion">Descripci&oacute;n:</label>
+			<div class="input-group">
+				<InputTextArea id="Descripcion" class="form-control" @bind-Value="productos.Descripcion" placeholder="Descripción del Producto"/>
+				<ValidationMessage For="@(() => productos.Descripcion)" />
+			</div>
+		</div>
 		
 	</div>
 
@@ -199,8 +209,6 @@
                     <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
                 </Authorized>
 			</AuthorizeView>
-
-
 		</div>
 	</div>
 
@@ -216,6 +224,8 @@
 	public DetalleLaboratorioProducto laboratorioProducto { get; set; } = new DetalleLaboratorioProducto();
 
 	public DetalleLaboratorioProducto detalleRemovido { get; set; } = new DetalleLaboratorioProducto();
+
+	public List<DetalleLaboratorioProducto> DetallesRemovidos { get; set; } = new List<DetalleLaboratorioProducto>();
 
 	public bool detalleLaboratorio = false;
 	public bool detalleCantidad = false;
@@ -276,7 +286,6 @@
 
 	public async Task Guardar()
 	{
-		productos.Existencia = CantidadTotal;
 		using var response = await httpClient.PostAsJsonAsync("api/Productos", productos);
 		if (!response.IsSuccessStatusCode)
 		{
@@ -290,10 +299,16 @@
 			notificacionesService.Notify(mensaje);
 			return;
 		}
+		foreach (var detalle in DetallesRemovidos)
+		{
+			await httpClient.DeleteAsync($"api/Productos/DeleteDetalle/{detalle.DetalleLaboratorioProductoId}");
+		}
+
 		var ProductoGuardado = await response.Content.ReadFromJsonAsync<Productos>();
 		if (ProductoGuardado is not null)
 		{
 			this.productos = ProductoGuardado;
+			productos.Existencia = CantidadTotal;
 			StateHasChanged();
 			var mensaje = new NotificationMessage
 				{
@@ -307,8 +322,10 @@
 		}
 	}
 
+
 	public async Task Eliminar()
 	{
+		var detalleLab = productos.detalleLabProducto;
 		using var reponse = await httpClient.DeleteAsync($"api/Productos/{productos.ProductoId}");
 		if (!reponse.IsSuccessStatusCode)
 		{
@@ -322,30 +339,22 @@
 			notificacionesService.Notify(mensaje);
 			return;
 		}
-
-		var DetalleElimar = new List<DetalleLaboratorioProducto>();
-		foreach (var detalle in productos.detalleLabProducto)
+		else
 		{
-			DetalleElimar.Add(detalle);
-		}
-
-		foreach (var detalle in DetalleElimar)
-		{
-			RemoveDetailLab(detalle);
-		}
-
-		{
+			foreach (var detalle in detalleLab)
+			{
+				await httpClient.DeleteAsync($"api/Productos/DeleteDetalle/{detalle.DetalleLaboratorioProductoId}");
+			}
 			var mensaje = new NotificationMessage
 				{
 					Severity = NotificationSeverity.Success,
 					Summary = "Eliminado",
-					Detail = "Producto Eliminado con exito",
+					Detail = "Producto eliminado con exito",
 					Duration = 5_000
 				};
 			notificacionesService.Notify(mensaje);
 		}
 		Nuevo();
-
 
 	}
 
@@ -382,27 +391,13 @@
 		}
 	}
 
+
 	public async Task RemoveDetailLab(DetalleLaboratorioProducto Removedetalle)
 	{
-		var detalleEncontrado = productos.detalleLabProducto.FirstOrDefault(d => d.Laboratorios == Removedetalle.Laboratorios && d.Cantidad == Removedetalle.Cantidad);
-		if (detalleEncontrado != null)
-		{
-			productos.detalleLabProducto.Remove(detalleEncontrado);
-			CantidadTotal -= Removedetalle.Cantidad;
-			await httpClient.DeleteAsync($"api/Productos/DeleteProductosLab/{Removedetalle.Laboratorios}/{Removedetalle.Cantidad}");
+			laboratorioProducto = Removedetalle;
+			productos.detalleLabProducto.Remove(laboratorioProducto);
+			DetallesRemovidos.Add(Removedetalle);
 			StateHasChanged();
-		}
-		else
-		{
-			var mensaje = new NotificationMessage
-				{
-					Severity = NotificationSeverity.Error,
-					Summary = "Error",
-					Detail = "No se pudo eliminar el detalle. Asegúrese de seleccionar un laboratorio, una cantidad y un precio.",
-					Duration = 5_000
-				};
-			notificacionesService.Notify(mensaje);
-		}
 
 	}
 

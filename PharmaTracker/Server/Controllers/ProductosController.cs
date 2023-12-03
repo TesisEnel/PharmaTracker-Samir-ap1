@@ -128,28 +128,26 @@ namespace PharmaTracker.Server.Controllers
             return NoContent();
         }
 
-        //Delete: api/Productos
-        [HttpDelete("DeleteProductosLab/{id}")]
-        public async Task<IActionResult> DeleteProductosLab(int id)
-        {
-            if(id <= 0)
-            {
-                return BadRequest();
-            }
-            var productosLab = await _context.DetalleLaboratorioProducto.FirstOrDefaultAsync(x => x.DetalleLaboratorioProductoId == id);
-
-            if (productosLab is null)
-            {
-                return NotFound();
+		//Delete: api/Productos
+		[HttpDelete("DeleteDetalle/{id}")]
+		public async Task<IActionResult> DeleteDetalle(int id)
+		{
+			if (id <= 0)
+			{
+				return BadRequest();
 			}
-           _context.DetalleLaboratorioProducto.Remove(productosLab);
+			var Detalle = await _context.Productos.FirstOrDefaultAsync(p => p.ProductoId == id);
+			if (Detalle is null)
+			{
+				return NotFound();
+			}
+			_context.Productos.Remove(Detalle);
+			await _context.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();
-
-            return Ok();
+			return Ok();
 		}
 
-        private bool ProductosExists(int id)
+		private bool ProductosExists(int id)
         {
             return (_context.Productos?.Any(e => e.ProductoId == id)).GetValueOrDefault();
         }
