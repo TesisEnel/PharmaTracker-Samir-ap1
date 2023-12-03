@@ -6,15 +6,6 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 
-<style>
-    .card-img-top {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-    }
-</style>
-
-
 @if (MostrarCesta)
 {
     <div class="card-header">
@@ -184,15 +175,16 @@ else
             <div class="row gx-4 row-cols-1 row-cols-md-3 row-cols-xl-4 justify-content-start">
                 @if (productos != null)
                 {
-                    foreach (var producto in productos.Where(p => p.Existencia > 0))
+                    foreach (var producto in productos)
                     {
+
                         <div class="col mb-5">
                             <div class="card h-100">
                                 @if (String.IsNullOrEmpty(producto.Imagen))
                                 {
                                     producto.Imagen = "https://cdn.discordapp.com/attachments/915304593485869137/1180543699701207131/image-not-found-icon.png?ex=657dcdff&is=656b58ff&hm=3faef98b0bff2c33cfdac8c83b78540ce6d0a95a3ac19f624882df5646f2e82e&";
                                 }
-                                <img class="card-img-top border-dark border-1" src="@producto.Imagen" style="width:100%;height:100%" alt="@producto.NombreProducto" />
+                                <img class="media-img-big" src="@producto.Imagen" style="width:100%;height:100%" alt="@producto.NombreProducto" href="detallesproducto/@producto.ProductoId" />
                                 <div class="card-body p-4">
                                     <div class="text-center">
                                         <h5 class="fw-bolder">@producto.NombreProducto</h5>
@@ -200,7 +192,7 @@ else
                                     </div>
                                 </div>
                                 <div class="card-footer p-3 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" @onclick="() => AgregarACompra(producto)"><i class="oi oi-cart"></i></a></div>
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="detallesproducto/@producto.ProductoId">Ver producto@* <i class="oi oi-cart"></i> *@</a></div>
                                 </div>
                             </div>
                         </div>
@@ -239,6 +231,7 @@ else
     {
         totalDCompra = 0;
         totalDproductos = 0;
+        await BuscarProductos(categoria);
     }
 
     public async Task BuscarProductos(string categoria)
