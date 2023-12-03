@@ -20,7 +20,18 @@ namespace PharmaTracker.Server.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            modelBuilder.Entity<Productos>().HasData(
+                new Productos
+                {
+                    ProductoId = 1,
+                    NombreProducto = "Paracetamol",
+                    Precio = 100,
+                    Descripcion = "Medicamento para el dolor",
+                    Existencia = 100,
+                    Categoria = "Medicamento",
+                    Unidad = "TAB",
+                    Imagen = "https://www.farmaciasguadalajara.com.mx/fgsa/img/productos/1000/7501050610010.jpg"
+                });
 
             modelBuilder.Entity<Clientes>().HasData(
                 new Clientes

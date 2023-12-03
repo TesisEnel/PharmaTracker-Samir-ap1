@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PharmaTracker.Server.DAL;
 
@@ -10,9 +11,11 @@ using PharmaTracker.Server.DAL;
 namespace PharmaTracker.Server.Migrations
 {
     [DbContext(typeof(PharmaTracketContext))]
-    partial class PharmaTracketContextModelSnapshot : ModelSnapshot
+    [Migration("20231203200951_AddProductoDescribe")]
+    partial class AddProductoDescribe
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
@@ -169,15 +172,6 @@ namespace PharmaTracker.Server.Migrations
                     b.HasIndex("ProductoId");
 
                     b.ToTable("DetalleLaboratorioProducto");
-
-                    b.HasData(
-                        new
-                        {
-                            DetalleLaboratorioProductoId = 1,
-                            Cantidad = 100,
-                            Laboratorios = "Bayer",
-                            ProductoId = 1
-                        });
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.Facturas", b =>
@@ -254,20 +248,6 @@ namespace PharmaTracker.Server.Migrations
                     b.HasIndex("FacturasFacturaId");
 
                     b.ToTable("Productos");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductoId = 1,
-                            Categoria = "Medicamento",
-                            Descripcion = "Medicamento para el dolor",
-                            Existencia = 100,
-                            Fecha = new DateTime(2023, 12, 3, 16, 41, 57, 392, DateTimeKind.Local).AddTicks(1541),
-                            Imagen = "https://www.farmaciasguadalajara.com.mx/fgsa/img/productos/1000/7501050610010.jpg",
-                            NombreProducto = "Paracetamol",
-                            Precio = 100,
-                            Unidad = "TAB"
-                        });
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.SesionDTO", b =>
