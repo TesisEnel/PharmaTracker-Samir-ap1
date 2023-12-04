@@ -1,0 +1,154 @@
+﻿@page "/C_Ordenes"
+@inject HttpClient httpClient
+@inject NotificationService notificacionesService
+@using PharmaTracker.Shared;
+
+<div class="card-header mt-4">
+
+	<div class="card-header">
+		<h3>Consulta de Ordenes</h3>
+	</div>
+
+	<div class="row">
+
+		<div class="col-md-5 mt-3">
+			<label>Desde:</label>
+			<input type="date" class="form-control" @bind="Desde" />
+		</div>
+
+		<div class="col-md-5 mt-3">
+			<label>Hasta:</label>
+			<input type="date" class="form-control" @bind="Hasta" />
+		</div>
+	</div>
+
+
+	<div class="row mt-2">
+		<label class="mt-2">Filtrar por:</label>
+
+		<div class="col">
+			<select class="form-select" @bind="opciones">
+				<option value="0" disabled selected>Elija una opci&oacute;n</option>
+				<option value="1">ID</option>
+				<option value="2">Nombre del Producto</option>
+				<option value="3">Existencia</option>
+				<option value="4">Unidad</option>
+				<option value="5">Categor&iacute;a</option>
+			</select>
+		</div>
+
+		<div class="col-md-4">
+			@if (opciones == 1)
+			{
+				<input type="number" min="0" class="form-control" />
+			}
+			else if (opciones == 2)
+			{
+				<input type="text" class="form-control" />
+			}
+			else if (opciones == 3)
+			{
+				<div class="col-md-4">
+					<label>Existencia:</label>
+					<div>
+						<label class="form-check-label">
+							<input type="radio" class="form-check-input" name="existenciaOption"  /> Con 
+						</label>
+					</div>
+					<div>
+						<label class="form-check-label">
+							<input type="radio" class="form-check-input" name="existenciaOption" /> 
+						</label>
+					</div>
+				</div>
+			}
+			else if (opciones == 4)
+			{
+				<div class="col-md-7">
+					<div>
+
+					</div>
+				</div>
+			}
+			else if (opciones == 5)
+			{
+				<div class="col-md-11">
+					<div class="form-group md-7">
+
+					</div>
+				</div>
+			}
+		</div>
+
+		<div class="col col-md-4">
+			<button class="btn btn-primary ml-2" type="button">
+				<i class="oi oi-magnifying-glass" />
+			</button>
+		</div>
+
+	</div>
+
+	<div class="card-body">
+		<div class="table-responsive ">
+			<table border="1" class="table table-bordered table-striped ">
+				<thead>
+					<tr class="table-secondary">
+						<th>ID</th>
+						<th>Fecha</th>
+						<th>Nombre del cliente</th>
+						<th>Pago</th>
+						<th>Ver</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					@*
+					@if (productos != null)
+					{
+					@foreach (var table in productos)
+					{
+					<tr>
+					<td>@table.ProductoId</td>
+					<td>@table.Fecha.ToString("MM/dd/yyyy")</td>
+					<td>@table.NombreProducto.ToUpper()</td>
+					<td>@table.Existencia</td>
+					<td>RD $@table.Precio</td>
+					<td>@table.Categoria</td>
+					<td>@table.Unidad</td>
+					<td><a href="R_Productos/@table.ProductoId"> <i class="oi oi-eye"> </i></a></td>
+					</tr>
+					}
+					}
+					*@
+
+				</tbody>
+
+				<div class="card-header-tabs">
+					<div class="col col-md-mt-4">
+						<span class="ml-2">Resultados: @conteo</span>
+					</div>
+				</div>
+
+			</table>
+
+		</div>
+	</div>
+
+</div>
+
+@code {
+
+	public DateTime Desde { get; set; }
+	public DateTime Hasta { get; set; }
+
+	public int opciones { get; set; }
+	public int conteo { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Desde = DateTime.Now.AddMonths(-1);
+		Hasta = DateTime.Now;
+		conteo = 0;
+	}
+
+}

@@ -3,32 +3,24 @@
 @inject HttpClient httpClient
 @inject NotificationService notificacionesService
 @inject NavigationManager NavigationManager
-@inject ICarritoService CarritoService
+@inject ICarritoService carritoService
+
 
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components
+
+@attribute [Authorize(Roles = "Administrador")]
 
 <div class="card-header d-flex justify-content-between align-items-center">
     <div>
         <h3>Tienda PharmaTracker</h3>
     </div>
 
-    @*Cesta*@
-    <div class="card shadow-lg">
-        <div class="row">
-            <button>
-                ( @totalDproductos art&iacute;culos / $@totalDCompra )
-                <a href="" @onclick="() => MostrarCesta = true">
-                    <i class="oi oi-basket"></i>
-                </a>
-            </button>
-        </div>
-    </div>
-
     @if (MostrarProducto)
     {
         <div class="ml-auto">
-            <button type="button" class="oi oi-arrow-circle-left" @onclick="() => MostrarProducto = false"></button>
+            <button type="button" class="oi oi-arrow-thick-left" @onclick="() => MostrarProducto = false"></button>
         </div>
     }
 </div>
@@ -153,7 +145,7 @@ else
                                 Severity = NotificationSeverity.Success,
                                 Summary = "¡Bienvenido!",
                                 Detail = "En esta sección podrás ver todos los productos disponibles en nuestra tienda",
-                                Duration = 5_000
+                                Duration = 3_000
                             };
                         notificacionesService.Notify(mensaje);
 
