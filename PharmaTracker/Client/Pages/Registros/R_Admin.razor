@@ -180,7 +180,7 @@
 
 	public Admin admin { get; set; } = new Admin();
 	public AdminDetalle adminDetalle { get; set; } = new AdminDetalle();
-
+	public List<AdminDetalle> DetalleRemove { get; set; } = new List<AdminDetalle>();
 
 
 	public bool detalleTipos { get; set; } = false;
@@ -247,6 +247,10 @@
 			};
 			notificationService.Notify(mensaje);
 			return;
+		}
+		foreach(var detallle in DetalleRemove)
+		{
+			await httpClient.DeleteAsync($"api/Admins/DeleteAdminDetalle/{detallle.AdminDetalleId}");
 		}
 
 		var adminDevuelto = await reponse.Content.ReadFromJsonAsync<Admin>();
@@ -346,6 +350,7 @@
 	{
 		adminDetalle = detalleRemover;
 		admin.AdminDetalle.Remove(detalleRemover);
+		DetalleRemove.Add(detalleRemover);
 		StateHasChanged();
 	}
 

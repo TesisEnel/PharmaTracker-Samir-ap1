@@ -121,6 +121,24 @@ namespace PharmaTracker.Server.Controllers
 		{
 			return (_context.Admin?.Any(e => e.AdminId == id)).GetValueOrDefault();
 		}
+
+		[HttpDelete("DeleteAdminDetalle/{id}")]
+		public async Task<IActionResult> DeleteDetalle(int id)
+		{
+			if(id <= 0)
+			{
+				return BadRequest();
+			}
+			var Detalle = await _context.Admin.FirstOrDefaultAsync(ad => ad.AdminId == id);
+			if(Detalle is null)
+			{
+				return NotFound();
+			}
+			_context.Admin.Remove(Detalle);
+			await _context.SaveChangesAsync();
+
+			return Ok();
+		}
 	}
 }
 
