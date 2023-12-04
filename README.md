@@ -6,10 +6,10 @@
 PharmaTracker es una aplicación de sistema de compras diseñada para farmacias. Permite a los clientes buscar productos, agregarlos a la cesta, consultar información detallada y completar transacciones de venta de manera eficiente.
 
 ## Características Principales
-- **Búsqueda de Productos:** Los clientes pueden buscar productos por nombre, categoría o código.
+- **Búsqueda de Productos:** Los clientes pueden buscar categoría.
 - **Gestión de Inventario:** Permite el seguimiento y gestión de inventario en tiempo real.
 - **Cesta de Compras:** Los clientes pueden agregar productos a una cesta virtual para su compra.
-- **Facturación y Ventas:** Funcionalidades para completar transacciones de venta y generar facturas.
+- **Facturación y Ventas:** Funcionalidades para completar transacciones de venta.
 
 ## Capturas de Pantalla
 
