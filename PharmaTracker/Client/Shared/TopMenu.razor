@@ -1,4 +1,6 @@
 ﻿@inject ISyncSessionStorageService SessionStorageService
+@inject ICarritoService CarritoService
+@implements IDisposable
 
 <a href="carrito" class="btn btn-info"> 
     <i class="oi oi-cart"></i> 
@@ -9,6 +11,17 @@
 
 
 @code{
+
+    protected override void OnInitialized()
+    {
+        CarritoService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CarritoService.OnChange -= StateHasChanged;
+    }
+
     private int ObtenerCantidadProductos()
     {
         var carrito = SessionStorageService.GetItem<List<Productos>>("carrito");
