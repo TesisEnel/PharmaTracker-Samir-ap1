@@ -2,12 +2,27 @@
 @inject ICarritoService CarritoService
 @implements IDisposable
 
-<a href="carrito" class="btn btn-info"> 
-    <i class="oi oi-cart"></i> 
-    Carrito
-    @ObtenerCantidadProductos()
-    <span class="badge badge-pill">@ObtenerCantidadProductos()</span>
-</a>
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components
+
+@*Cesta*@
+
+@if (ObtenerCantidadProductos() > 0)
+{
+    <div class="card shadow-lg">
+        <div class="row">
+            <button class="btn btn-light">
+                <a href="carrito">
+                    <i class="oi oi-cart"></i>
+                    Carrito
+                    @ObtenerCantidadProductos()
+                    <span class="badge badge-pill">@ObtenerCantidadProductos()</span>
+                </a>
+            </button>
+        </div>
+    </div>
+}
 
 
 @code{
