@@ -2,6 +2,7 @@
 @inject HttpClient httpClient
 @inject NotificationService notificationService
 @inject ISessionStorageService sessionStorageService
+@inject ICarritoService CarritoService
 
 <carrito showInShop="true" />
 
@@ -93,20 +94,8 @@
 
 	private async Task AgregarAlCarrito()
     {
-        var carrito = await sessionStorageService.GetItemAsync<List<Productos>>("carrito");
-        if (carrito == null)
-        {
-            carrito = new List<Productos>();
-        }
-        carrito.Add(producto);
-        await sessionStorageService.SetItemAsync("carrito", carrito);
-        var mensaje = new NotificationMessage
-            {
-                Severity = NotificationSeverity.Success,
-                Summary = $"{producto.NombreProducto} agregado",
-                Detail = $"{producto.NombreProducto} se ha agregado al carrito",
-                Duration = 5_000
-            };
-        notificationService.Notify(mensaje);
+        await CarritoService.AgregarAlCarrito(producto);
     }
+
 }
+

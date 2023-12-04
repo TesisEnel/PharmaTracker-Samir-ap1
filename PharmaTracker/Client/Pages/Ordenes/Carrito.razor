@@ -1,0 +1,85 @@
+﻿@page "/carrito"
+@inject ICarritoService CarritoService
+
+<h3>Carrito</h3>
+
+<div class="col-sm-8">
+    <div class="card mb-3">
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm bg-light table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width:102px"></th>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (articulosEnCarrito.Any())
+                        {
+                            foreach (var articulo in articulosEnCarrito)
+                            {
+                                <tr>
+                                    <td valign="middle">
+                                        <img class="card-img-top" src="@articulo.Imagen" style="width:100px">
+                                    </td>
+                                    <td valign="middle">@articulo.NombreProducto</td>
+                                    <td valign="middle">@articulo.Precio</td>
+                                    <td valign="middle" align="center">
+                                    </td>
+                                    <td valign="middle">@articulosEnCarrito.Count: $@articulosEnCarrito.Sum(articulo => articulo.Precio)</td>
+                                    <td valign="middle">
+                                        <button type="button" class="btn btn-outline-dark" @onclick="(() => Eliminar(articulo))">
+                                            <i class="oi oi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+
+
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6">
+                                    <div class="alert alert-warning" role="alert">
+                                        No hay productos en el carrito
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+
+    </div>
+</div>
+
+
+@code {
+
+    List<ArticulosEnCarrito> articulosEnCarrito = new List<ArticulosEnCarrito>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        articulosEnCarrito = await CarritoService.ObtenerArticulosEnCarrito();
+    }
+
+    private async Task Eliminar(ArticulosEnCarrito articulo)
+    {
+        await CarritoService.EliminarArticulo(articulo);
+        articulosEnCarrito = await CarritoService.ObtenerArticulosEnCarrito();
+    }
+}
