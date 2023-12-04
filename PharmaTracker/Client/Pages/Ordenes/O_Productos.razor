@@ -2,214 +2,204 @@
 @using PharmaTracker.Shared;
 @inject HttpClient httpClient
 @inject NotificationService notificacionesService
-
+@inject NavigationManager NavigationManager
 
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 
-@if (MostrarCesta)
-{
-    <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3>Sus Art&iacute;culos en el Carrito de Compras</h3>
-            <a href="/O_Productos" class="btn btn-link">
-                <i class="oi oi-arrow-circle-left"></i>
-            </a>
+<div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+        <h3>Tienda PharmaTracker</h3>
+    </div>
+
+    @*Cesta*@
+    <div class="card shadow-lg">
+        <div class="row">
+            <button>
+                ( @totalDproductos art&iacute;culos / $@totalDCompra )
+                <a href="" @onclick="() => MostrarCesta = true">
+                    <i class="oi oi-basket"></i>
+                </a>
+            </button>
         </div>
     </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-    </table>
-
-    <tbody>
-        @foreach (var producto in cestaDCompra)
-        {
-            <tr>
-                <td>@producto.</td>
-                <td>@producto.Producto</td>
-                <td>@producto.Cantidad</td>
-            </tr>
-        }
-    </tbody>
-}
-else
-{
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div>
-            <h3>Tienda PharmaTracker</h3>
-        </div>
-
-        @*Cesta*@
-        <div class="card shadow-lg">
-            <div class="row">
-                <button>
-                    ( @totalDproductos art&iacute;culos / $@totalDCompra )
-                    <a href="/ShoppinCart_Productos" @onclick="() => MostrarCesta = true">
-                        <i class="oi oi-basket"></i>
-                    </a>
-                </button>
-            </div>
-        </div>
-
-        @if (MostrarProducto)
-        {
-            <div class="ml-auto">
-                <button type="button" class="oi oi-arrow-circle-left" @onclick="() => MostrarProducto = false"></button>
-            </div>
-        }
-    </div>
-
-    <div class="d-flex align-items-center mt-3">
-        <div class="mr-3">
-            <select @bind="categoria" class="form-select">
-                <option value="" disabled selected>Seleccione una categoría</option>
-                <option value="MEDICAMENTO">MEDICAMENTO</option>
-                <option value="CUIDADO PERSONAL">CUIDADO PERSONAL</option>
-                <option value="SALUD Y NUTRICION">SALUD Y NUTRICION</option>
-                <option value="APLICACIONES DE SALUD">APLICACIONES DE SALUD</option>
-                <option value="BEBES Y NIÑOS">BEBES Y NIÑOS</option>
-                <option value="PLANIFICACIÓN FAMILIAR">PLANIFICACIÓN FAMILIAR</option>
-            </select>
-        </div>
-
-        <div>
-            <button @onclick="() => BuscarProductos(categoria)" class="btn btn-primary">Buscar</button>
-        </div>
-    </div>
-
-    @if (!MostrarProducto)
+    @if (MostrarProducto)
     {
-        <div class="container mt-2">
-            <div class="card shadow-lg">
-                <div class="card-header" style="background-color: #f8f9fa;">
+        <div class="ml-auto">
+            <button type="button" class="oi oi-arrow-circle-left" @onclick="() => MostrarProducto = false"></button>
+        </div>
+    }
+</div>
 
-                    <div class="container mt-4">
-                        <div class="row">
+<div class="d-flex align-items-center mt-3">
+    <div class="mr-3">
+        <select @bind="categoria" class="form-select">
+            <option value="" disabled selected>Seleccione una categoría</option>
+            <option value="MEDICAMENTO">MEDICAMENTO</option>
+            <option value="CUIDADO PERSONAL">CUIDADO PERSONAL</option>
+            <option value="SALUD Y NUTRICION">SALUD Y NUTRICION</option>
+            <option value="APLICACIONES DE SALUD">APLICACIONES DE SALUD</option>
+            <option value="BEBES Y NIÑOS">BEBES Y NIÑOS</option>
+            <option value="PLANIFICACIÓN FAMILIAR">PLANIFICACIÓN FAMILIAR</option>
+        </select>
+    </div>
 
-                            <div class="col-md-4 mb-4">
-                                <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("APLICACIONES DE SALUD"))>
-                                    <div class="card">
-                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177965996812800003/image.png?ex=65746d53&is=6561f853&hm=2a8b15d10f863efb14306945361d785735382d607c51529c4a1a37b6f55173aa&=&format=webp&width=507&height=363" class="card-img-top" alt="Opción 1">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Aplicaciones de Salud</h5>
-                                        </div>
+    <div>
+        <button @onclick="() => BuscarProductos(categoria)" class="btn btn-primary">Buscar</button>
+    </div>
+</div>
+
+@if (!MostrarProducto)
+{
+    <div class="container mt-2">
+        <div class="card shadow-lg">
+            <div class="card-header" style="background-color: #f8f9fa;">
+
+                <div class="container mt-4">
+                    <div class="row">
+
+                        <div class="col-md-4 mb-4">
+                            <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("APLICACIONES DE SALUD"))>
+                                <div class="card">
+                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177965996812800003/image.png?ex=65746d53&is=6561f853&hm=2a8b15d10f863efb14306945361d785735382d607c51529c4a1a37b6f55173aa&=&format=webp&width=507&height=363" class="card-img-top" alt="Opción 1">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Aplicaciones de Salud</h5>
                                     </div>
-                                </button>
-                            </div>
-
-                            <div class="col-md-4 mb-4">
-                                <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("BEBES Y NIÑOS"))>
-                                    <div class="card">
-                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177965770471387216/image.png?ex=65746d1d&is=6561f81d&hm=a9c85c09e7840ade5f6e7fda946fff6ade66132bef9931ea90fa8b1f901d91c6&=&format=webp&width=450&height=460" class="card-img-top" alt="Opción 2">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Bebes y Niños</h5>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-
-                            <div class="col-md-4 mb-4">
-                                <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("CUIDADO PERSONAL"))>
-                                    <div class="card">
-                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177965390651985920/image.png?ex=65746cc2&is=6561f7c2&hm=98d41f3ea71e7364610813ff5126d8af6e0f8b65ce62e0e77c63bb50dfb09099&=&format=webp&width=406&height=467" class="card-img-top" alt="Opción 3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                Cuidado Personal
-                                            </h5>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
+                                </div>
+                            </button>
                         </div>
 
-                        <div class="row">
-
-                            <div class="col-md-4 mb-4">
-                                <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("MEDICAMENTO"))>
-                                    <div class="card">
-                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177964623299870750/image.png?ex=65746c0b&is=6561f70b&hm=c5ff2bde4b35e47355fcd3faaf7633bf9d9a816bf0b29d2f17781cbdd86f1182&=&format=webp&width=405&height=461" class="card-img-top" alt="Opción 4">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Medicamento</h5>
-                                        </div>
+                        <div class="col-md-4 mb-4">
+                            <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("BEBES Y NIÑOS"))>
+                                <div class="card">
+                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177965770471387216/image.png?ex=65746d1d&is=6561f81d&hm=a9c85c09e7840ade5f6e7fda946fff6ade66132bef9931ea90fa8b1f901d91c6&=&format=webp&width=450&height=460" class="card-img-top" alt="Opción 2">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Bebes y Niños</h5>
                                     </div>
-                                </button>
-                            </div>
+                                </div>
+                            </button>
+                        </div>
 
-                            <div class="col-md-4 mb-4">
-                                <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("PLANIFICACIÓN FAMILIAR"))>
-                                    <div class="card">
-                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177963907600617472/image.png?ex=65746b61&is=6561f661&hm=8f5e0378b8b6306561b19ae72e7cc8c5f823f2bec75d4790fb424670010d9b56&=&format=webp&width=458&height=445" class="card-img-top" alt="Opción 5">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Planificaci&oacute;n Familiar</h5>
-                                        </div>
+                        <div class="col-md-4 mb-4">
+                            <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("CUIDADO PERSONAL"))>
+                                <div class="card">
+                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177965390651985920/image.png?ex=65746cc2&is=6561f7c2&hm=98d41f3ea71e7364610813ff5126d8af6e0f8b65ce62e0e77c63bb50dfb09099&=&format=webp&width=406&height=467" class="card-img-top" alt="Opción 3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            Cuidado Personal
+                                        </h5>
                                     </div>
-                                </button>
-                            </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
 
-                            <div class="col-md-4 mb-4">
-                                <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("SALUD Y NUTRICION"))>
-                                    <div class="card">
-                                        <img src="https://media.discordapp.net/attachments/855103306766352395/1177964288405671936/image.png?ex=65746bbb&is=6561f6bb&hm=aa553ecd4ca4c42f7024ba8c186c74169ed8d35a768921d87f6e24f1264df952&=&format=webp&width=345&height=442" class="card-img-top" alt="Opción 6">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Salud y Nutrición</h5>
-                                        </div>
+                    <div class="row">
+
+                        <div class="col-md-4 mb-4">
+                            <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("MEDICAMENTO"))>
+                                <div class="card">
+                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177964623299870750/image.png?ex=65746c0b&is=6561f70b&hm=c5ff2bde4b35e47355fcd3faaf7633bf9d9a816bf0b29d2f17781cbdd86f1182&=&format=webp&width=405&height=461" class="card-img-top" alt="Opción 4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Medicamento</h5>
                                     </div>
-                                </button>
-                            </div>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("PLANIFICACIÓN FAMILIAR"))>
+                                <div class="card">
+                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177963907600617472/image.png?ex=65746b61&is=6561f661&hm=8f5e0378b8b6306561b19ae72e7cc8c5f823f2bec75d4790fb424670010d9b56&=&format=webp&width=458&height=445" class="card-img-top" alt="Opción 5">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Planificaci&oacute;n Familiar</h5>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <button type="button" class="btn btn-link" @onclick=@(() => BuscarProductos("SALUD Y NUTRICION"))>
+                                <div class="card">
+                                    <img src="https://media.discordapp.net/attachments/855103306766352395/1177964288405671936/image.png?ex=65746bbb&is=6561f6bb&hm=aa553ecd4ca4c42f7024ba8c186c74169ed8d35a768921d87f6e24f1264df952&=&format=webp&width=345&height=442" class="card-img-top" alt="Opción 6">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Salud y Nutrición</h5>
+                                    </div>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    }
-    else
-    {
-        <div class="col-sm-9">
-            <div class="row gx-4 row-cols-1 row-cols-md-3 row-cols-xl-4 justify-content-start">
-                @if (productos != null)
-                {
-                    foreach (var producto in productos)
-                    {
+    </div>
+}
+else
+{
+    <div class="col-sm-9 mt-3">
+        @if(productos != null)
+        {
+            var productosConExistencia = productos.Where(p => p.Existencia > 0).ToList();
 
-                        <div class="col mb-5">
-                            <div class="card h-100">
-                                @if (String.IsNullOrEmpty(producto.Imagen))
-                                {
-                                    producto.Imagen = "https://cdn.discordapp.com/attachments/915304593485869137/1180543699701207131/image-not-found-icon.png?ex=657dcdff&is=656b58ff&hm=3faef98b0bff2c33cfdac8c83b78540ce6d0a95a3ac19f624882df5646f2e82e&";
-                                }
-                                <img class="media-img-big" src="@producto.Imagen" style="width:100%;height:100%" alt="@producto.NombreProducto" href="detallesproducto/@producto.ProductoId" />
-                                <div class="card-body p-4">
-                                    <div class="text-center">
-                                        <h5 class="fw-bolder">@producto.NombreProducto</h5>
-                                        <span>RD$ @producto.Precio</span>
+            if (productosConExistencia.Any())
+            {
+                <div class="row gx-4 row-cols-1 row-cols-md-3 row-cols-xl-4 justify-content-start">
+                    @if (productos != null)
+                    {
+                        var mensaje = new NotificationMessage
+                            {
+                                Severity = NotificationSeverity.Success,
+                                Summary = "¡Bienvenido!",
+                                Detail = "En esta sección podrás ver todos los productos disponibles en nuestra tienda",
+                                Duration = 5_000
+                            };
+                        notificacionesService.Notify(mensaje);
+
+                        foreach (var producto in productosConExistencia)
+                        {
+
+                            <div class="col mb-5">
+                                <div class="card h-100">
+                                    @if (String.IsNullOrEmpty(producto.Imagen))
+                                    {
+                                        producto.Imagen = "https://cdn.discordapp.com/attachments/915304593485869137/1180543699701207131/image-not-found-icon.png?ex=657dcdff&is=656b58ff&hm=3faef98b0bff2c33cfdac8c83b78540ce6d0a95a3ac19f624882df5646f2e82e&";
+                                    }
+                                    <img class="media-img-big" src="@producto.Imagen" style="width:100%;height:100%" alt="@producto.NombreProducto" href="detallesproducto/@producto.ProductoId" />
+                                    <div class="card-body p-4">
+                                        <div class="text-center">
+                                            <h5 class="fw-bolder">@producto.NombreProducto</h5>
+                                            <span>RD$ @producto.Precio</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer p-3 pt-0 border-top-0 bg-transparent">
+                                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="detallesproducto/@producto.ProductoId">Ver producto</a></div>
                                     </div>
                                 </div>
-                                <div class="card-footer p-3 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="detallesproducto/@producto.ProductoId">Ver producto@* <i class="oi oi-cart"></i> *@</a></div>
-                                </div>
                             </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
                     }
-                }
-                else
-                {
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                }
-            </div>
-        </div>
-
-    }
+                </div>
+            }
+			else
+			{
+				<div class="alert alert-danger" role="alert">
+					<h4 class="alert-heading">¡Lo sentimos!</h4>
+					<p>En este momento no tenemos productos disponibles en esta categoría.</p>
+					<hr>
+					<p class="mb-0">¡Vuelve pronto!</p>
+				</div>
+            }
+        }
+    </div>
 }
+
 
 @code {
 
@@ -226,8 +216,6 @@ else
 
     public int totalDCompra;
     public int totalDproductos; 
-
-    public string BuscaMedicamento = "MEDICAMENTO";
 
 
     protected override async Task OnInitializedAsync()

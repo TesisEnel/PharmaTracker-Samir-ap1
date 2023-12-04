@@ -3,6 +3,7 @@
 @inject NotificationService notificationService
 @inject ISessionStorageService sessionStorageService
 
+<carrito showInShop="true" />
 
 <div class="container px-4 px-lg-5 my-5">
 	@if (producto != null)
@@ -18,8 +19,13 @@
 			<div class="col-md-6">
 				<h1 class="display-5 fw-bolder">@producto.NombreProducto</h1>
 				<div class="fs-5 mb-5">
-						<span>@producto.Descripcion</span>
-				</div
+					<span>@producto.Descripcion</span>
+					<div>
+						<p class="mb-3 mt-3">Tipo de Unidad: @producto.Unidad</p>
+					</div>
+				</div>
+
+
 					<p class="lead">RD$@producto.Precio</p>
 				<div class="d-flex">
 					<button class="btn btn-outline-dark flex-shrink-0 me-3" type="button" @onclick="AgregarAlCarrito">
@@ -30,7 +36,7 @@
 							<i class="oi oi-arrow-thick-left"></i>
                             Volver
 					</a>
-				</div
+				</div>
 			</div>
 		</div>
 	}
