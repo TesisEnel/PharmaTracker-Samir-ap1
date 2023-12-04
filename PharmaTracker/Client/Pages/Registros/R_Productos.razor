@@ -94,6 +94,8 @@
 						<option value="TAB">TAB</option>
 						<option value="POLV">POLV</option>
 						<option value="LATA">LATA </option>
+						<option value="CART">CART</option>
+						<option value="FRAS">FRAS</option>
 					</InputSelect>
 					<ValidationMessage For="@(() => productos.Unidad)" />
 				</div>
@@ -203,7 +205,7 @@
 	<div class="d-flex justify-content-center mb-4 mt-4">
 		<div class="btn-group">
 			<button type="button" class="btn btn-outline-primary" @onclick="Nuevo"> Nuevo <i class="oi oi-file" /></button>
-			<button type="submit" class="btn btn-outline-success" @onclick="Guardar"> Guardar <i class="oi oi-document" /></button>
+			<button type="button" class="btn btn-outline-success" @onclick="Guardar"> Guardar <i class="oi oi-document" /></button>
 			<AuthorizeView Roles="Administrador">
                 <Authorized Context="not_for_vendedor">
                     <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
