@@ -25,7 +25,7 @@
 			<div class="form-group mb-2">
 				<label class="form-label" @for="productos.ProductoId">Producto Id:</label>
 				<div class="input-group">
-					<InputNumber id="EntradasId" readonly min="0" class="form-control" @bind-Value="productos.ProductoId" />
+					<InputNumber id="EntradasId"  min="0" class="form-control" @bind-Value="productos.ProductoId" readonly />
 					<ValidationMessage For="@(() => productos.ProductoId)" />
 					<div class="ms-2">
 						<button class="btn btn-primary" type="button" @onclick="Buscar">
@@ -299,17 +299,14 @@
 			notificacionesService.Notify(mensaje);
 			return;
 		}
-		foreach (var detalle in DetallesRemovidos)
-		{
-			await httpClient.DeleteAsync($"api/Productos/DeleteDetalle/{detalle.DetalleLaboratorioProductoId}");
-		}
 
 		var ProductoGuardado = await response.Content.ReadFromJsonAsync<Productos>();
 		if (ProductoGuardado is not null)
 		{
-			this.productos = ProductoGuardado;
-			productos.Existencia = CantidadTotal;
-			StateHasChanged();
+			foreach (var detalle in DetallesRemovidos)
+			{
+				await httpClient.DeleteAsync($"api/Productos/DeleteDetalle/{detalle.DetalleLaboratorioProductoId}");
+			}
 			var mensaje = new NotificationMessage
 				{
 					Severity = NotificationSeverity.Success,
@@ -318,7 +315,10 @@
 					Duration = 5_000
 				};
 			notificacionesService.Notify(mensaje);
-			Nuevo();
+			productos = ProductoGuardado;
+			productos.Existencia = CantidadTotal;
+			StateHasChanged();
+			this.Nuevo();
 		}
 	}
 
