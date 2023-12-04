@@ -25,7 +25,7 @@
 			<div class="form-group mb-2">
 				<label class="form-label" @for="productos.ProductoId">Producto Id:</label>
 				<div class="input-group">
-					<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="productos.ProductoId" />
+					<InputNumber id="EntradasId" readonly min="0" class="form-control" @bind-Value="productos.ProductoId" />
 					<ValidationMessage For="@(() => productos.ProductoId)" />
 					<div class="ms-2">
 						<button class="btn btn-primary" type="button" @onclick="Buscar">
@@ -130,7 +130,7 @@
 				</div>
 			</div>
 
-						@*Descripcion*@
+		@*Descripcion*@
 		<div class="form-group mb-2">
 			<label class="form-label" @for="Descripcion">Descripci&oacute;n:</label>
 			<div class="input-group">

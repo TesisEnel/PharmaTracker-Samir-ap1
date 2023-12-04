@@ -27,7 +27,7 @@
 					<div class="form-group mb-2">
 						<label class="form-label" @for="admin.AdminId">Admin Id:</label>
 						<div class="input-group">
-							<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="admin.AdminId" />
+							<InputNumber readonly id="EntradasId" min="0" class="form-control" @bind-Value="admin.AdminId" />
 							<ValidationMessage For="@(() => admin.AdminId)" />
 							<div class="ms-2">
 								<button class="btn btn-primary" type="button" @onclick="Buscar">
