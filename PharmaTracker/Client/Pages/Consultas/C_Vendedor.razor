@@ -2,6 +2,12 @@
 @inject HttpClient httpClient
 @inject NotificationService notificationService
 
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components
+
+@attribute [Authorize(Roles = "Administrador")]
+
 <PageTitle>Consulta de Vendedores</PageTitle>
 
 <div class="card-header mt-4">

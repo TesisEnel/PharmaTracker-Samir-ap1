@@ -4,6 +4,12 @@
 @inject NotificationService notificacionesService
 @using PharmaTracker.Shared;
 
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components
+
+@attribute [Authorize(Roles = "Administrador")]
+
 <div class="card-header mt-4">
 
 	<div class="card-header">
