@@ -1,0 +1,22 @@
+﻿@inject ISyncSessionStorageService SessionStorageService
+
+<a href="carrito" class="btn btn-info"> 
+    <i class="oi oi-cart"></i> 
+    Carrito
+    @ObtenerCantidadProductos()
+    <span class="badge badge-pill">@ObtenerCantidadProductos()</span>
+</a>
+
+
+@code{
+    private int ObtenerCantidadProductos()
+    {
+        var carrito = SessionStorageService.GetItem<List<Productos>>("carrito");
+        if (carrito == null)
+        {
+            return 0;
+        }
+        return carrito.Count;
+    }
+}
+
