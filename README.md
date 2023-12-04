@@ -1,4 +1,4 @@
-# PharmaTracker - Sistema de Facturación para Farmacias
+# PharmaTracker - Sistema de compras para Farmacias
 
 ![PharmaTracker](https://cdn.discordapp.com/attachments/1077669793236271258/1181347116946309170/image.png?ex=6580ba3d&is=656e453d&hm=03f78718a0cb6f4973bf9d05ddd2d46d8ea5372dfbc92332c830dee8463b35e5&)
 
@@ -28,25 +28,25 @@ PharmaTracker es una aplicación de sistema de facturación diseñada para farma
 ### Registro de clientes
 ![Registro de clientes](https://media.discordapp.net/attachments/1077669793236271258/1181343199122436187/c1e0af9d-fb2c-4905-bf71-bc4f20a9e063.jpg?ex=6580b696&is=656e4196&hm=012564c1e3c3be14cdc906828cbc6fed52e91ce43634d81e484c507dcd122546&=&format=webp&width=641&height=662)
 
-###Registro Vendedores para Administradores
+### Registro Vendedores para Administradores
 ![Registro Vendedores para Administradores](https://media.discordapp.net/attachments/1077669793236271258/1181343200766590976/6dab62c7-552d-4d0b-802a-19eaaadbfc5f.jpg?ex=6580b697&is=656e4197&hm=d5c05bf66a7948b01374387dac07e5f742a7856c8a02851c189eb730de5428ac&=&format=webp&width=1367&height=662)
 
-###Registro admin para Administradores
+### Registro admin para Administradores
 ![Registro admin para Administradores](https://media.discordapp.net/attachments/1077669793236271258/1181343201911648416/d77549e0-f7f3-4c5a-b064-8be3649a5f7f.jpg?ex=6580b697&is=656e4197&hm=034f68f032dc93ae2c9277b83646fee3a5af9aeea65be60babdbccfc62096540&=&format=webp&width=1380&height=662)
 
-###Registrar nuevos productos
+### Registrar nuevos productos
 ![Registrar nuevos productos](https://media.discordapp.net/attachments/1077669793236271258/1181343200514945095/23816173-deea-4cb7-a376-be981c00e5dc.jpg?ex=6580b697&is=656e4197&hm=4b3ab62c90ee80ce22402b9269e8265e4c628d9c68719b608795cf8cda66c5da&=&format=webp&width=1402&height=661)
 
-###Consulta Clientes
+### Consulta Clientes
 ![Consulta Clientes](https://media.discordapp.net/attachments/1077669793236271258/1181343202423361606/fb08f2d8-24d3-41e2-942f-5cb94d09ecd8.jpg?ex=6580b697&is=656e4197&hm=c8291a38040647dba78351cc070c1e0651478cfa880fe435d1187c23b8fdef6e&=&format=webp&width=1360&height=662)
 
-###Consulta Vendedores
+### Consulta Vendedores
 ![Consulta Vendedores](https://media.discordapp.net/attachments/1077669793236271258/1181343202746314924/c8cdca35-8721-4e9e-8eaf-6d460a42cc81.jpg?ex=6580b697&is=656e4197&hm=8a4c8c25c72ea1c68010f3003578e06ab0491ff5e949bc10ee383b349bf9cb42&=&format=webp&width=1397&height=662)
 
-###Consulta Administradores
+### Consulta Administradores
 ![Consulta Administradores](https://media.discordapp.net/attachments/1077669793236271258/1181346690079408138/image.png?ex=6580b9d7&is=656e44d7&hm=400b8aafbc8f6f045329e6ecec4b76180a973191bda2310602bbacda5d9f007a&=&format=webp&quality=lossless&width=1440&height=658)
 
-###Consultar productos
+### Consultar productos
 ![Consultar productos](https://media.discordapp.net/attachments/1077669793236271258/1181343202154905773/3ff5b21e-b1c3-4b15-81ed-fa0afee6fc2b.jpg?ex=6580b697&is=656e4197&hm=8eee5fae85fa5996416c7df59332dc56c58e8388556ca7b154bba75171b599b7&=&format=webp&width=1400&height=662)
 
 
