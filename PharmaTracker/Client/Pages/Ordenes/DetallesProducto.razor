@@ -1,6 +1,8 @@
 ﻿@page "/detallesproducto/{ProductoId:int}"
 @inject HttpClient httpClient
 @inject NotificationService notificationService
+@inject ISessionStorageService sessionStorageService
+
 
 <div class="container px-4 px-lg-5 my-5">
 	@if (producto != null)
@@ -16,16 +18,16 @@
 			<div class="col-md-6">
 				<h1 class="display-5 fw-bolder">@producto.NombreProducto</h1>
 				<div class="fs-5 mb-5">
-						<span>RD$@producto.Precio</span>
+						<span>@producto.Descripcion</span>
 				</div
-					<p class="lead">@producto.Descripcion</p>
+					<p class="lead">RD$@producto.Precio</p>
 				<div class="d-flex">
-					<button class="btn btn-outline-dark flex-shrink-0 me-3" type="button">
+					<button class="btn btn-outline-dark flex-shrink-0 me-3" type="button" @onclick="AgregarAlCarrito">
 							<i class="oi oi-cart me-1"></i>
                             Agregar al carrito
 					</button>
 					<a class="btn btn-outline-dark flex-lg-shrink-0" href="O_Productos">
-							<i class="oi oi-cart me-1"></i>
+							<i class="oi oi-arrow-thick-left"></i>
                             Volver
 					</a>
 				</div
@@ -57,6 +59,7 @@
 			await Buscar();
 		}
 	}
+
 	public async Task Buscar()
 	{
 		var productoNotNull = (await httpClient.GetFromJsonAsync<List<Productos>>($"api/Productos")).ToList().Any(p => p.ProductoId == producto.ProductoId);
@@ -81,4 +84,23 @@
 			notificationService.Notify(mensaje);
 		}
 	}
+
+	private async Task AgregarAlCarrito()
+    {
+        var carrito = await sessionStorageService.GetItemAsync<List<Productos>>("carrito");
+        if (carrito == null)
+        {
+            carrito = new List<Productos>();
+        }
+        carrito.Add(producto);
+        await sessionStorageService.SetItemAsync("carrito", carrito);
+        var mensaje = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = $"{producto.NombreProducto} agregado",
+                Detail = $"{producto.NombreProducto} se ha agregado al carrito",
+                Duration = 5_000
+            };
+        notificationService.Notify(mensaje);
+    }
 }
