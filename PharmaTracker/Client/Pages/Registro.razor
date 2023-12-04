@@ -44,8 +44,8 @@
 						<ValidationMessage For="@(() => Cliente.Dirección)" />
 
                         <div class="form-floating mb-2">
-							<InputText type="text" id="telefono" class="form-control" placeholder="Teléfono" @bind-Value="Cliente.Teléfono" />
-                            <label for="telefono">Tel&eacute;fono</label>
+							<InputText type="text" id="telefono" class="form-control" placeholder="Teléfono" @bind-Value="Cliente.Teléfono" maxlength="10" />
+							<label for="telefono">Tel&eacute;fono</label>
                         </div>
 
 						<ValidationMessage For="@(() => Cliente.Teléfono)" />
@@ -83,19 +83,8 @@
 
 @code {
 
-
-	[Parameter]
-	public int clienteId { get; set; }
-
 	public Clientes Cliente { get; set; } = new Clientes();
 
-	protected override async Task OnInitializedAsync()
-	{
-		if (clienteId > 0)
-		{
-			this.Cliente.ClienteId = clienteId;
-		}
-	}
 
 	public async Task Guardar()
 	{
