@@ -178,6 +178,7 @@
 
 	public Vendedor vendedor { get; set; } = new Vendedor();
 	public VendedorDetalle vendedorDetalle { get; set; } = new VendedorDetalle();
+	public List<VendedorDetalle> DetalleRemove { get; set; } = new List<VendedorDetalle>();
 
 	public bool detalleTipos = false;
 	public bool detalleTelefono = false;
@@ -243,7 +244,10 @@
 			notificationService.Notify(mensaje);
 			return;
 		}
-
+		foreach(var detalle in DetalleRemove)
+		{
+			await httpClient.DeleteAsync($"api/VendedorDetalles/DeleteVendedorDetalle/{detalle.VendedorDetalleId}");
+		}
 		var vendedorDevuelto = await reponse.Content.ReadFromJsonAsync<Vendedor>();
 		if (vendedorDevuelto is not null)
 		{
@@ -340,6 +344,7 @@
 	{
 		vendedorDetalle = detalleRemover;
 		vendedor.VendedorDetalle.Remove(detalleRemover);
+		DetalleRemove.Add(detalleRemover);
 		StateHasChanged();
 	}
 
