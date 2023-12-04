@@ -1,6 +1,6 @@
 # PharmaTracker - Sistema de Facturación para Farmacias
 
-![PharmaTracker]([images/pharmatracker_logo.png](https://cdn.discordapp.com/attachments/1077669793236271258/1181344347321544754/image.png?ex=6580b7a8&is=656e42a8&hm=fcf7a500463faf93355f53977506b27be360fe56fd19dacc944c5a2e778a5492&))
+![PharmaTracker](https://cdn.discordapp.com/attachments/1077669793236271258/1181347116946309170/image.png?ex=6580ba3d&is=656e453d&hm=03f78718a0cb6f4973bf9d05ddd2d46d8ea5372dfbc92332c830dee8463b35e5&)
 
 ## Descripción
 PharmaTracker es una aplicación de sistema de facturación diseñada para farmacias. Permite a los clientes buscar productos, agregarlos a la cesta, consultar información detallada y completar transacciones de venta de manera eficiente.
@@ -57,7 +57,7 @@ PharmaTracker es una aplicación de sistema de facturación diseñada para farma
 - [SQLite](https://www.sqlite.org/download.html)
 
 ### Pasos de Instalación
-1. Clona este repositorio: `git clone https://github.com/tu_usuario/PharmaTracker.git`
+1. Clona este repositorio: `git clone https://github.com/darcklito/PharmaTracker.git`
 2. Navega al directorio del proyecto: `cd PharmaTracker`
 3. Ejecuta la aplicación: `dotnet run`
 
