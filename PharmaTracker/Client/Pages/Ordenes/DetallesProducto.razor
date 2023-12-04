@@ -4,6 +4,12 @@
 @inject ISessionStorageService sessionStorageService
 @inject ICarritoService CarritoService
 
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components
+
+@attribute [Authorize]
+
 <carrito showInShop="true" />
 
 <div class="container px-4 px-lg-5 my-5">
@@ -48,8 +54,6 @@
         </div>
     }
 
-
-
 </div>
 
 @code {
@@ -57,6 +61,7 @@
 	public int ProductoId { get; set; }
 	public Productos producto { get; set; } = new Productos();
 
+	public ArticulosEnCarrito articuloEnCarrito = new ArticulosEnCarrito { Cantidad = 1 };
 
 	protected override async Task OnInitializedAsync()
 	{

@@ -8,5 +8,7 @@ namespace PharmaTracker.Client.Services.CarritoService
 		Task AgregarAlCarrito(Productos producto);
 		Task<List<ArticulosEnCarrito>> ObtenerArticulosEnCarrito();
 		Task EliminarArticulo(ArticulosEnCarrito articulo);
+		Task Guardar(ArticulosEnCarrito articulo);
+
 	}
 }

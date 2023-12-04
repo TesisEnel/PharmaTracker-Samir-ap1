@@ -66,5 +66,11 @@ namespace PharmaTracker.Client.Services.CarritoService
 
 			OnChange?.Invoke();
         }
+
+		public async Task Guardar(ArticulosEnCarrito articulo)
+		{
+			
+		}
+
     }
 }

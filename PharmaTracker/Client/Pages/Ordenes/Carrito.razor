@@ -1,5 +1,15 @@
 ﻿@page "/carrito"
 @inject ICarritoService CarritoService
+@inject HttpClient httpClient
+@inject NotificationService notificacionesService
+@using PharmaTracker.Shared;
+
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components
+
+@attribute [Authorize]
 
 <div class="col-sm-8">
     <div class="card mb-3">
@@ -23,25 +33,29 @@
                             <th>Producto</th>
                             <th>Precio</th>
                             <th>Cantidad</th>
-                            <th>Total</th>
+                            <th>SubTotal</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-
                         @if (articulosEnCarrito.Any())
                         {
                             foreach (var articulo in articulosEnCarrito)
                             {
                                 <tr>
                                     <td valign="middle">
-                                        <img class="card-img-top" src="@articulo.Imagen" style="width:100px">
+                                        <div class="img-container">
+                                            <img class="card-img-top" src="@articulo.Imagen" alt="@articulo.NombreProducto">
+                                        </div>
                                     </td>
                                     <td valign="middle">@articulo.NombreProducto</td>
-                                    <td valign="middle">@articulo.Precio</td>
+                                    <td valign="middle">$@articulo.Precio</td>
                                     <td valign="middle" align="center">
+                                        <EditForm Model="@articulo">
+                                            <InputNumber @bind-Value="@articulo.Cantidad" step="1" min="1" style="width: 70px;" />
+                                        </EditForm>
                                     </td>
-                                    <td valign="middle"> $@articulosEnCarrito.Sum(articulo => articulo.Precio)</td>
+                                    <td valign="middle"> $@(articulo.Cantidad * articulo.Precio)</td>
                                     <td valign="middle">
                                         <button type="button" class="btn btn-outline-dark" @onclick="(() => Eliminar(articulo))">
                                             <i class="oi oi-trash"></i>
@@ -49,8 +63,13 @@
                                     </td>
                                 </tr>
                             }
-
-
+                            <tr>
+                                <td colspan="6">
+                                    <div>
+                                        Total: $@articulosEnCarrito.Sum(articulo => articulo.Cantidad * articulo.Precio)
+                                    </div>
+                                </td>
+                            </tr>
                         }
                         else
                         {
@@ -62,22 +81,25 @@
                                 </td>
                             </tr>
                         }
-
-
                     </tbody>
                 </table>
             </div>
-
-
+            <div class="d-flex justify-content-center mb-4 mt-4">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" @onclick="RealizarPedido">
+                        Realizar pedido
+                    </button>
+                </div>
+            </div>
         </div>
-
-
     </div>
 </div>
 
 
+
 @code {
 
+    public ArticulosEnCarrito articuloEnCarrito = new ArticulosEnCarrito { Cantidad = 1 };
     List<ArticulosEnCarrito> articulosEnCarrito = new List<ArticulosEnCarrito>();
 
     protected override async Task OnInitializedAsync()
@@ -89,5 +111,21 @@
     {
         await CarritoService.EliminarArticulo(articulo);
         articulosEnCarrito = await CarritoService.ObtenerArticulosEnCarrito();
+    }
+
+    public async Task RealizarPedido()
+    {
+
+        var mensaje = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Pedido Realizado",
+                Detail = "Gracias por su pedido. Se ha procesado con éxito.",
+                Duration = 3_000 
+            };
+        notificacionesService.Notify(mensaje);
+
+        articulosEnCarrito = new List<ArticulosEnCarrito>();
+
     }
 }
