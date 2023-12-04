@@ -27,7 +27,7 @@
 					<div class="form-group mb-2">
 						<label class="form-label" @for="admin.AdminId">Admin Id:</label>
 						<div class="input-group">
-							<InputNumber id="EntradasId" min="0" class="form-control" @bind-Value="admin.AdminId" />
+							<InputNumber readonly id="EntradasId" min="0" class="form-control" @bind-Value="admin.AdminId" />
 							<ValidationMessage For="@(() => admin.AdminId)" />
 							<div class="ms-2">
 								<button class="btn btn-primary" type="button" @onclick="Buscar">
@@ -180,7 +180,7 @@
 
 	public Admin admin { get; set; } = new Admin();
 	public AdminDetalle adminDetalle { get; set; } = new AdminDetalle();
-
+	public List<AdminDetalle> DetalleRemove { get; set; } = new List<AdminDetalle>();
 
 
 	public bool detalleTipos { get; set; } = false;
@@ -247,6 +247,10 @@
 			};
 			notificationService.Notify(mensaje);
 			return;
+		}
+		foreach(var detallle in DetalleRemove)
+		{
+			await httpClient.DeleteAsync($"api/Admins/DeleteAdminDetalle/{detallle.AdminDetalleId}");
 		}
 
 		var adminDevuelto = await reponse.Content.ReadFromJsonAsync<Admin>();
@@ -346,6 +350,7 @@
 	{
 		adminDetalle = detalleRemover;
 		admin.AdminDetalle.Remove(detalleRemover);
+		DetalleRemove.Add(detalleRemover);
 		StateHasChanged();
 	}
 

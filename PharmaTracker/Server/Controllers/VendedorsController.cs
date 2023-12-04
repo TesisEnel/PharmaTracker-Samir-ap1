@@ -25,10 +25,10 @@ namespace PharmaTracker.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Vendedor>>> GetVendedor()
         {
-          if (_context.Vendedor == null)
-          {
-              return NotFound();
-          }
+            if (_context.Vendedor == null)
+            {
+                return NotFound();
+            }
             return await _context.Vendedor.ToListAsync();
         }
 
@@ -90,24 +90,24 @@ namespace PharmaTracker.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Vendedor>> PostVendedor(Vendedor vendedor)
         {
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
-			if (vendedor.VendedorId<= 0 || !VendedorExists(vendedor.VendedorId))
-			{
-				_context.Vendedor.Add(vendedor);
-			}
-			else
-			{
-				_context.Vendedor.Update(vendedor);
-			}
-			await _context.SaveChangesAsync();
-			return Ok(vendedor);
-		}
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (vendedor.VendedorId <= 0 || !VendedorExists(vendedor.VendedorId))
+            {
+                _context.Vendedor.Add(vendedor);
+            }
+            else
+            {
+                _context.Vendedor.Update(vendedor);
+            }
+            await _context.SaveChangesAsync();
+            return Ok(vendedor);
+        }
 
-		// DELETE: api/Vendedors/5
-		[HttpDelete("{id}")]
+        // DELETE: api/Vendedors/5
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVendedor(int id)
         {
             if (_context.Vendedor == null)
@@ -130,5 +130,25 @@ namespace PharmaTracker.Server.Controllers
         {
             return (_context.Vendedor?.Any(e => e.VendedorId == id)).GetValueOrDefault();
         }
+
+        [HttpDelete("DeleteVendedorDetalle/{id}")]
+        public async Task<IActionResult> DeleteVendedorDetalle(int id)
+        {
+            if(id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var vendedorDetail = await _context.Vendedor.FirstOrDefaultAsync(a => a.VendedorId == id);
+            if(vendedorDetail is null)
+            {
+				return NotFound();
+			}
+            _context.Vendedor.Remove(vendedorDetail);
+			await _context.SaveChangesAsync();
+
+			return Ok();
+        }
     }
-}
+}   
+

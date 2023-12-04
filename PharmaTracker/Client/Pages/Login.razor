@@ -61,6 +61,19 @@
 
     private async Task IniciarSesion()
     {
+        if (string.IsNullOrEmpty(login.Correo) || string.IsNullOrEmpty(login.Clave))
+        {
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Warning,
+                    Summary = "Aviso",
+                    Detail = "Por favor, ingrese su correo electrónico y contraseña.",
+                    Duration = 3_000
+                };
+            notificationService.Notify(mensaje);
+            return; 
+        }
+
         var loginResponse = await httpClient.PostAsJsonAsync<LoginDTO>("/api/Usuario/Login", login);
 
         if (loginResponse.IsSuccessStatusCode)
@@ -71,19 +84,21 @@
 
             navManager.NavigateTo("/Index");
         }
-
-        if(loginResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        else if (loginResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
-            var mensaje = new NotificationMessage
-            {
-                Severity = NotificationSeverity.Error,
-                Summary = "Error",
-                Detail = loginResponse.Content.ReadAsStringAsync().Result,
-                Duration = 4_000
-            };
-            notificationService.Notify(mensaje);
+
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Correo electrónico o contraseña incorrecta",
+                    Duration = 3_000
+                };
+            notificationService.Notify(mensajeError);
+
         }
     }
+
 
     private bool mostrarContraseña = false;
 

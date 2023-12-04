@@ -19,7 +19,7 @@ namespace PharmaTracker.Client.Extensions
         {
             ClaimsPrincipal claimsPrincipal;
 
-            if (userSession != null)
+            if (userSession != null && !string.IsNullOrEmpty(userSession.Nombre) && !string.IsNullOrEmpty(userSession.Correo) && !string.IsNullOrEmpty(userSession.Rol))
             {
                 claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
