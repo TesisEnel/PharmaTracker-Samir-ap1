@@ -20,17 +20,21 @@
 
                         <h1 class="h2">PharmaTracker</h1>
                     </div>
+
                     <div class="card-body">
 
+						<h4>Registrate</h4>
+						<p>Es r&aacute;pido y f&aacute;cil</p>
+
                         <div class="form-floating mb-2">
-                            <InputText type="text" id="Nombre" class="form-control" placeholder="Nombre" @bind-Value="Cliente.Nombre" />
+							<InputText type="text" id="Nombre" class="form-control" placeholder="Nombre" autofocus @bind-Value="Cliente.Nombre" />
                             <label for="Nombre">Nombre</label>
                         </div>
 
 						<ValidationMessage For="@(() => Cliente.Nombre)" />
 
                         <div class="form-floating mb-2">
-							<InputText type="email" id="email" class="form-control" @bind-Value="Cliente.Email" autofocus placeholder="Correo" />
+							<InputText type="email" id="email" class="form-control" @bind-Value="Cliente.Email"  placeholder="Correo" />
                             <label for="email">Correo</label>
                         </div>
 
@@ -68,11 +72,19 @@
 							</div>
 
 						<ValidationMessage For="@(() => Cliente.Contraseña)" />
+							<div>
+							<p style="font-size: 12px;">
+								Al hacer clic en "Registrarte", aceptas nuestras <a href="/legal/codinciones" id="terms-link" target="_blank" rel="nofollow">Condiciones</a> y la
+								<a href="/legal/politica_privacidad" id="terms-link" target="_blank" rel="nofollow">Política de privacidad</a>
+							</p>
+							</div>
+
+
 
                         <p> ¿Ya tienes una cuenta? <a title="Iniciar Sesión" href="">Inicia Sesión</a></p>
 
                         <div class="d-grid gap-2">
-                            <button class="btn btn-lg btn-primary btn-block" type="submit">Registrarse</button>
+							<button class="btn btn-lg btn-primary btn-block" type="submit">Registrarte</button>
                         </div>
                     </div>
                 </div>
