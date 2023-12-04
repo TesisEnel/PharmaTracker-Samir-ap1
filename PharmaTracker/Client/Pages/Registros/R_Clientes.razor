@@ -8,76 +8,103 @@
 
 @attribute [Authorize(Roles = "Administrador, Vendedor")]
 
+<div class="card-header">
+	<h3>Registros de Clientes</h3>
+</div>
+
+
 <EditForm Model="Cliente" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
 
-    <div class="container">
-        <div class="card shadow-lg">
-            <div class="card-header">
-                <h3>Registro de Clientes.</h3>
-            </div>
-            <div class=card-body>
-                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
-                    <label>Cliente Id:</label>
-                    <div class="input-group mb-3">
-                        <InputNumber min="0" @bind-Value="Cliente.ClienteId" class="form-control" aria-describedby="BotonBuscar" />
-                        <ValidationMessage For="@(() => Cliente.ClienteId)" />
-                        <button @onclick="Buscar" class="btn btn-outline-primary" type="button" id="BotonBuscar"><i class="oi oi-magnifying-glass" /></button>
-                    </div>
-                </div>
+	<div class="container">
+		<div class="card shadow-lg">
+			<div class="card-header">
 
-                <div class="mb-3">
-                    <label class="form-label" for="Nombre">Nombre:</label>
-                    <InputText @bind-Value="Cliente.Nombre" class="form-control" />
-                    <ValidationMessage For="@(() => Cliente.Nombre)" />
-                </div>
+				@*ID*@
+				<div class="col-md-3 mt-2">
+					<div class="form-group mb-2">
+						<label class="form-label" @for="Cliente.ClienteId">Cliente Id:</label>
+						<div class="input-group">
+							<InputNumber readonly id="EntradasId" min="0" class="form-control" @bind-Value="Cliente.ClienteId" />
+							<ValidationMessage For="@(() => Cliente.ClienteId)" />
+						</div>
+					</div>
+				</div>
 
-                <div class="mb-3">
-                    <label class="form-label" for="Dirección">Dirección:</label>
-                    <InputText @bind-Value="Cliente.Dirección" class="form-control" />
-                    <ValidationMessage For="@(() => Cliente.Dirección)" />
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label" for="Teléfono">Teléfono:</label>
-                    <InputText @bind-Value="Cliente.Teléfono" class="form-control" maxlength="10" />
-                    <ValidationMessage For="@(() => Cliente.Teléfono)" />
-                </div>
+				<div class="row">
+					@*Nombre*@
+					<div class="col-md-6 mt-2">
+						<div class="form-group mb-3">
+							<label class="form-label" @for="Cliente.Nombre">Nombre:</label>
+							<InputText id="Nombre" class="form-control" @bind-Value="Cliente.Nombre" />
+							<ValidationMessage For="@(() => Cliente.Nombre)" />
+						</div>
+					</div>
 
-                <div class="mb-3">
-                    <label class="form-label" for="Email">Email:</label>
-                    <InputText @bind-Value="Cliente.Email" class="form-control" />
-                    <ValidationMessage For="@(() => Cliente.Email)" />
-                </div>
+					@*Telefono*@
+					<div class="col-md-3 ms-4 mt-2">
+						<label>Tel&eacute;fono:</label>
+						<InputText class="form-control" @bind-Value="Cliente.Teléfono" maxlength="10"></InputText>
+						<ValidationMessage For="@(() => Cliente.Teléfono)" />
+					</div>
+				</div>
 
-                <div class="mb-3">
-                    <label class="form-label" for="Contraseña">Contraseña:</label>
-                    <InputText @bind-Value="Cliente.Contraseña" type="@((mostrarContraseña) ? "text" : "password")" class="form-control" />
-                    <ValidationMessage For="@(() => Cliente.Contraseña)" />
-                    <div class="ms-2">
-                        <button @onclick="MostrarContraseña" class="btn btn-outline-secondary" type="button">
-                            @if (mostrarContraseña)
-                            {
-                                <i class="oi oi-dial"></i>
-                            }
-                            else
-                            {
-                                <i class="oi oi-eye"></i>
-                            }
-                        </button>
-                    </div>
-                </div>
 
-            </div>
-            <div class="card-footer d-flex justify-content-center">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">Nuevo <i class="oi oi-file" /></button>
-                    <button type="submit" class="btn btn-outline-success" @onclick="Guardar">Guardar <i class="oi oi-document" /></button>
-                    <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="row">
+
+					@*Email*@
+					<div class="col-md-6 mt-2">
+						<div class="form-group">
+							<label for="Email">Email:</label>
+							<InputText @bind-Value="Cliente.Email" class="form-control" id="Email" placeholder="Ingrese su correo electr&oacute;nico" />
+							<ValidationMessage For="@(() => Cliente.Email)" />
+						</div>
+					</div>
+
+					@*Password*@
+					<div class="col-md-5">
+						<div class="form-group ">
+							<label class="form-label" @for="Cliente.Contraseña">Contraseña </label>
+							<div class="input-group">
+								<InputText @bind-Value="Cliente.Contraseña" type="@((mostrarContraseña) ? "text" : "password")" class="form-control" id="Contraseña" placeholder="Ingrese su contraseña" />
+								<div class="ms-2">
+									<button @onclick="MostrarContraseña" class="btn btn-outline-secondary" type="button">
+										@if (mostrarContraseña)
+										{
+											<i class="oi oi-dial"></i>
+										}
+										else
+										{
+											<i class="oi oi-eye"></i>
+										}
+									</button>
+								</div>
+								<ValidationMessage For="@(() => Cliente.Contraseña)" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6 mt-2">
+					<div class="form-group">
+						<label for="Dirección">Direcci&oacute;n:</label>
+						<InputTextArea @bind-Value="Cliente.Dirección" class="form-control" id="Dirección" />
+						<ValidationMessage For="@(() => Cliente.Dirección)" />
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<div class="d-flex justify-content-center mb-4 mt-4">
+			<div class="btn-group">
+				<button type="button" class="btn btn-outline-primary" @onclick="Nuevo"> Nuevo <i class="oi oi-file" /></button>
+				<button type="submit" class="btn btn-outline-success" @onclick="Guardar"> Guardar <i class="oi oi-document" /></button>
+				<button type="button" class="btn btn-outline-danger" @onclick="Eliminar"> Eliminar <i class="oi oi-trash" /></button>
+			</div>
+		</div>
+	</div>
+    
 </EditForm>
 
 @code {

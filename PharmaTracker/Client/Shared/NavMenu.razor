@@ -17,29 +17,21 @@
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Index" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+        <AuthorizeView>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="Index" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="O_Productos">
+                    <span class="oi oi-basket" aria-hidden="true"></span> Tienda
+                </NavLink>
+            </div>
+        </AuthorizeView>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="O_Productos">
-                <span class="oi oi-basket" aria-hidden="true"></span> Tienda
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <AuthorizeView Roles="Administrador,Vendedor">
-                <Authorized>
-
-                    <NavLink class="nav-link" href="R_Clientes">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Registro Clientes
-                    </NavLink>
-
-                </Authorized>
-            </AuthorizeView>
-
             <AuthorizeView Roles="Administrador">
                 <Authorized>
 
@@ -85,11 +77,13 @@
             </AuthorizeView>
         </div>
 
-        <div class="nav-item px-3 mt-3">
-            <NavLink class="nav-link" @onclick="LogoutConfirmation" href="javascript:void(0)">
-                <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
-            </NavLink>
-        </div>
+        <AuthorizeView>
+            <div class="nav-item px-3 mt-3">
+                <NavLink class="nav-link" @onclick="LogoutConfirmation" href="javascript:void(0)">
+                    <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                </NavLink>
+            </div>
+        </AuthorizeView>
 
         <div class="nav-item px-3 mt-6">
             <AuthorizeView>
