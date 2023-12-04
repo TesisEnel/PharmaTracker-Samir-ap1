@@ -3,6 +3,7 @@
 @inject HttpClient httpClient
 @inject NotificationService notificacionesService
 @inject NavigationManager NavigationManager
+@inject ICarritoService CarritoService
 
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -206,9 +207,6 @@ else
     public List<Productos> productos { get; set; } = new List<Productos>();
     public Productos auxProducto { get; set; } = new Productos();
 
-    public List<CarritoCompra> cestaDCompra { get; set; } = new List<CarritoCompra>();
-    public CarritoCompra auxCesta { get; set; } = new CarritoCompra();
-
     private bool MostrarProducto = false;
     private bool MostrarCesta = false;
 
@@ -244,45 +242,6 @@ else
 
         MostrarProducto = true;
         StateHasChanged();
-    }
-
-    public void AgregarACompra(Productos producto)
-    {
-        if (producto.Existencia > 0)
-        {
-            producto.Existencia--;
-            var cestaProducto = new CarritoCompra
-                {
-                    Producto = producto,
-                    Cantidad = 1,
-                };
-            cestaDCompra.Add(cestaProducto);
-
-            totalDCompra += producto.Precio ?? 0;
-            totalDproductos++;
-
-
-            var mensaje = new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Success,
-                    Summary = "Agregado al carrito",
-                    Duration = 1_000
-                };
-            notificacionesService.Notify(mensaje);
-
-            StateHasChanged();
-        }
-        else
-        {
-            var mensaje = new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Warning,
-                    Summary = "Existencia insuficiente",
-                    Detail = "No hay suficiente existencia para este producto.",
-                    Duration = 1_000
-                };
-            notificacionesService.Notify(mensaje);
-        }
     }
 
 }
