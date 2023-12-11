@@ -3,13 +3,13 @@
 ![PharmaTracker](https://cdn.discordapp.com/attachments/1077669793236271258/1181347116946309170/image.png?ex=6580ba3d&is=656e453d&hm=03f78718a0cb6f4973bf9d05ddd2d46d8ea5372dfbc92332c830dee8463b35e5&)
 
 ## Descripción
-PharmaTracker es una aplicación de sistema de facturación diseñada para farmacias. Permite a los clientes buscar productos, agregarlos a la cesta, consultar información detallada y completar transacciones de venta de manera eficiente.
+PharmaTracker es una aplicación de sistema de compras diseñada para farmacias. Permite a los clientes buscar productos, agregarlos a la cesta, consultar información detallada y completar transacciones de venta de manera eficiente.
 
 ## Características Principales
-- **Búsqueda de Productos:** Los clientes pueden buscar productos por nombre, categoría o código.
+- **Búsqueda de Productos:** Los clientes pueden buscar categoría.
 - **Gestión de Inventario:** Permite el seguimiento y gestión de inventario en tiempo real.
 - **Cesta de Compras:** Los clientes pueden agregar productos a una cesta virtual para su compra.
-- **Facturación y Ventas:** Funcionalidades para completar transacciones de venta y generar facturas.
+- **Facturación y Ventas:** Funcionalidades para completar transacciones de venta.
 
 ## Capturas de Pantalla
 
