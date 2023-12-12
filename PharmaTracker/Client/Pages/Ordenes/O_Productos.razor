@@ -3,7 +3,6 @@
 @inject HttpClient httpClient
 @inject NotificationService notificacionesService
 @inject NavigationManager NavigationManager
-@inject ICarritoService carritoService
 
 
 @using Microsoft.AspNetCore.Authorization
@@ -224,7 +223,7 @@ else
                     Severity = NotificationSeverity.Warning,
                     Summary = "Filtro requerido",
                     Detail = "Debe elegir una categoría antes de realizar la búsqueda.",
-                    Duration = 5000
+                    Duration = 5_000
                 });
             return;
         }

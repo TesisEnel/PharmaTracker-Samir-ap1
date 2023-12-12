@@ -3,8 +3,12 @@
 @inject HttpClient httpClient
 @inject NotificationService notificacionesService
 @using PharmaTracker.Shared;
+@using System.Security.Claims
+@inject AuthenticationStateProvider autenticacionProvider
 
 
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Extensions.DependencyInjection
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components
@@ -67,7 +71,7 @@
                                 <tr>
                                     <td colspan="6">
                                         <div>
-                                            Total: $@articulosEnCarrito.Sum(articulo => articulo.Cantidad * articulo.Precio)
+                                             Total: $@articulosEnCarrito.Sum(articulo => articulo.Cantidad * articulo.Precio)
                                         </div>
                                     </td>
                                 </tr>
@@ -86,20 +90,25 @@
                     </table>
                 </div>
 
-                <div class="d-flex justify-content-center mb-4 mt-4">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-success" @onclick="RealizarPedido">
-                            Realizar pedido
-                        </button>
+                @if (articulosEnCarrito.Any())
+                {
+                    if (!pagarConTarjeta)
+                    {
+                        <div class="d-flex justify-content-center mb-4 mt-4">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success" @onclick="RealizarPedido">
+                                    Realizar pedido
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    <div class="mb-2">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" id="PagarConTarjeta" @bind="pagarConTarjeta" @onclick="NuevoTarjeta" />
+                            Pagar con tarjeta
+                        </label>
                     </div>
-                </div>
-
-                <div class="mb-2">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" @bind="pagarConTarjeta" />
-                        Pagar con tarjeta
-                    </label>
-                </div>
+                }
             </div>
         </div>
     </div>
@@ -109,15 +118,15 @@
         <div class="col-sm-4">
             <div class="card mb-3">
                 <div class="card-body">
-                    <EditForm Model="tarjeta" OnValidSubmit="ProcesarPago">
+                    <EditForm Model="tarjeta" OnValidSubmit="GuardarPago">
                         <DataAnnotationsValidator></DataAnnotationsValidator>
 
                         <div class="mb-2">
                             <label class="form-label">Nombre Titular</label>
                             <input type="text" class="form-control form-control-sm" placeholder="" @bind-value="tarjeta.Titular" disabled="@disabled">
                             <ValidationMessage For="@(()=>tarjeta.Titular)" />
-
                         </div>
+
                         <div class="mb-2">
                             <label class="form-label">N&uacute;mero Tarjeta</label>
                             <input type="text" class="form-control form-control-sm" placeholder="##############" autocomplete="off" @bind-value="tarjeta.NumeroTarjeta" disabled="@disabled" maxlength="16">
@@ -126,7 +135,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="mb-2">
-                                    <label class="form-label">Vigencia</label>
+                                    <label class="form-label">Fecha Expiraci&oacute;n</label>
                                     <input type="text" class="form-control form-control-sm" placeholder="MM/YY" autocomplete="off" @bind-value="tarjeta.FechaExpiracion" disabled="@disabled" maxlength="5">
                                     <ValidationMessage For="@(()=>tarjeta.FechaExpiracion)" />
                                 </div>
@@ -142,7 +151,7 @@
                         <hr />
                         <div class="mt-2">
                             <div class="d-grid gap-1">
-                                <button class="btn btn-outline-secondary float-end" type="submit" disabled="@disabled">Procesar pago</button>
+                                <button class="btn btn-outline-secondary float-end" type="button"  @onclick="GuardarPago">Procesar pago</button>
                             </div>
                         </div>
                     </EditForm>
@@ -162,8 +171,6 @@
 </div>
 
 
-
-
 @code {
 
     public ArticulosEnCarrito articuloEnCarrito = new ArticulosEnCarrito { Cantidad = 1 };
@@ -171,10 +178,15 @@
 
     private bool disabled = false;
     private bool pagarConTarjeta = false;
-    public TarjetaPago tarjeta = new TarjetaPago();
+    public TarjetaPago tarjeta { get; set; } = new TarjetaPago();
+
+    AuthenticationState usuario;
+    Clientes cliente = new Clientes();
 
     protected override async Task OnInitializedAsync()
     {
+        await getUsuario();
+        await getCliente();
         articulosEnCarrito = await CarritoService.ObtenerArticulosEnCarrito();
 
         foreach (var articulo in articulosEnCarrito)
@@ -189,6 +201,11 @@
         articulosEnCarrito = await CarritoService.ObtenerArticulosEnCarrito();
     }
 
+    public void NuevoPedido()
+    {
+        this.articuloEnCarrito = new ArticulosEnCarrito();
+    }
+
     public async Task RealizarPedido()
     {
 
@@ -201,14 +218,68 @@
             };
         notificacionesService.Notify(mensaje);
 
-        articulosEnCarrito = new List<ArticulosEnCarrito>();
+        NuevoPedido();
 
     }
-    
-    public async Task ProcesarPago()
-	{
-		disabled = true;
-		await Task.Delay(3_000);
-		disabled = false;
-	}
+
+    public void NuevoTarjeta()
+    {
+        this.tarjeta = new TarjetaPago();
+    }
+
+    public async Task GuardarPago()
+    {
+        await Task.Delay(100);
+        using var reponse = await httpClient.PostAsJsonAsync("api/TarjetaPago", tarjeta);
+        if (!reponse.IsSuccessStatusCode)
+        {
+            var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "No se pudo registrar el pago",
+					Duration = 5_000
+				};
+            notificacionesService.Notify(mensaje);
+            return;
+        }
+        var pagoDevuelto = await reponse.Content.ReadFromJsonAsync<TarjetaPago>();
+        if (pagoDevuelto is not null)
+        {
+            this.tarjeta = pagoDevuelto;
+            StateHasChanged();
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Pago realizado",
+                    Detail = "El pago fue realizado con éxito",
+                    Duration = 5_000
+                };
+            notificacionesService.Notify(mensaje);
+            NuevoTarjeta();
+        }
+    }
+
+    public async Task getUsuario()
+    {
+        var autenticacionExt = (AuthenticacionExtension)autenticacionProvider;
+        usuario = await autenticacionExt.GetAuthenticationStateAsync();
+        if (httpClient == null || usuario == null)
+        {
+            return;
+        }
+    }
+    public async Task getCliente()
+    {
+        var cliente = await httpClient.GetFromJsonAsync<List<Clientes>>("api/Clientes");
+
+        var correoUsuario = usuario.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+        if (correoUsuario != null)
+        {
+            this.cliente = cliente.FirstOrDefault(c => c.Email == correoUsuario);
+        }
+    }
+
+
 }
