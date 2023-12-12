@@ -27,5 +27,3 @@ namespace PharmaTracker.Shared
         public string? CVV { get; set; }
     }
 }
-
-// 		[RegularExpression(@"^\d{3}-\d{3}-\d{4}$", ErrorMessage = "El formato del teléfono debe ser xxx-xxx-xxxx")]

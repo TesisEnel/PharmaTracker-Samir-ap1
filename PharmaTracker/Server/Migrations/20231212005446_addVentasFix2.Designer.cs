@@ -11,8 +11,8 @@ using PharmaTracker.Server.DAL;
 namespace PharmaTracker.Server.Migrations
 {
     [DbContext(typeof(PharmaTracketContext))]
-    [Migration("20231211235758_addVentasFix")]
-    partial class addVentasFix
+    [Migration("20231212005446_addVentasFix2")]
+    partial class addVentasFix2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -228,7 +228,7 @@ namespace PharmaTracker.Server.Migrations
                             Categoria = "Medicamento",
                             Descripcion = "Medicamento para el dolor",
                             Existencia = 100,
-                            Fecha = new DateTime(2023, 12, 11, 19, 57, 58, 674, DateTimeKind.Local).AddTicks(103),
+                            Fecha = new DateTime(2023, 12, 11, 20, 54, 46, 270, DateTimeKind.Local).AddTicks(1613),
                             Imagen = "https://www.farmaciasguadalajara.com.mx/fgsa/img/productos/1000/7501050610010.jpg",
                             NombreProducto = "Paracetamol",
                             Precio = 100,

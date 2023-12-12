@@ -78,34 +78,6 @@ namespace PharmaTracker.Server.Migrations
                     b.ToTable("AdminDetalle");
                 });
 
-            modelBuilder.Entity("PharmaTracker.Shared.CarritoCompra", b =>
-                {
-                    b.Property<int>("CarritoCompraId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("Cantidad")
-                        .IsRequired()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Comentario")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("ProductoId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SesionId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("CarritoCompraId");
-
-                    b.HasIndex("ProductoId");
-
-                    b.HasIndex("SesionId");
-
-                    b.ToTable("CestaDCompra");
-                });
-
             modelBuilder.Entity("PharmaTracker.Shared.Clientes", b =>
                 {
                     b.Property<int>("ClienteId")
@@ -169,15 +141,6 @@ namespace PharmaTracker.Server.Migrations
                     b.HasIndex("ProductoId");
 
                     b.ToTable("DetalleLaboratorioProducto");
-
-                    b.HasData(
-                        new
-                        {
-                            DetalleLaboratorioProductoId = 1,
-                            Cantidad = 100,
-                            Laboratorios = "Bayer",
-                            ProductoId = 1
-                        });
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.Facturas", b =>
@@ -262,7 +225,7 @@ namespace PharmaTracker.Server.Migrations
                             Categoria = "Medicamento",
                             Descripcion = "Medicamento para el dolor",
                             Existencia = 100,
-                            Fecha = new DateTime(2023, 12, 3, 16, 41, 57, 392, DateTimeKind.Local).AddTicks(1541),
+                            Fecha = new DateTime(2023, 12, 11, 20, 54, 46, 270, DateTimeKind.Local).AddTicks(1613),
                             Imagen = "https://www.farmaciasguadalajara.com.mx/fgsa/img/productos/1000/7501050610010.jpg",
                             NombreProducto = "Paracetamol",
                             Precio = 100,
@@ -270,24 +233,31 @@ namespace PharmaTracker.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("PharmaTracker.Shared.SesionDTO", b =>
+            modelBuilder.Entity("PharmaTracker.Shared.TarjetaPago", b =>
                 {
-                    b.Property<int>("SesionId")
+                    b.Property<int>("TarjetaPagoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Correo")
+                    b.Property<string>("CVV")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Nombre")
+                    b.Property<string>("FechaExpiracion")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Rol")
+                    b.Property<string>("NumeroTarjeta")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("SesionId");
+                    b.Property<string>("Titular")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.ToTable("SesionDTO");
+                    b.HasKey("TarjetaPagoId");
+
+                    b.ToTable("TarjetaPago");
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.Vendedor", b =>
@@ -354,6 +324,50 @@ namespace PharmaTracker.Server.Migrations
                     b.ToTable("VendedorDetalle");
                 });
 
+            modelBuilder.Entity("PharmaTracker.Shared.Venta", b =>
+                {
+                    b.Property<int>("VentaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("FechaVenta")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Total")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("VentaId");
+
+                    b.ToTable("ventas");
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.VentaDetalle", b =>
+                {
+                    b.Property<int>("DetalleVentaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Subtotal")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("VentaId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DetalleVentaId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.HasIndex("VentaId");
+
+                    b.ToTable("VentaDetalle");
+                });
+
             modelBuilder.Entity("PharmaTracker.Shared.AdminDetalle", b =>
                 {
                     b.HasOne("PharmaTracker.Shared.Admin", null)
@@ -361,21 +375,6 @@ namespace PharmaTracker.Server.Migrations
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("PharmaTracker.Shared.CarritoCompra", b =>
-                {
-                    b.HasOne("PharmaTracker.Shared.Productos", "Producto")
-                        .WithMany()
-                        .HasForeignKey("ProductoId");
-
-                    b.HasOne("PharmaTracker.Shared.SesionDTO", "Sesion")
-                        .WithMany("carritoCompra")
-                        .HasForeignKey("SesionId");
-
-                    b.Navigation("Producto");
-
-                    b.Navigation("Sesion");
                 });
 
             modelBuilder.Entity("PharmaTracker.Shared.DetalleLaboratorioProducto", b =>
@@ -401,6 +400,21 @@ namespace PharmaTracker.Server.Migrations
                         .HasForeignKey("VendedorId");
                 });
 
+            modelBuilder.Entity("PharmaTracker.Shared.VentaDetalle", b =>
+                {
+                    b.HasOne("PharmaTracker.Shared.Productos", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PharmaTracker.Shared.Venta", null)
+                        .WithMany("DetallesVenta")
+                        .HasForeignKey("VentaId");
+
+                    b.Navigation("Producto");
+                });
+
             modelBuilder.Entity("PharmaTracker.Shared.Admin", b =>
                 {
                     b.Navigation("AdminDetalle");
@@ -416,14 +430,14 @@ namespace PharmaTracker.Server.Migrations
                     b.Navigation("detalleLabProducto");
                 });
 
-            modelBuilder.Entity("PharmaTracker.Shared.SesionDTO", b =>
-                {
-                    b.Navigation("carritoCompra");
-                });
-
             modelBuilder.Entity("PharmaTracker.Shared.Vendedor", b =>
                 {
                     b.Navigation("VendedorDetalle");
+                });
+
+            modelBuilder.Entity("PharmaTracker.Shared.Venta", b =>
+                {
+                    b.Navigation("DetallesVenta");
                 });
 #pragma warning restore 612, 618
         }

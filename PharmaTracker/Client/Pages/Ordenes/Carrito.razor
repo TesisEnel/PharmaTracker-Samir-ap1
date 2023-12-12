@@ -2,10 +2,10 @@
 @inject ICarritoService CarritoService
 @inject HttpClient httpClient
 @inject NotificationService notificacionesService
+@inject ISessionStorageService _sessionStorageService
 @using PharmaTracker.Shared;
 @using System.Security.Claims
 @inject AuthenticationStateProvider autenticacionProvider
-
 
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.Extensions.DependencyInjection
@@ -181,6 +181,7 @@
     public TarjetaPago tarjeta { get; set; } = new TarjetaPago();
 
     AuthenticationState usuario;
+    public event Action OnChange;
     Clientes cliente = new Clientes();
 
     protected override async Task OnInitializedAsync()
@@ -203,7 +204,7 @@
 
     public void NuevoPedido()
     {
-        this.articuloEnCarrito = new ArticulosEnCarrito();
+        articuloEnCarrito = new ArticulosEnCarrito();
     }
 
     public async Task RealizarPedido()
@@ -214,13 +215,14 @@
                 Severity = NotificationSeverity.Success,
                 Summary = "Pedido Realizado",
                 Detail = "Gracias por su pedido. Se ha procesado con éxito.",
-                Duration = 3_000 
+                Duration = 3_000
             };
         notificacionesService.Notify(mensaje);
 
         NuevoPedido();
-
     }
+
+    
 
     public void NuevoTarjeta()
     {
@@ -257,6 +259,7 @@
                 };
             notificacionesService.Notify(mensaje);
             NuevoTarjeta();
+            NuevoPedido();
         }
     }
 
