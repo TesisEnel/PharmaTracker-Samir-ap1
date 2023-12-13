@@ -57,7 +57,7 @@ PharmaTracker es una aplicación de sistema de compras diseñada para farmacias.
 - [SQLite](https://www.sqlite.org/download.html)
 
 ### Pasos de Instalación
-1. Clona este repositorio: `git clone https://github.com/darcklito/PharmaTracker.git`
+1. Clona este repositorio: `git clone https://github.com/drcklo/PharmaTracker.git`
 2. Navega al directorio del proyecto: `cd PharmaTracker`
 3. Ejecuta la aplicación: `dotnet run`
 
